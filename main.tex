@@ -1,0 +1,296 @@
+% !TEX encoding = UTF-8 Unicode
+% !TEX TS-program = pdflatex
+
+%%%%%%% La riga soprastante serve per configurare gli editor
+%%%%%%% TeXShop, TeXworks e TeXstudio per gestire questo file
+%%%%%%% con la codifica UFF-8.
+%%%%%%% Se si vuole usare un'altra codifica si veda sotto.
+%%%%%%%
+
+%%%%%%%  Esempio con molte opzioni
+%%%%%%% Le opzioni nella forma "chiave=valore" sono definite
+%%%%%%% perché la classe dalla versione 6.1.00 usa il pacchetto
+%%%%%%% xkeyval. Vedere sulla documentazione in inglese o
+%%%%%%% in italiano quali chiavi accettano valori.
+
+%%%%%%% L'opzione per il corpo accetta qualsiasi valore, anche fratto
+%%%%%%% (per esempio: corpo=11.5pt) e va sempre scritto con una
+%%%%%%% unità di misura. L'utente è pregato di non esagerare con
+%%%%%%% corpi normali minori di 9.5pt o maggiori di 13pt.
+%%%%%%%
+%%%%%%% Le opzioni per inputenc e fontenc vanno per prime.
+%%%%%%% Vengono ignorate se NON si compone con pdfLaTeX. Ma
+%%%%%%% questo è un esempio per pdfLaTeX.
+%%%%%%%
+
+\documentclass[%
+corpo=12pt,
+twoside,
+stile=standard,
+% oldstyle,
+%    autoretitolo,
+tipotesi=magistrale,
+numerazioneromana,
+% libro, utile per la stampa => mette il margine diverso per la rilegatura
+greek,
+evenboxes,
+]{toptesi}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% Per la codifica d'entratasi può scegliere quella che si vuole,
+%%%%%% ma si consiglia di preferire utf8; in ogni caso non scegliere
+%%%%%% codifiche specifiche del sistema operativo.
+
+\usepackage[utf8]{inputenc}% codifica d'entrata
+\usepackage[T1]{fontenc}%    codifica dei font
+\usepackage{lmodern}%        scelta dei font
+
+% Vedere la documentazione toptesi-it.pdf per le
+% attenzioni che bisogna usare al fine di ottenere un file
+% veramente conforme alle norme per l'archiviabilità.
+
+
+\usepackage{hyperref}
+
+\hypersetup{%
+    pdfpagemode={UseOutlines},
+    bookmarksopen,
+    pdfstartview={FitH},
+    colorlinks,
+    linkcolor={blue},
+    citecolor={blue},
+    urlcolor={blue}
+}
+%
+%%%%%%% Esempio di composizione di tesi di laurea con PDFLATEX 
+%
+%
+% Per scrivere testo fasullo in "latinorum"
+\usepackage{lipsum}
+%
+
+%%%%%%% Definizioni locali
+\newtheorem{osservazione}{Osservazione}% Standard LaTeX
+\ExtendCaptions{italian}{Abstract}{Acknowledgements}
+
+\begin{document}\errorcontextlines=9
+%%%%%%% Questi comandi è meglio metterli dentro l'ambiente
+%%%%%%% ThesisTitlePage con o senza asterisco, oppure in un file di
+%%%%%%% configurazione personale. Si veda la documentazione
+%%%%%%% inglese o italiana.
+%%%%%%% Comunque i presenti comandi servono per comporre la
+%%%%%%% tesi con i moduli di estensione standard del pacchetto
+%%%%%%% TOPtesi.
+
+\begin{ThesisTitlePage}
+% Per cambiare la dicitura sopra la lista dei laureandi decommentare
+% la riga seguente, cambiando le 4 parole in modo consistente
+%
+\TitoloListaCandidati{Studente,Studenti,Studentessa,Studentesse}
+%
+\ateneo{Politecnico di Torino}
+%
+% Non tutte le università hanno un nome proprio
+% \nomeateneo{Sede di Torre sosjd}
+%
+% \struttura[III]{Matematica, Fisica e~Scienze Naturali}
+%\Materia{Remote sensing}
+\titolo{Sistemi anti-DDoS distribuiti}% per la laurea quinquennale e il dottorato
+% \sottotitolo{Metodo dei satelliti medicei}% per la laurea quinquennale e il dottorato
+%
+%%%%%%% Corso degli studi
+\corsodilaurea{Ingegneria Informatica}% per la laurea
+
+%%%%%%% L'eventuale numero di matricola va fra parentesi quadre
+%\show\Candidato
+%\def\Candidato{Studente}
+%\show\Candidato
+\candidato{Stefano \textsc{Loscalzo}}[s267614] 
+%\secondocandidato{Evangelista \textsc{Torricelli}}[123457]
+
+%%%%%%% Relatori o supervisori
+%
+\relatore{prof.~Guido Marchetto}
+% \secondorelatore{dipl.~ing.~Werner von Braun}
+% \terzorelatore{dott.~Mario Rossi}
+% 
+%%%%%%% Per mettere altri relatori consultare toptesi-it.pdf
+
+%%%%%%% Tutore
+\tutoreaziendale{dott.\ ing.\ Giovanni Giacosa}
+\NomeTutoreAziendale{Supervisore aziendale\\Centro Ricerche FIAT}
+
+%%%%%%% Seduta dell'esame
+%\sedutadilaurea{Agosto 1615}
+%%%%%%%% oppure:
+\sedutadilaurea{\textsc{Anno~accademico} 2020-2021}% 
+
+%%%%%%% Logo della sede
+% \logosede{logodue}% 
+\end{ThesisTitlePage}
+
+
+%%%%%%% Per cambiare l'offset per la rilegatura;
+%%%%%%% meno offset c'e', meglio e'
+%\setbindingcorrection{3mm}
+
+
+
+
+%%%%%%% Questo test è usato appunto per collaudare diversi stili,
+%%%%%%% non per comporre una vera tesi.
+%%%%%%% Non usarlo mai, solo perché qui è usato!
+\ifclassica%
+{\begin{dedica}
+A non so fare una dedica
+
+% \textdagger\ A non so
+\end{dedica}
+\fi
+%%%%%%% Fine esperimento
+
+\include{capitoli/sommario}
+% \paginavuota % funziona anche senza specificare l'opzione classica
+\italiano
+
+% \tablespagetrue\figurespagetrue % normalmente questa riga non serve ed e' commentata
+\indici
+
+
+\mainmatter
+\include{capitoli/introduzione}
+\include{capitoli/stato_dell_arte}
+\include{capitoli/anomaly_detection}
+\include{capitoli/mitigation}
+\include{capitoli/lavoro_futuro}
+\include{capitoli/conclusioni}
+
+\chapter{Stato dell'arte}
+
+\section{Gli attacchi DDoS}
+Prova prova
+
+\section{I satelliti medicei}
+Prova prova
+
+\chapter{Il barometro}
+\section{Generalit\`a}
+\begin{interlinea}{0.87} Il barometro, come dice il nome, serve per
+misurare la pesantezza; pi\`u precisamente la pesantezza dell'aria
+riferita all'unit\`a di superficie.
+\end{interlinea}
+
+\begin{interlinea}{2} Studiando il fenomeno fisico si pu\`o concludere
+che in un dato punto grava il peso della colonna d'aria che lo
+sovrasta, e che tale colonna \`e tanto pi\`u grave quanto maggiore
+\`e la superficie della sua base; il rapporto fra il peso e la base
+della colonna si chiama pressione e si misura in once toscane al cubito
+quadrato, \cite{tor1}; nel Ducato di Savoia la misura in once al piede
+quadrato \`e quasi uguale, perch\'e col\`a usano un piede molto
+grande, che \`e simile al nostro cubito.
+\end{interlinea}
+
+\subsection{Forma del barometro}
+Il barometro consta di un tubo di vetro chiuso ad una estremit\`a e
+ripieno di mercurio, capovolto su di un vaso anch'esso ripieno di
+mercurio; mediante un'asta graduata si pu\`o misurare la distanza fra
+il menisco del mercurio dentro il tubo e la superficie del mercurio
+dentro il vaso; tale distanza \`e normalmente di 10 pollici toscani,
+\cite{tor1,tor2}, ma la misura pu\`o variare se si usano dei pollici
+diversi; \`e noto infatti che gl'huomini sogliono avere mani di
+diverse grandezze, talch\'e anche li pollici non sono egualmente
+lunghi.
+\section{Del mercurio}
+Il mercurio \`e un a sostanza che si presenta come un liquido, ma ha il colore
+del metallo. Esso \`e pesantissimo, tanto che un bicchiere, che se fosse pieno
+d'acqua, sarebbe assai leggiero, quando invece fosse ripieno di mercurio,
+sarebbe tanto pesante che con entrambe le mani esso necessiterebbe di essere
+levato in suso.
+
+Esso mercurio non trovasi in natura nello stato nel quale \`e d'uopo che sia
+per la costruzione dei barometri, almeno non trovasi cos\`i abbondante come
+sarebbe necessario.
+
+\setcounter{footnote}{25}
+
+Il Monte Amiata, che \`e locato nel territorio del Ducato%
+\footnote{Naturalmente stiamo parlando del Granducato di Toscana.%
+\ifclassica\NoteWhiteLine\fi
+} del nostro Eccellentissimo et Illustrissimo Signore Granduca di Toscana\footnote{Cosimo IV de' Medici.}, \`e uno dei
+luoghi della terra dove pu\`o rinvenirsi in gran copia un sale rosso, che
+nomasi \emph{cinabro}, dal quale con artifizi alchemici, si estrae il mercurio
+nella forma e nella consistenza che occorre per la costruzione del barometro
+terrestre%
+\ifclassica
+\nota{Nota senza numero\dots
+
+\dots e che va a capo.
+}\fi.
+
+
+La densit\`a del mercurio \`e molto alta e varia con la temperatura come
+pu\`o desumersi dalla tabella \ref{t:1}.
+
+
+Il mercurio gode della sorprendente qualit\`a et propriet\`a, cio\`e che esso
+diventa tanto solido da potersene fare una testa di martello et infiggere
+chiodi aguzzi nel legname.
+\begin{table}[htp]              % crea un floating body col nome Tabella nella
+                            % didascalia
+\centering                      % comando necessario per centrare la tabella
+\begin{tabular}%                % inizio vero e proprio della tabella
+{rrrrrr}                        % parametri di incolonnamento
+\hline\hline                    % filetti orizzontali sopra la tabella
+                            % intestazione della tabella
+\multicolumn{3}{c}{\rule{0pt}{2.5ex}Temperatura} % \rule serve per lasciare
+& \multicolumn{3}{c}{Densit\`a} \\               % un po' di spazio sopra le parole
+&\unit{\gradi C} & & & $\unit{t/m^3}$ &  \\
+\hline%                         % Filetto orizzontale per separare l'intestazione
+\hspace*{1.3em}& 0  &  & & 13,8 &  \\   % I numeri sono incolonnati % 
+          & 10  &  & & 13,6 &  \\   % a destra; le colonne vuote
+          & 50  &  & & 13,5 &  \\   % servono per centrare le colonne
+          &100  &  & & 13,3 &  \\   % numeriche sotto le intestazioni
+\hline \hline                           % Filetti di fine tabella
+\end{tabular}
+\caption[Densit\`a del mercurio]{Densit\`a del mercurio. Si pu\`o fare molto meglio usando il pacchetto \textsf{booktabs}.} \label{t:1}  % didascalia con label
+\end{table}
+
+%\selectlanguage{italian}
+
+\begin{osservazione}\normalfont
+Questa propriet\`a si manifesta quando esso \`e estremamente freddo, come
+quando lo si immerge nella salamoia di sale e ghiaccio che usano li maestri
+siciliani per confetionare li sorbetti, dei quali sono insuperabili artisti.
+\end{osservazione}
+
+Per nostra fortuna, questo grande freddo, che necessita per la confetione de
+li sorbetti, molto raramente, se non mai, viene a formarsi nelle terre del
+Granduca Eccellentissimo, sicch\'e non vi ha tema che il barometro di mercurio
+possa essere ruinato dal grande gelo e non indichi la pressione giusta, come
+invece deve sempre fare uno strumento di misura, quale \`e quello che \`e
+descritto cost\`i.\cite{duane1964}
+
+\chapter*{Conlusioni}
+E con questo si conclude la tesi d'esempio per una tesi magistrale con un capitolo non  numerato che si trova ancora nella main matter.
+
+Dovrebbe essere evidente che il comando \texttt{\string\chapter*} non dovrebbe mai essere usato nella main matter, tranne eventualmente un capitoletto conclusivo e riassuntivo \emph{non strutturato}. Infatti se esso contenesse al suo interno paragrafi, sottoparagrafi e affini, questi verrebbero numerati erroneamente con il numero del capitolo precedente. 
+
+\appendix
+
+\chapter{Il listato del pacchetto \texttt{topcoman.sty}}
+\listing{topcoman.sty}
+
+\chapter{Seconda appendice}
+Questa è la seconda appendice numerata con una lettera perché questo comando \texttt{\string\chapter} viene dopo il comando \texttt{\string\appendix}.
+
+Le appendici vanno numerate se sono più di una e devono quindi stare nella main matter, perché nella back matter nulla viene numerato.
+
+La bibliografia che segue non è numerata perché l'ambiente \texttt{thebibliography} compone il suo titolo con il comando \texttt{\string\chapter*} e ne manda il titolo nell'indice generale con i suoi propri comandi interni. La definizione di questo ambiente è specifica di questo macro-pacchetto \texttt{TOPtesi}.
+
+Sarebbe meglio inserire la bibliografia dopo un comando \texttt{\string\backmatter} esplicito. La back matter è destina espressamente a una sola appendice non numerata (ci pensa da sola a non numerare le sue sezioni); alla bibliografia, a uno o più indici analitici, a glossari o nomenclature, liste di acronimi, e simili. Nulla è obbligatorio in una back matter, ma una tesi senza bibliografia non sarebbe appropriata, tanto meno una tesi magistrale priva di una bibliografia.
+
+\include{capitoli/bibliografia}
+
+
+
+\end{document}
+
