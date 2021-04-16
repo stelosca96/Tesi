@@ -8,18 +8,17 @@ Prova
 \section{Gli attacchi DDoS}
 
 Gli attacchi di Denial of Service (DoS) sono degli attacchi nel campo della sicurezza informatica che mirano a interrompere la fruizione di un servizio, fornito da un host connesso a internet, da parte di utenti legittimi. L'attacco ha l'obiettivo di esaurire le risorse dell'host in modo da non consentirgli di erogare le risposte ai richiedenti.
-Nel caso in cui la sorgente del traffico che mira a creare disservizi non sia unica, si parla di attacchi di denial of service distribuiti (Distribuited Denial of Service).
+Nel caso in cui la sorgente del traffico che mira a creare disservizi non sia unica, si parla di attacchi di denial of service distribuiti (Distributed Denial of Service).
 
 \subsection{Tipologia di attacchi DDoS}
     
 Gli attacchi DDoS possono essere suddivisi in due categorie principali in base al loro funzionamento. La prima si basa sul mandare alla vittima pacchetti malformati in grado di sfruttare un bug ana falla a livello applicativo. La seconda categoria invece si basa su tecniche per colpire l'infrastruttura del servizio, per il funzionamento di questa tecnica vengono usati uno o entrambi i seguenti metodi: uno punta sull'interruzione della connessione di rete grazie all'esaurimento della banda o della capacità di processamento dei router o di entrambe, nel secondo caso l'obiettivo dell'attaccante è di esaurire le risorse (es. sockets, CPU, memoria) del server che ospita il servizio \cite{ddos_survey_1}.
 
 \begin{figure}[h]
-    \label{1}
-    % todo: capire come gestire citazioni immagini a livello di copyright
-    %  e capire come funzionano le label per richiamar le immagini
+    % todo: capire come gestire citazioni imsmagini a livello di copyright
+    %  e capire come funzionano le label per richiamare le immagini
     \includegraphics[width=\hsize]{images/introduzione/tipologie_ddos.png}
-    \caption{Tipologie di attacchi DDoS}
+    \caption{Tipologie di attacchi DDoS \cite{ddos_survey_3}}
     \centering
 \end{figure}
 
@@ -27,7 +26,23 @@ L'obiettivo di questa sarà concentrato sul rilevamento e la mitigazione della s
 
 \subsubsection{Attacchi basati sul flooding}
 
-TODO
+\begin{figure}[h]
+    % todo: capire come gestire citazioni immagini a livello di copyright
+    %  e capire come funzionano le label per richiamar le immagini
+    \includegraphics[width=\hsize]{images/introduzione/attacchi_per_livello.png}
+    \caption{Attacchi per livello \cite{ddos_survey_4}}
+    \centering
+\end{figure}
+
+\paragraph{Network/transport-level DDoS flooding attacks} % todo: rivedere titolo
+Gli attacchi di denial of service che mirano 
+
+\paragraph{Application-level DDoS flooding attacks} % todo: rivedere titolo
+
+\paragraph{DDoS con obiettivo la riduzione della qualità del servizio}
+
+% parlare anche di attacchi a basso rate, ma da molte fonti che portano ad un grande risultato finale \cite{ddos_survey_4} pagina 38, rendendolo difficile da indentificare
+
 
 \subsection{Vittime attacchi DDoS}
 
@@ -47,6 +62,39 @@ Per capire maggiormente chi possono essere le vittime di un attacco bisogna anal
 
 
 \subsection{Diffusione attacchi DDoS}
+
+Nel mondo gli attacchi a fine 2020 la quasi totalità degli attacchi DDoS proveniva da botnets, con target principali in Cina e negli Stati Uniti. Le tipologie di attacco maggiormente utilizzate sono guidate dal \emph{Syn Flood} che copre più del 90\% della totalità degli attacchi, seguito da \emph{ICMP flooding} e \emph{UDP flooding} \cite{ddos_kaspersky} \cite{ddos_kaspersky_q3_2020}.
+
+\begin{figure}[h]
+    % todo: capire come gestire citazioni immagini a livello di copyright
+    %  e capire come funzionano le label per richiamar le immagini
+    \includegraphics[width=\hsize]{images/introduzione/07-en-ddos-report-q3-2020-chrarts.png}
+    \caption{Distribuzione di attacchi DDoS per tipologia, Q3 2020 \cite{ddos_kaspersky_q3_2020}}
+    \centering
+\end{figure}
+
+\subsubsection{Attacchi DDoS famosi}
+
+Prova prova
+
+\subsubsection{Attacchi basati su botnets}
+
+Gli attacchi basati su botnets sono un grande problema per l'implementazione di sistemi anti-DDoS perché un grande numero di ``zombie'' rende l'attacco più distruttivo e spesso utilizzano ip spoofing, il che rende più difficile il tracciamento all'indietro per determinare i bot. \cite{ddos_survey_1}
+% todo: qui dovrei magari differenziare le botnet controllate direttamente e indirettamente e dilungarmi meno, magari nominare le tre fasi degli attacchi \cite{ddos_motivations} pagina 5 \cite{ddos_survey_4} pagina 37
+I bot possono essere controllati dell'artefice dell'attacco tramite tre architetture: 
+\begin{itemize}
+    \item IRC-based: architettura client-server in cui ad ogni server si possono collegare centinaia di dispositivi, utilizza un protocollo testuale e utilizzando porte non standard rende molto difficile il riconoscimento del comando per lanciare un DDoS, il quale si può nascondere facilmente nel grande traffico dei server IRC, ma il singolo server a cui si connettono tutti i client può essere considerato un single point of failure.
+    \item Web based: ogni bot scarica periodicamente delle informazioni tramite una richiesta web ad un server, i comandi di questa tipologia di controllo sono i più difficili da tracciare.
+    \item P2P based: \cite{ddos_survey_4} pagina 46
+\end{itemize}
+
+\begin{figure}[h]
+    % todo: capire come gestire citazioni immagini a livello di copyright
+    %  e capire come funzionano le label per richiamar le immagini
+    \includegraphics[width=\hsize]{images/introduzione/struttura_botnets_2.png}
+    \caption{Struttura di lancio di attacchi DDoS \cite{ddos_survey_4}}
+    \centering
+\end{figure}
 
 
 
