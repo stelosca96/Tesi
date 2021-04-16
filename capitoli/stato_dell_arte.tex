@@ -2,10 +2,51 @@
 
 \section{Riconoscimento DDoS}
 
+% \cite{ddos_motivations} pagina 16, \cite{ddos_survey_4} pagina 66
+La fase di riconoscimento degli attacchi DDoS è un importante passo per la mitigazione degli attacchi, questa fase diventa più facile maggiormente ci avviciniamo alla vittima dell'attacco, ma più ci si allontana dalla sorgente dell'attacco e più diventa difficile identificarla. In letteratura esistono due tecniche per identificare i flussi malevoli: signature-based detection e anomaly-based detection.
+
+\subsection{Signature-based detection}
+
+La signature-based detection è un meccanismo che si basa su attacchi DDoS conosciuti per differenziare la loro firma, dai normali flussi della rete. Queste soluzioni hanno un buon successo con attacchi DDoS conosciuti, ma non sono in grado di rilevare nuove tipologie ti attacco di cui non si conosce ancora la signature. Questi sistemi si possono basare su pattern matching (es. Bro/Zeek), su regole (es. Snort), sulla correlazione di informazioni di management sul traffico, o sull'analisi spettrale.
+% todo: rivedere le ultime due perchè non so bene cosa siano
+
+\subsection{Anomaly-based detection}
+
+I meccanismi di rilevamento delle anomalie possono riconoscere attacchi anche su attacchi non conosciuti, basandosi su soglie per differenziare il traffico normale e malevolo, ma la scelta di esse è una grande sfida per questa tipologia di tecniche.
+I metodi più diffusi si basano su metodi statistici, di data mining o intelligenze artificiali.
+
 \section{Contromisure attacchi DDoS}
 
+Gli attacchi DDoS si ramificano ad imbuto dalle sorgenti verso la vittima, per questa ragione più si è vicini alla vittima e più l'attacco sarà facile da riconoscere, ma più difficile da mitigare. Per questa ragione le tecniche di mitigazione vengono suddivise in base al luogo in cui vengono azionate.
+
 \subsection{Soluzioni alla sorgente}
+Questa tipologia di soluzioni sono adottate vicino alle sorgenti dell'attacco per impedire agli utenti della sottorete di generare attacchi DDoS. Queste soluzioni possono essere applicate agli edge router degli Autonomous System (AS) di accesso.
+
+Degli esempi di soluzioni sono:
+
+% todo: completare elenco delle soluzioni alla sorgente
+\begin{itemize}
+    \item Filtri in ingresso e uscita agli edge router delle sorgenti:
+    \item D-WARD:
+    \item MULTOPS:
+    \item MANAnet’s Reverse Firewall: 
+\end{itemize}
+
+I problemi di questa soluzione sono che dovrebbe essere implementata su gli edge router ti tutti gli AS di accesso per permettere una copertura totale, inoltre è difficile differenziare il traffico legittimo, da quello malevolo e non meno importante non è chiaro chi sia il responsabile del mantenimento economico di questo servizio \cite{ddos_survey_1}.
 
 \subsection{Soluzioni alla destinazione}
 
+Esistono soluzioni che si possono applicare agli edge router della vittima, possono analizzare il comportamento della vittima e il suo traffico usuale e riconoscere le anomalie \cite{ddos_survey_1,ddos_survey_2}.
+Delle soluzioni posizionate in questi luoghi possono essere dei proxy, firewall che gestiscono le connessioni semi aperte in caso di syn flood, l'utilizzo sistemi di tracciamento implementati in alcuni router (in caso di ip spoofing), % todo: non so come concludere le soluzioni alla destinazione, sicuramente c'è qualche meccanismo che ho dimenticato \cite{ddos_survey_2, ddos_survey_1}
+Questi sistemi di difesa possono diventare i target degli attacchi, poiché spesso richiedono una grande quantità di memoria e potenza di processamento per effettuare le osservazioni delle misure statistiche \cite{ddos_survey_4}.
+
+\subsection{Soluzioni sulla rete}
+
+I sistemi anti-DDoS sulla rete si basano sui router o su firewall installati sulla rete dell'operatore.
+Una prima soluzione adottata è quella del Router based packet filter, la quale si basa sui criteri dell'ingress filtering, ma applicandola ai router nel core della rete. Il traffico per ogni link tendenzialmente viene generato da un ristretto intervalli di indirizzi ip, quando appare un indirizzo ip sospetto viene filtrato, questa soluzione è adatta a rilevare attacchi che utilizzano ip spoofing, ma è inutile nel caso di utilizzo di ip genuini.
+Altre soluzioni mirano ad identificare i router nel core di internet che sono stati compromessi e si comportano in anomalo, oppure mirano all'installazione di detection systems (DSs) che permettono di rilevare pattern anomali, ma sono computazionalmente molto dispendiose.
+
 \subsection{Soluzioni distribuite}
+
+
+\section{Tolleranza}
