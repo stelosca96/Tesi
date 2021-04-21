@@ -1,17 +1,20 @@
 \chapter{Introduzione}
 
-
 \section{Motivazione}
-Spiegare il perchè l'ho fatto
-Dati importanti, piccole e medie imprese devono sfruttare software opensource disponibili a tutti che permetto di passare da una frase experimental a production ready
-Scoprire anomalie nei dati di rete di singoli flussi e dati aggregati.
-Questa tesi sarà incentrata sui DDoS
+% Spiegare il perchè l'ho fatto Dati importanti, piccole e medie imprese devono sfruttare software opensource disponibili a tutti che permetto di passare da una frase experimental a production ready
+
+Le piccole e medie imprese sono sempre più informatizzate e dipendenti da servizi informatici per poter continuare a lavorare. Per questo motivo scoprire e analizzare il traffico anomalo che passa sulle reti aziendali è sempre più importante, il nostro obiettivo è farlo ad un basso costo, senza aggiungere applicativi che richiedono molta potenza di calcolo o di banda ai router che compongono la rete. Punteremo a scoprire le anomalie nei dati di rete di singoli flussi e dati aggregati analizzando i dati su un server aggiuntivo che si occuperà anche di mitigare l'attacco informando i router sui flussi da bloccare.
+Gli attacchi maggiormente presi in considerazione in questa tesi sono gli attacchi di Distributed Denial of Service, ma i suoi principi possono essere applicati anche ad altre tipologie di anomalie.
+% problema delle botnets
+Inoltre raccogliere informazioni sull'utilizzo della rete può portare anche alla risoluzioni di problemi non derivanti da attacchi.
 
 \section{Scenario}
-Come organizzata la rete => diversi scenari, nodo centrale, negozi con una sede centrale, server in cloud
-Casi d'uso
-Applicativi aziendali e perchè scelta
-Da dove arrivano le minacce
+Per fare questa tesi abbiamo preso in considerazione un tipico scenario aziendale, in cui esiste una sede centrale, ben protetta e su cui sono ospitati i servizi dell'azienda e tante sedi periferiche: uffici, negozi o altro, collegati ai servizi della sede centrale tramite un overlay MPLS o una VPN.
+Le sedi periferiche sono quelle più esposte sotto l'aspetto della sicurezza (todo: magari spiegare i motivi), per questo motivo il nostro obiettivo è quello di proteggere i servizi aziendali e la rete centrale dai pc connessi alle reti degli uffici.
+L'organizzazione di Tiesse e di molti suoi clienti è caratterizzata da questo scenario, per questo motivo le prove da me effettuate si basano sull'analisi del traffico proveniente dall'ufficio di Torino e mirano a proteggere i servizi aziendali presenti nella sede centrale di Ivrea a cui l'ufficio di Torino è collegato tramite una VPN.
+Un altro caso possibile di utilizzo di questa soluzione è la distribuzione dei servizi in cloud, in cui l'azienda non ha il controllo dell'infrastruttura di rete.
+
+% todo: sostituire servizi con applicativi aziendali
 
 
 \section{Gli attacchi DDoS}
