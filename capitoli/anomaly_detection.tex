@@ -1,16 +1,65 @@
-\chapter{Riconoscimento anomalie}
+
+\chapter{Stato dell'arte dell'anomaly detecion - trovare titolo}
+
+\section{Cos'è l'anomaly dedtection?}
 
 
-\section{Stato dell'arte dell'anomaly detecion - trovare titolo}
+L'Anomaly detection si riferisce al problema di trovare pattern nei dati che non sono conformi al comportamento aspettato. A queste non conformità ci si riferisce come anomalie \cite{anomaly_detection_survey_3}. L'importanza del rilevamento delle anomalie è il fatto che un'anomalia nei dati spesso corrisponde ad un'informazione critica nel dominio a cui si riferisce, per esempio nelle reti di computer un traffico anomalo potrebbe significare che un computer è stato hackerato e sta compiendo azioni per il danneggiamento dell'azienda.
 
-\subsection{Sfide dell'anomaly detection}
+\section{Sfide dell'anomaly detection}
 
-\subsection{Tipologia delle anomalie}
-\paragraph{Tipologia degli attacchi di rete}
-\subsection{Sistemi di rilevamento delle anomalie}
+Le anomalie sono definite come un pattern che non rispetta il normale comportamento, ma il definire il concetto di normalità è una sfida, i maggiori fattori che influiscono su questa decisione sono \cite{anomaly_detection_survey_3}:
+
+\begin{itemize}
+    \item La difficoltà nel trovare una regione che comprenda tutti i possibili comportamenti normali è molto difficile e il confine tra azioni normali e anomale spesso non è ben definito.
+    \item Se le azioni anomale sono generate da azioni malevole, il responsabile cercherà di fare in modo che le osservazioni sui dati appaiano normali.
+    \item In alcuni contesti il comportamento si evolve e ciò che è considerato correntemente normale potrebbe essere rappresentativo per il futuro.
+    \item È difficile definire quanto la differenza dalla normalità debba essere considerata anomala, per esempio in medicina piccole variazioni per esempio della temperatura corporea possono essere considerate anormali, in finanza la fluttuazione del valore delle azioni potrebbe essere considerato normale.
+    \item La disponibilità di dati già classificati come normali o anomali per verificare il modello è uno dei problemi principali.
+    \item Spesso i dati contengono rumore che tende ad essere simile alle anomalie ed è difficile rimuoverlo o distinguerlo.
+\end{itemize}
+
+
+\section{Classificazione delle anomalie}
+
+\subsection{Tipologia di anomalie}
+Un aspetto importante dell'anomaly detection è l'analisi delle anomalie che possono presentarsi, di conseguenza le anomalie possono essere classificate nel seguente modo:
+\begin{itemize}
+    \item Anomalie puntuali: un singolo dato che si discosta dalla normalità. Questo è il caso più semplice e su cui si concentra la maggior parte delle ricerche sui dati anomali. Un esempio è un utente che tutti i giorni scarica 1GB di dati quando arriva in ufficio, ma un giorno ne scarica 10.
+    \item Anomalie contestuali: quando un insieme di dati si comporta in modo anomalo in un determinato contesto, per esempio il numero di acquisti su un sito durante il periodo di Natale è più alto che durante il resto dell'anno.
+    \item Anomalie collettive: quando un'istanza di dati è anormale rispetto all'intero dataset, in questo caso i dati in sè non sono anomali, ma lo diventano quando presi insieme, un esempio è l'elettrocardiogramma, in cui se ci sono bassi valori per un lungo periodo possono identificare un problema.
+\end{itemize}
+
+\subsection{Applicazione anomaly detection}
+% \subsection{Tipologie anomaly detection}
+% \begin{itemize}
+%     \item Intrusion detection
+%     \item Fraud detection
+%     \item Medical and Public Health Anomaly Detection
+%     \item 
+% \end{itemize}
+
+\subsection{Tipologia degli attacchi di rete}
 %parlare di Network IDS E Host IDS pagina 9 \cite{anomaly_detection_survey_2_deep_learning}
-\paragraph{Basati sulla classificazione}
-\paragraph{Basati sulla statistica}
+\section{Sistemi di rilevamento delle anomalie}
+
+\subsection{Metodo di detection}
+% \cite{anomaly_detection_survey_1_network} pagina 24
+\begin{itemize}
+    \item Classification based
+    \item Statistical anomaly detection
+    \item Information theory
+    \item Clustering-based
+\end{itemize}
+
+\subsection{Dati in input}
+pagina 6 \cite{anomaly_detection_survey_3}
+
+\subsection{Output of Anomaly Detection}
+
+Etichette o Anomaly score
+
+
 
 \section{Motivazione}
 Prova 
@@ -23,6 +72,7 @@ Prova
 \subsection{Autoencoders}
 
 
+\chapter{Il mio lavoro}
 
 
 \section{Selezione features}
