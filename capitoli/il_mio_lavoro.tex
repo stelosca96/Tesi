@@ -1,0 +1,54 @@
+\chapter{Il mio lavoro - Titolo provvisorio}
+
+\section{Introduzione}
+%spiegare obiettivo
+
+% spiegare come vengono gestiti i dati
+I dati vengono collezionati tramite un demone in locale (collectd), inviati ad un server (go-graphite) posizionato fisicamente nella sede centrale e visualizzati tramite una dashboard(graphana).
+Il tool di anomaly detection da me pensato si interfaccia direttamente con il database per la lettura dei dati e la scrittura dei risultati.
+Qui in seguito approfondirò maggiormente il flusso della gestione dei dati.
+\subsection{Gestione dei dati}
+
+\paragraph{collectd} è un demone che raccoglie metriche di sistema e di applicazioni, trasferisce e salva dati di computer e dispositivi di rete.
+Parlare di come funziona collect, plugin, plugin fatto da me.
+
+\paragraph{go-graphite}
+
+\section{Selezione features}
+
+La scelta delle feature da utilizzare dipende da quale obiettivo su vuole ottenere, il mio obiettivo primario in questa tesi è di rilevare gli attacchi DDoS in uscita verso la sede centrale, quindi basandomi sugli attacchi più famosi e frequenti ho delineato una lista di parametri da osservare. Questi parametri sono:
+% todo: capire le unità di misura i dati sono ogni secondo o ogni 10
+\begin{itemize}
+    \item \emph{bytes trasmessi al secondo}:questa metrica è utile, abbinata ad altre, per la rilevazione di attacchi che mirano alla saturazione della banda.
+    \item \emph{pacchetti trasmessi al secondo}: questa metrica ha uno scopo simile alla precedente oppure aiuta ad avere informazioni sugli attacchi di tipo flooding.
+    \item \emph{numero di connessioni aperte} %todo: questa ha molti usi
+    \item 
+    \item \emph{numero di pacchetti con flag syn}: questa metrica è molto utile per la rilevazione di syn flood o port scanning.
+    \item \emph{tls throughput}
+    \item \emph{dns throughput}
+    \item \emph{ssh throughput}
+    \item \emph{icmp throughput}
+    \item \emph{ora del giorno}: l'ora del giorno viene aggiunta per caratterizzare al meglio il traffico lungo la giornata.
+\end{itemize}
+
+Tutte le feature vengono poi derivate su un tempo di 10/30s, per avere dei "rate" confrontabili tra lavoro.
+
+La scelta della features è nata da un compromesso tra i dati necessari per rilevare al meglio le anomalie, la riduzione dei dati da salvare sul server e di conseguenza l'uso di banda usata per il trasferimento. Inoltre un problema che ho dovuto tenere in considerazione è l'utilizzo di un acceleratore hardware nei router Tiesse, il quale permette un incremento della velocità di routing, ma non permette di analizzare nel kernel i pacchetti.
+ %todo: approfondire meglio come funziona il fast path
+ 
+ Per la raccolta dei dati sono stati usati dei plug
+\subsection{NDPI}
+
+\section{Il mio tool}
+\subsection{Struttura}
+\subsection{Modello della rete}
+\subsection{Train}
+\subsection{Evaluate}
+
+
+\section{Test sulle anomalie}
+\subsection{Tool utilizzati}
+
+Parlare come funzionano i tool che ho fatto
+
+\subsection{Risultati}

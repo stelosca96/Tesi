@@ -1,7 +1,7 @@
 
-\chapter{Stato dell'arte dell'anomaly detecion - trovare titolo}
+\chapter{Stato dell'arte dell'Anomaly Detecion}
 
-\section{Cos'è l'anomaly dedtection?}
+\section{Cos'è l'anomaly detection?}
 
 
 L'Anomaly detection si riferisce al problema di trovare pattern nei dati che non sono conformi al comportamento aspettato. A queste non conformità ci si riferisce come anomalie \cite{anomaly_detection_survey_3}. L'importanza del rilevamento delle anomalie è il fatto che un'anomalia nei dati spesso corrisponde ad un'informazione critica nel dominio a cui si riferisce, per esempio nelle reti di computer un traffico anomalo potrebbe significare che un computer è stato hackerato e sta compiendo azioni per il danneggiamento dell'azienda.
@@ -19,6 +19,45 @@ Le anomalie sono definite come un pattern che non rispetta il normale comportame
     \item Spesso i dati contengono rumore che tende ad essere simile alle anomalie ed è difficile rimuoverlo o distinguerlo.
 \end{itemize}
 
+\section{Sistemi di rilevamento delle anomalie}
+
+
+
+\subsection{Metodo di detection}
+% \cite{anomaly_detection_survey_1_network} pagina 24
+\begin{itemize}
+    \item Classification based
+    \item Statistical anomaly detection
+    \item Information theory
+    \item Clustering-based
+\end{itemize}
+
+
+
+\subsection{Dati in input}
+pagina 6 \cite{anomaly_detection_survey_3}
+
+\subsection{Output of Anomaly Detection}
+
+Un'importante caratteristica è come sono rappresentate le anomalie in uscita dal modello, esistono due metodi: le etichette, tecnica con la quale i dati vengono etichettati con una categoria, tendenzialmente binaria per esempio possiamo etichettare i dati come normali o anomali. L'altro metodo è l'uso di un ``anomaly score'': un punteggio per ogni istanza di dati, che indica quando si discosta dalla normalità, imponendo delle soglie possiamo verificare quali dati sono anomali \cite{anomaly_detection_survey_2_deep_learning,anomaly_detection_survey_3,anomaly_detection_survey_1_network}.
+
+\subsection{Modalità di apprendimento}
+
+\paragraph{Apprendimento superivisionato}
+
+I sistemi di anomaly detection basati su apprendimento supervisionato hanno prestazioni superiori ai metodi non supervisionati, poichè usano esempi etichettati di dati. I metodi supervisionati imparano il limite di separazione da un set di dati annotato durante una fase di allenamento e successivamente classifica le istanze da testare basandosi sul modello imparato. Avendo bisogno di etichette di difficile reperibilità, questo metodo è poco usato rispetto a quello semi-supervisionato e a quello non supervisionato, ma ha come vantaggi oltre al fatto di essere più preciso anche la velocità della fase di test, basandosi su un modello pre calcolato.
+Le tipologie di reti c
+% Deep supervised techniques fail to separate normal from anomalous data if the feature space is highly complex and non-linear.
+
+\paragraph{Apprendimento semi-superivisionato}
+
+L'apprendimento semi-supervisionato è una tecnica che che per funzionare assume che tutti i dati usati per l'allenamento siano etichettati in un'unica classe, quella della normalità. Tutte le istanze di dati di dati di test che superano un certo limite intorno alla normalità verranno etichettate come anomale. I vantaggi di questo metodo è che l'uso di dati etichettati può portare ad un grosso miglioramento di performance rispetto alle tecniche non supervisionate, ma rischiano di non essere rappresentative di alcuni casi e sono inclini all'over fitting.
+% qua la frase precedente non ha molto senso
+
+\paragraph{Apprendimento non superivisionato}
+
+Questa tecnica si basa su un set di dati normali che contengono che contengono una piccola quantità di dati anomali, l'algoritmo i occuperà di creare un punteggio di separazione basandosi su proprietà intrinseche dei dati.
+%magari aggiungere altro pagina 23 \cite{anomaly_detection_survey_2_deep_learning}
 
 \section{Classificazione delle anomalie}
 
@@ -32,63 +71,37 @@ Un aspetto importante dell'anomaly detection è l'analisi delle anomalie che pos
 
 \subsection{Applicazione anomaly detection}
 % \subsection{Tipologie anomaly detection}
-% \begin{itemize}
-%     \item Intrusion detection
-%     \item Fraud detection
-%     \item Medical and Public Health Anomaly Detection
-%     \item 
-% \end{itemize}
+\begin{itemize}
+%todo: dire per ogni tipologia di applicazione quale sistema per l'anomaly detection è usato: esempio nids autoencoders, va, o altro 
+%todo: terminare l'elenco delle applicazioni
+    \item Fraud detection: sono sistemi con lo scopo di riconoscere frodi, i occupano di rilevare attività illegali in diversi campi come quella assicurativo, finanziario e telefonico.
+    \item Medical and Public Health Anomaly Detection: lavorano sui dati dei pazienti, che possono avere anomalie per diverse ragioni: errori di registrazione, errori degli strumenti di misura o una condizione anormale delle condizioni del paziente. Questi sistemi mirano a riconoscere anomalie puntuali usando sistemi semi supervisionati.
+    \item Industrial Damage Detection
+    \item Image Processing
+    \item Anomaly Detection in Text Data
+    \item Sensor Networks
+    \item Intrusion detection systems(IDS): sono dei sistemi che puntano ad identificare attività malevole nei sistemi informativi, gli IDS possono essere installati su un computer, in quel caso si parla di ``Host Intrusion Detection (HIDS)'' oppure su una rete, in quel caso si parla di ``Network Intrusion Detection (NIDS)'', gli IDS possono essere signature-based oppure anomaly based, nel primo caso non si è in grado di riconoscere nuove tipologie di attacchi. In questo contesto vengono analizzate le anomalie collettive e sono preferiti sistemi di apprendimento semi-supervionato o non supervisionato, perchè le etichette per i dati anomali non sono quasi mai disponibili. In questa tesi mi concentrerò sull'analisi di anomalie di rete basandomi su sistemi di anomaly detection. 
+\end{itemize}
 
 \subsection{Tipologia degli attacchi di rete}
 %parlare di Network IDS E Host IDS pagina 9 \cite{anomaly_detection_survey_2_deep_learning}
-\section{Sistemi di rilevamento delle anomalie}
+Analizzando 
 
-\subsection{Metodo di detection}
-% \cite{anomaly_detection_survey_1_network} pagina 24
-\begin{itemize}
-    \item Classification based
-    \item Statistical anomaly detection
-    \item Information theory
-    \item Clustering-based
-\end{itemize}
+\section{Reti neurali e funzionamento}
 
-\subsection{Dati in input}
-pagina 6 \cite{anomaly_detection_survey_3}
+Spiego cosa sono le reti neurali, come funzionano e come vengono allenate.
 
-\subsection{Output of Anomaly Detection}
+\subsection{Autoencoders}
 
-Etichette o Anomaly score
+Cosa sono gli autoencoders e perchè sono utili nell'anomaly detection.
 
 
+\section{Soluzioni esistenti di Anomaly Detection}
+
+Qua illustro delle soluzioni esistenti prese dagli articoli.
 
 \section{Motivazione}
 Prova 
 
 
-\section{Reti neurali e funzionamento}
 
-
-
-\subsection{Autoencoders}
-
-
-\chapter{Il mio lavoro}
-
-
-\section{Selezione features}
-\subsection{Collectd}
-\subsection{NDPI}
-
-\section{Il mio tool}
-\subsection{Struttura}
-\subsection{Modello della rete}
-\subsection{Train}
-\subsection{Evaluate}
-
-
-\section{Test sulle anomalie}
-\subsection{Tool utilizzati}
-
-Parlare come funzionano i tool che ho fatto
-
-\subsection{Risultati}
