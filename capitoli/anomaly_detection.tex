@@ -87,14 +87,76 @@ Un aspetto importante dell'anomaly detection è l'analisi delle anomalie che pos
 %parlare di Network IDS E Host IDS pagina 9 \cite{anomaly_detection_survey_2_deep_learning}
 Analizzando 
 
-\section{Reti neurali e funzionamento}
+\section{Le reti neurali}
 
 Spiego cosa sono le reti neurali, come funzionano e come vengono allenate.
+\subsection{Funzionamento delle reti neurali}
+
+Le reti neurali sono composte da diversi strati (layer) di nodi, ciascuno collegato al successivo.
+
+L'unità base di ogni rete neurale è il nodo, che rappresenta il neurone artificiale, il tipo base è il ``perceptron'': un nodo con più input e un output rappresentato come una funzione a gradino caratterizzata dalla funzione ~\ref{eq:perceptron}, in cui si può notare che solo se la sommatoria dei valori in ingresso supera una certa soglia, il neurone si attiva.
+%todo: fixare label equazione
+\[
+\label{eq:perceptron}
+output = \begin{cases}
+    0 & \mbox{if } \sum_{j}{w_{j}x_{j}}\leq \mbox{threshold} \\
+    1 &  \mbox{if } \sum_{j}{w_{j}x_{j}} > \mbox{threshold}
+\end{cases}
+\]
+Questo permette di compiere decisioni in base all'input.
+%todo: Per esempio qui posso inserire l'esempio di pagina 3 del libro sulle reti neurali.
+
+\begin{figure}[h]
+    % todo: capire come gestire citazioni imsmagini a livello di copyright
+    %  e capire come funzionano le label per richiamare le immagini
+    \label{fig:neurone}
+    \includegraphics[width=\hsize]{images/reti_neurali/neurone.png}
+    \caption{Neurone artificiale}
+    \centering
+    % https://www.doc.ic.ac.uk/~nuric/teaching/imperial-college-machine-learning-neural-networks.html
+\end{figure}
+
+% todo: qua potrei generalizzare dicendo che 
+Come si può notare dalla figura con l'evoluzione delle reti neurali non viene più solo usata la funzione a gradino, ma anche delle generiche rappresentate genericamente come ``f''.
+Un esempio comunemente usato di evoluzione del perceptron sono i neuroni di Sigmoid, i quali invece di ritornare una funzione a gradino in uscita, ritornano il risultato della funzione di sigmoid ~\ref{eq:sigmoid} \cite{reti_neurali_libro}.
+
+\begin{equation}
+    \label{eq:sigmoid}
+    \sigma(z) = \frac{1}{1+\mbox{exp}(-\sum_{j}{w_{j}x_{j}} - b)}
+\end{equation}
+%todo: grafico funzione di sigmoid
+Le reti neurali sono composte da gruppi di neuroni artificiali organizzati in livelli e tipicamente composte da almeno tre strati: uno di input, uno o più livelli intermedi definiti ``livelli nascosti'' e un livello di uscita. Ogni livello può contenere uno o più neuroni che possono essere collegati tra loro solo con dei collegamenti in direzione dai nodi di input a quelli di output, in questo caso si parla di ``feedforward'' oppure ``recurrent'' in cui sono previste delle connessioni di feedback a neuroni dello stesso livello o a livelli precedenti.
+% 
+%https://www.spindox.it/it/blog/ml1-reti-neurali-demistificate/
+% fonte immagine https://towardsdatascience.com/what-the-hell-is-perceptron-626217814f53
+\paragraph{I neuroni}
+
 
 \subsection{Autoencoders}
+\begin{figure}[h]
+    % todo: capire come gestire citazioni imsmagini a livello di copyright
+    %  e capire come funzionano le label per richiamare le immagini
+    \label{fig:autoencoder}
+    \includegraphics[width=\hsize]{images/reti_neurali/autoencoder.png}
+    \caption{Struttura di un autoencoder}
+    \centering
+\end{figure}
 
-Cosa sono gli autoencoders e perchè sono utili nell'anomaly detection.
+Cosa sono gli autoencoder e perchè sono utili nell'anomaly detection.
+Gli autoencoder sono una tipologia di reti neurali non supervisionata, anche se quasi sempre vengono usati in maniera semi-supervisionata, che permettono di generare nuovi dati, effettuando in uscita la ricostruzione dei dati forniti in ingresso.
+Gli autoencoder sono composti da tre parti, l'encoder, lo spazio latente e il decoder, negli autoencoder la dimensione dell'input è uguale a quella dell'output, e nel mezzo ci sono dei livelli che si occupano prima di comprimere (encoder) le dimensioni, fino a raggiungere lo spazio latente, una forma ``compressa'' dell'input, seguita da una serie di livelli (decoder) che si occupano ti ritornare alle dimensioni originarie ~\ref{fig:autoencoder}.
+La capacità di comprire i dati e decomprimerli si basa sull'allenamento della rete, di conseguenza ogni rete è specifica per una tipologia di dati da comprimere e decomprimere, questo la caratterizza dagli altri sistemi di compressione, per esempio gzip, inoltre è una tipologia di compressione ``lossy'', con perdita, perchè l'uscita sarà simile all'ingresso, ma degradata.
+Una popolare applicazione degli autoencoder è l'anomaly detection. Gli autoencoder si occupano di ricostruire i dati iniziali, imparando effettivamente a riprodurre una funzione identità, per questo motivo allenandoli solo con dati di istanze normali quando si troveranno falliranno la ricostruzione dell'input e di conseguenza produrranno un grande errore di ricostruzione \cite{anomaly_detection_survey_2_deep_learning}. 
+% https://towardsdatascience.com/applied-deep-learning-part-3-autoencoders-1c083af4d798#f686
+% https://www.deeplearningitalia.com/introduzione-agli-autoencoder/
 
+%todo: citare articoli autoencoders
+Gli autoencoders sono stati usati da questo, quello e quell'altro ancora per sviluppare questi sistemi di anomaly detection:
+\begin{itemize}
+    \item articolo 1
+    \item articolo 2
+    \item articolo 3
+\end{itemize}
 
 \section{Soluzioni esistenti di Anomaly Detection}
 
