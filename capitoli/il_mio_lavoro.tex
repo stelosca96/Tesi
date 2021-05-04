@@ -316,29 +316,120 @@ for j in range(3):
 
 \paragraph{La standardizzazione dei dati} è la fase subito successiva, 
 % differenziare i casi tra l'evaluate e il train
+Durante il train calcolo la media e la deviazione standard sui dati per ogn, successivamente standardizzo e salvo la media e deviazione standard di ogni feature su un file.
+Durante la fase di evaluate per standardizzare i dati uso i dati salvati precedentemente sul file e standardizzo i dati.
+% Un problema della standardizzazione dei dati è la gestione dei picchi le reti neurali lavorano meglio con dati piccoli, quindi i picchi potrebbero essere un problema, si può pensare un modo diverso per standardizzare i dati
+
+\paragraph{Scelta della lunghezza delle sequenze dei dati.} Utilizzando i dati standardizzati genero ``N-K'' sequenze di lunghezza ``K'' elementi, dove ``N'' è il numero di elementi ricevuti precedentemente. Queste sequenze mi servono per uniformare i dati di allenamento e valutazione usando una lunghezza fissa per la sequenza di dati da dare in input alla rete neurale.
+La scelta della lunghezza della sequenza è molto importante, perchè da essa dipende la capacità di rilevamento delle anomalie: più il valore sarà grande e più sarà preciso il riconoscimento delle anomalie e meno il programma sarà soggetto a falsi positivi, ma al tempo stesso renderà di difficile identificazione i picchi anomali e il tempo necessario per rilevare un'anomalia sarà maggiore.
+%todo: aggiungo il codice per creare le sequenze?
+%todo: qua spiego cosa ho scelto allegando delle immagini
+Abbiamo scelto una lunghezza della sequenza di otto elementi
+%https://keras.io/examples/timeseries/timeseries_anomaly_detection/
 
 \subsection{Modello della rete}
 
+Spiego come ho usato Keras per generarlo.
 Spiego come sono arrivato a scegliere il modello e comparo i risultati tra 2/3 modelli totalmente diversi come numero di nodi, sarebbe interessante provare a mettere anche un modello con retroazione visto che stiamo usando sequenze temporali.
 
-\subsection{Train}
-Come effettuo il train?
-Quali dati uso?
-Cosa escludo? 
-Per quanto tempo?
-e se il traffico varia nel tempo?
-Vantaggi e svantaggi del train fatto in questo modo
-Overfitting? 
+Il modello di una rete neurale serve a descrivere le interconnessioni, le diverse tipologie e la composizione dei livelli di una rete neurale, è un oggetto della libreria Keras, che può essere facilmente creato grazie alla funzione ``tf.keras.Model()''.
+Nel nostro caso ogni livello prevedeva un solo livello in ingresso e uno in uscita, per questo motivo abbiamo usato il ``sequential model'' di Keras.
+La nostra rete è composta da un semplice autoencoder a cinque livelli: uno di input e uno di output con dimensioni (lunghezza\_sequenza, numero\_features) e livelli con prima una riduzione e poi un incremento dei nodi, come nei classici autoencoders.
+Avendo in ingresso dei dati con più dimensioni ho dovuto linearizzare i dati in ingresso (flatten) e ricostruire il vettore multidimensionale in uscita (reshape), nei nodi intermedi invece ho usato progressivamente un layer con 25 nodi, uno spazio latente con 8 e un livello successivo di nuovo con 25 nodi. La scelta delle dimensioni dei livelli centrali è stata presa analizzando più configurazioni e considerando che usando una lunghezza della sequenza di otto elementi, con dieci features significa avere 80 nodi in input e output, di conseguenza i nodi nei livelli centrali devono essere meno.
+Per creare la rete sono stati usati ``Dense layers'', in cui cui i nodi di due livelli sono interamente connessi tra loro e sono state usate come funzioni di attivazioni ``relu'' (Equazione \ref{eq:relu}) per i nodi intermedi e ``linear'', una funzione lineare, per i nodi dell'ultimo livello, questo permette di rappresentare anche i numeri negativi.
+%https://keras.io/api/models/model/
 
-Assumo che gli intervalli di traffico utilizzati per il train non includa anomalie, que
-Utilizzo il traffico di più uffici per velocizzare l'apprendimento se hanno caratteristiche simili
+\begin{equation} \label{eq:relu}
+    f(x) = x^+ = max(0, x)
+\end{equation}
+
+Il modello viene infine compilato e salvato su file, in modo da potere essere usato successivamente.
+
+\begin{lstlisting}[language=Python, label={code:get_data}, caption={Funzione usata per generale il modello della rete neurale}]
+    sequential_model = keras.Sequential(
+        [
+            layers.Flatten(input_shape=shape),
+            layers.Dense(25, activation='relu'),
+            layers.Dropout(rate=0.2),
+            layers.Dense(8, activation='relu'),
+            layers.Dropout(rate=0.2),
+            layers.Dense(25, activation='relu'),
+            layers.Dropout(rate=0.2),
+            layers.Dense(shape[1]*shape[0], activation='linear'),
+            layers.Reshape((shape[0], shape[1]))
+
+        ]
+    )
+\end{lstlisting}
+
+\subsection{Train}
+Il train deve essere effettuato su degli intervalli di tempo in cui non si sono verificate anomalie, per questo motivo viene fatta l'assunzione che tutto il traffico generato non presenti anomalie a meno di piccoli intervalli in cui è stato volutamente generato traffico malevolo per scopo di test. Volendo se l'amministratore di sistema notasse altri periodi di traffico anomalo potrà escluderli dai dati di allenamento.
+Inoltre per avere un maggiore numero di dati, e velocizzare l'apprendimento dell'allenamento della rete, è possibile utilizzare i dati provenienti da più router delle sedi periferiche, se ipotizziamo che il traffico generato sia simile tra loro.
+Dalla selezione degli intervalli di tempo su cui si vuole effettuare il train per semplicità in questa prima versione di algoritmo vengono esclusi i weekend: giorni della settimana in cui, nel nostro caso, il traffico è molto diverso dagli altri, volendo risolvere il problema si potrebbe usare una seconda rete da usare solo nei giorni festivi o %todo: proporre altre soluzioni per i weekend
+Nella fase di train per prima cosa verrà effettuato la raccolta e la trasformazione dei dati dal server, come spiegato precedentemente e avere caricato da file il modello generato.
+Successivamente prima di effettuare il train vero e proprio, grazie alla funzione ``train\_test\_split'' della libreria sklearn i dati vengono divisi in due insiemi, quello di train e quello di test, con il 15\% dei dati usati per il test e il restante per il train.
+L'allenamento viene effettuato usando il metodo ``fit'' della classe model e usando in input sia per le x, che per le y, l'insieme di train appena generato e l'insieme di test per validare il modello. Inoltre è abilitato l'EarlyStopping, in cui se per più di cinque iterazioni non si hanno miglioramenti, viene stoppato il processo di allenamento, questo serve per ridurre i tempi di train e ridurre la possibilità di overfitting.
+%todo: da valutare possibilità di overfitting.
+
+Come spiegato precedentemente, l'utilizzo degli autoencoders permette di ottenere degli ``anomaly score'' per ogni sequenza di dati, quindi terminata la fase di allenamento della rete devo decidere sopra quale valore devo considerare i dati anomali.
+Le soglie sopra i quali considero i dati anomali vengono prese dal massimi valore degli anomaly score per ogni feature: avendo ipotizzato che tutti i dati forniti per il train non siano anomali, devo assicurarmi che effettuando la valutazione delle anomalie su quei dati nulla risulti anomalo.
+% todo: potrei anche aumentare le soglie di un certo valore per essere meno soggetto a falsi positivi
+Per calcolare l'anomaly score calcolo il valore medio dei valori assoluti delle differenze tra il valore originale e quello ricostruita.
+\begin{equation}
+    % \caption{Formula per il calcolo dell'anomaly score}
+    anomaly\_score = \frac{\sum_{elementi\_sequenza}\lvert valore\_originale - valore\_ricostruito \rvert}{lunghezza\_sequenza}
+\end{equation}
+Le soglie calcolate vengono salvate su un file, da potere usare successivamente per la valutazione delle anomalie.
+
+Quando eseguire il train?
+% todo: per quanto tempo faccio il train? 
+
+%todo: Immagini di confronto dei valori ricostruiti e originali con anomalie e non
+
+
+% Come effettuo il train?
+% Quali dati uso?
+% Cosa escludo? 
+% Per quanto tempo?
+% e se il traffico varia nel tempo?
+% Vantaggi e svantaggi del train fatto in questo modo
+% Overfitting? 
+
+% Assumo che gli intervalli di traffico utilizzati per il train non includa anomalie, que
+% Utilizzo il traffico di più uffici per velocizzare l'apprendimento se hanno caratteristiche simili
+
+% Scartati i weekend perchè i dati sono molto diversi rispetto al resto della settimana e la rete non tiene in considerazione il giorno della settimana.
 
 \subsection{Evaluate}
-Come effettuo la valutazione? Su quali sequenze?
+% Come effettuo la valutazione? Su quali sequenze?
+Allenato il modello a ricostruire l'input e calcolate sopra le quali considerare gli anomaly score anomali è possibile verificare se il traffico generato in un intervallo di tempo da un determinato router è anomalo.  
+Per mettere in atto questa fase, dopo avere trattato i dati in ingresso nello stesso modo dei dati per l'allenamento, leggo dal file generato precedentemente le soglie e verifico se ogni sequenza di k elementi è anomala, calcolando gli anomaly score come effettuato nell'ultima fase del train. Se gli anomaly score superano le soglie si è verificata un'anomalia, a questo punto viene segnalata all'amministratore di rete e viene attivata la fase di mitigazione sul router.
+% come viene attivata questa fase? C'è una comunicazione tra server e router?
+Questa fase viene ripetuta automaticamente dal software ogni periodo di tempo definito (nell'ordine dei trenta secondi) per i dati di ogni router di cui si vogliono monitorare le anomalie.
 
 \section{Test sulle anomalie}
+
+L'analisi delle anomalie in questa tesi ha l'obiettivo principale di rilevare attacchi DDoS, quindi basandoci sullo studio degli attacchi più popolari abbiamo selezionato un ristretto elenco di attacchi possibili da riprodurre:
+%todo: noi l'abbiamo fatto da una sorgente sola, quindi alla fine è un dos, dobbiamo aggregare maggiormente i dati per capire se si tratta di un ddos?
+%todo: la feature ssh non sono convinto che sia utile, nel nostro caso è usata talmente poco che temo sia quasi dannosa (viene usata per ricostruire meglio le altre metriches)
+\begin{itemize}
+    \item SYN flood
+    \item ICMP flood
+    \item UDP flood
+    \item DNS flood
+    \item DNS amplification
+\end{itemize}
+
 \subsection{Tool utilizzati}
 
+Per effettuare le varie tipologie di attacchi sono stati usati software open-source reperibili sul web e sono stati scritti dei tool per adeguarsi al meglio alle nostre esigente.
+
+\paragraph{hping3} è un tool in grado di generare pacchetti di rete TCP/IP personalizzati. Il nostro utilizzo è stato per generare attacchi di tipo SYN flood, ICMP flood e UDP flood. Il tool, oltre a permettere di generare i pacchetti personalizzati da mandare alla vittima, permette di regolare la portata dell'attacco, tramite le possibilità di sceltà del rate a cui inviare i pacchetti.
+% https://linux.die.net/man/8/hping3
+
+Per cosa è stato usato, quali sono i limiti di hping3 e perchè dobbiamo
+
+\paragraph{Il nostro toool}
 Parlare come funzionano i tool che ho fatto
 
 \subsection{Risultati}
