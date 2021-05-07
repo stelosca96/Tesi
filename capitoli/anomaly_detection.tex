@@ -43,6 +43,8 @@ Un'importante caratteristica è come sono rappresentate le anomalie in uscita da
 
 \subsection{Modalità di apprendimento}
 
+I sistemi di classificazione (e gli altri metodi?) necessitano di dataset con esempi di traffico per poter capire in che modo effettuare la classificazione. Per effettuare questo apprendimento esistono tre metodi:
+
 \paragraph{Apprendimento superivisionato}
 
 I sistemi di anomaly detection basati su apprendimento supervisionato hanno prestazioni superiori ai metodi non supervisionati, poichè usano esempi etichettati di dati. I metodi supervisionati imparano il limite di separazione da un set di dati annotato durante una fase di allenamento e successivamente classifica le istanze da testare basandosi sul modello imparato. Avendo bisogno di etichette di difficile reperibilità, questo metodo è poco usato rispetto a quello semi-supervisionato e a quello non supervisionato, ma ha come vantaggi oltre al fatto di essere più preciso anche la velocità della fase di test, basandosi su un modello pre calcolato.
@@ -51,7 +53,7 @@ Le tipologie di reti c
 
 \paragraph{Apprendimento semi-superivisionato}
 
-L'apprendimento semi-supervisionato è una tecnica che che per funzionare assume che tutti i dati usati per l'allenamento siano etichettati in un'unica classe, quella della normalità. Tutte le istanze di dati di dati di test che superano un certo limite intorno alla normalità verranno etichettate come anomale. I vantaggi di questo metodo è che l'uso di dati etichettati può portare ad un grosso miglioramento di performance rispetto alle tecniche non supervisionate, ma rischiano di non essere rappresentative di alcuni casi e sono inclini all'over fitting.
+L'apprendimento semi-supervisionato è una tecnica che che per funzionare assume che tutti i dati usati per l'allenamento siano etichettati in un'unica classe, quella della normalità. Tutte le istanze di dati di dati di test che superano un certo limite intorno alla normalità verranno etichettate come anomale. I vantaggi di questo metodo è che l'uso di dati etichettati può portare ad un grosso miglioramento di performance rispetto alle tecniche non supervisionate, ma rischiano di non essere rappresentative di alcuni casi e sono inclini all'overfitting.
 % qua la frase precedente non ha molto senso
 
 \paragraph{Apprendimento non superivisionato}
@@ -94,7 +96,7 @@ Spiego cosa sono le reti neurali, come funzionano e come vengono allenate.
 
 Le reti neurali sono composte da diversi strati (layer) di nodi, ciascuno collegato al successivo.
 
-L'unità base di ogni rete neurale è il nodo, che rappresenta il neurone artificiale, il tipo base è il ``perceptron'': un nodo con più input e un output rappresentato come una funzione a gradino caratterizzata dalla funzione ~\ref{eq:perceptron}, in cui si può notare che solo se la sommatoria dei valori in ingresso supera una certa soglia, il neurone si attiva.
+L'unità base di ogni rete neurale è il nodo, che rappresenta il neurone artificiale, il tipo base è il ``perceptron'': un nodo con più input e un output rappresentato come una funzione a gradino caratterizzata dalla funzione \ref{eq:perceptron}, in cui si può notare che solo se la sommatoria dei valori in ingresso supera una certa soglia, il neurone si attiva.
 %todo: fixare label equazione
 \[
 \label{eq:perceptron}
@@ -117,7 +119,7 @@ Questo permette di compiere decisioni in base all'input.
 \end{figure}
 
 % todo: qua potrei generalizzare dicendo che 
-Come si può notare dalla figura con l'evoluzione delle reti neurali non viene più solo usata la funzione a gradino, ma anche delle generiche rappresentate genericamente come ``f''.
+Come si può notare dalla figura con l'evoluzione delle reti neurali non viene più usata solo la funzione a gradino, ma anche delle generiche funzioni rappresentate come ``f''.
 Un esempio comunemente usato di evoluzione del perceptron sono i neuroni di Sigmoid, i quali invece di ritornare una funzione a gradino in uscita, ritornano il risultato della funzione di sigmoid ~\ref{eq:sigmoid} \cite{reti_neurali_libro}.
 
 \begin{equation}
@@ -141,11 +143,16 @@ Le reti neurali sono composte da gruppi di neuroni artificiali organizzati in li
     \centering
 \end{figure}
 
+%tate of a supercomputer node (looking﻿at the measured features); afterwards, the model can be used to no-﻿tice representation changes that underlie anomalous conditions. This﻿happens because an autoencoder is a neural network trained to copyits input푥to its output푦. Internally it has hidden layersℎencodingthe representation of the data. An autoencoder is composed by twosubparts: an encoding functionℎ=푓(푥)and a decoding function thatreconstructs the input푦=푔(ℎ). Typically, autoencoders do not simplylearn the identity function푔(푓(푥)) =푥but are designed not to beable to copy perfectly, thus the output of an autoencoder is generally﻿different from its input; this difference is calledreconstruction error. The﻿reconstruction error is used to identify anomalies. During training, anautoencoder learns the relationships among the features in the input﻿set. If new, previously unseen, data is given to the trained autoencoder
+%todo: citare questo articolo https://www-sciencedirect-com.ezproxy.biblio.polito.it/science/article/pii/S0952197619301721
+
+%To reduce overfitting, aDropoutlayer was applied (Srivastava et al.,﻿2014) to the output of layers 1 and 2 (dropout rate equal to 0.2).
+
 Cosa sono gli autoencoder e perchè sono utili nell'anomaly detection.
 
 Gli autoencoder sono una tipologia di reti neurali non supervisionata, anche se quasi sempre vengono usati in maniera semi-supervisionata, che permettono di generare nuovi dati, effettuando in uscita la ricostruzione dei dati forniti in ingresso.
 Gli autoencoder sono composti da tre parti, l'encoder, lo spazio latente e il decoder, negli autoencoder la dimensione dell'input è uguale a quella dell'output, e nel mezzo ci sono dei livelli che si occupano prima di comprimere (encoder) le dimensioni, fino a raggiungere lo spazio latente, una forma ``compressa'' dell'input, seguita da una serie di livelli (decoder) che si occupano ti ritornare alle dimensioni originarie ~\ref{fig:autoencoder}.
-La capacità di comprire i dati e decomprimerli si basa sull'allenamento della rete, di conseguenza ogni rete è specifica per una tipologia di dati da comprimere e decomprimere, questo la caratterizza dagli altri sistemi di compressione, per esempio gzip, inoltre è una tipologia di compressione ``lossy'', con perdita, perchè l'uscita sarà simile all'ingresso, ma degradata.
+La capacità di comprimere i dati e decomprimerli si basa sull'allenamento della rete, di conseguenza ogni rete è specifica per una tipologia di dati da comprimere e decomprimere, questo la caratterizza dagli altri sistemi di compressione, per esempio gzip, inoltre è una tipologia di compressione ``lossy'', con perdita, perchè l'uscita sarà simile all'ingresso, ma degradata.
 Una popolare applicazione degli autoencoder è l'anomaly detection. Gli autoencoder si occupano di ricostruire i dati iniziali, imparando effettivamente a riprodurre una funzione identità, per questo motivo allenandoli solo con dati di istanze normali quando si troveranno davanti ad un dato anomalo falliranno la ricostruzione dell'input e di conseguenza produrranno un grande errore di ricostruzione \cite{anomaly_detection_survey_2_deep_learning}. 
 % https://towardsdatascience.com/applied-deep-learning-part-3-autoencoders-1c083af4d798#f686
 % https://www.deeplearningitalia.com/introduzione-agli-autoencoder/
@@ -153,9 +160,10 @@ Una popolare applicazione degli autoencoder è l'anomaly detection. Gli autoenco
 %todo: citare articoli autoencoders
 Gli autoencoders sono stati usati da questo, quello e quell'altro ancora per sviluppare questi sistemi di anomaly detection:
 \begin{itemize}
-    \item articolo 1
-    \item articolo 2
-    \item articolo 3
+    \item articolo 1  \url{https://www-sciencedirect-com.ezproxy.biblio.polito.it/science/article/pii/S0952197619301721}
+    \item articolo 2 \url{https://ieeexplore-ieee-org.ezproxy.biblio.polito.it/abstract/document/8363930}
+    \item articolo 3 il più importante \url{https://ieeexplore.ieee.org/abstract/document/8438865}
+    % \item \url{https://ieeexplore-ieee-org.ezproxy.biblio.polito.it/stamp/stamp.jsp?tp=&arnumber=8336654}
 \end{itemize}
 
 \section{Soluzioni esistenti di Anomaly Detection}

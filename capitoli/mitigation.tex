@@ -2,13 +2,37 @@
 
 
 \section{Introduzione}
-Prova 
-\subsection{Bloccare l'ip spoofing}
-L'ip spoofing permettere di usare la tecnica dell'amplification
+
+Mitigare gli attacchi DDoS è un problema di più difficile risoluzione rispetto alla sola rilevazione, perchè bisogna conoscere maggiori informazioni sulla provenienza del flusso malevolo e il problema dei ``false positive'' è maggiormente sentito: se durante la fase di detection rileviamo un falso positivo e lo notifichiamo all'amministratore di sistema \underline{non è un grande problema} perchè sarà lui ad effettuare una successiva analisi prima di intraprendere azioni correttive. Se ci prefiggiamo l'obiettivo di bloccare automaticamente i flussi malevoli dei falsi positivi significherà degradare la connessione ad utenti legittimi.
+
+\subsection{Ip spoofing}
+
+L'ip spoofing è una tecnica che permette di costruire pacchetti IP con indirizzo IP sorgente modificato con lo scopo di fingersi un altro dispositivo o nascondere la propria identità.È un grande problema di sicurezza delle reti, principalmente perchè permette effettuare attacchi DDoS, permettendo di effettuare attacchi come l'amplificazione DNS oppure rendendo più difficile l'identificazione della sorgente dell'attacco nelle altre tipologie.
+
+%todo: cite https://www.cloudflare.com/it-it/learning/ddos/glossary/ip-spoofing/
+
+
+\paragraph{Bloccare l'ip spoofing}
+Per mitigare questo problema abbiamo introdotto una regola iptables nel router \ref{code:iptablesrule}, la quale impedisce l'inoltro di pacchetti provenienti da sottoreti diverse da quella in cui è situato il router.
+Iptables è un firewall integrato nel kernel linux.
+% https://wiki.archlinux.org/title/Iptables_(Italiano)#:~:text=Iptables%20%C3%A8%20un%20potente%20firewall,%C3%A8%20usato%20per%20gli%20IPv6.
+
+% todo: la regola è corretta?
+\begin{lstlisting}[caption={Esempio di regola iptables}\label{code:iptablesrule}]
+    mettere la regola qui
+\end{lstlisting}
+Questa soluzione impedisce solo parzialmente l'utilizzo dell'ip spoofing, perchè sarà sempre possibile generare pacchetti con ip spoofing provenienti da qualsiasi indirizzo ip della sottorete in cui si trova l'attaccante.
 
 
 \section{Funzionamento}
 Prova prova
+
+\subsection{Netflow}
+
+Netflow è un software introdotto inizialmente nei router Cisco nel 1996, che permette di monitorare e registare informazioni sui flussi che attraversano una determinata interfaccia.
+% todo: tabella con features raccolete da netflow
+Poichè non è possibile estendere le features di netflow e non rispecchiano completamente i nostri interessi abbiamo deciso di progettare il nostro agent utilizzando altre soluzioni.
+% todo: le features di netflow le posso modificare?
 \subsection{eBPF}
 \subsection{BCC}
 

@@ -2,8 +2,9 @@
 
 \section{Introduzione}
 %spiegare obiettivo
-Il mio obiettivo è di creare un sistema di anomaly detection con struttura distribuita: nei router delle sedi periferiche raccolgo informazioni sul traffico e in un server posizionato fisicamente nella sede centrale lo analizzo e prendo decisioni sulle azioni da compiere. Per svolgere questo lavoro mi sono dovuto basare su alcuni software e sull'hardware aziendale con i relativi vantaggi e svantaggi rispetto ad una soluzione completamente ex-novo.
+Il nostro obiettivo è di creare un sistema di anomaly detection con struttura distribuita: nei router delle sedi periferiche vengono raccolte informazioni sul traffico e in un server posizionato fisicamente nella sede centrale lo analizzo e prendo decisioni sulle azioni da compiere. Questa tipologia di architettura permette di sfruttare dispositivi già esistenti e non aggiunge molta complessità all'infrastruttura informatica aziendale,quindi per svolgere questo lavoro ci siamo basati su alcuni software e sull'hardware aziendale con i relativi vantaggi e svantaggi rispetto ad una soluzione completamente ex-novo.
 % spiegare come vengono gestiti i dati
+La raccolta e l'analisi dei dati viene effettuata utilizzando un sistema centralizzato, questo permette di avere un unico dispositivo con la capacità necessaria a svolgere l'elaborazione, che al tempo stesso possiede una visione completa sulle sorgenti e quindi sarà in grado di identificare facilmente da quale sede proviene il traffico anomalo.
 
 \section{Obiettivo}
 
@@ -26,12 +27,13 @@ Qui in seguito approfondirò maggiormente il flusso della gestione dei dati.
 Inoltre per avere ulteriori dati a disposizione ho scritto un plugin che si occupa di aggiungere delle metriche sul conteggio dei pacchetti non possibile con i plugin standard.
 
 \paragraph{Il mio plugin di collect}
+%todo: posso parlare della prima versione, dei problemi riscontrati e dell'utilizzo di ebpf al suo posto
 
 \paragraph{NDPI} è un software per il deep-packet inspection basato su OpenDPI
 %http://luca.ntop.org/nDPI.pdf
 %todo: completare ndpi
 
-%todo: posso parlare della prima versione, dei problemi riscontrati e dell'utilizzo di ebpf al suo posto
+
 \paragraph{graphite} è un software open source per il monitoraggio che può funzionare sia su hardware economico, che su un'infrastruttura cloud. Può essere usato per monitorare le performance di siti, applicazioni, server e nel caso di Tiesse è usato per monitorare informazioni sull'uso dei router, come per esempio il numero totale di router connessi, quelli raggiungibili, il throughput, l'uptime e la velocità della connessione xDSL.
 L'obiettivo di graphite è il salvataggio di serie temporali di dati numerici e la successiva condivisione e visualizzazione.
 Graphite è composto da tre parti (come si può vedere dalla figura ~\ref{fig:graphite}):
@@ -314,6 +316,8 @@ for j in range(3):
     data_list.append(line.copy())
 \end{lstlisting}
 
+%todo: tabella con i dati di tutte le features
+
 \paragraph{La standardizzazione dei dati} è la fase subito successiva, 
 % differenziare i casi tra l'evaluate e il train
 Durante il train calcolo la media e la deviazione standard sui dati per ogn, successivamente standardizzo e salvo la media e deviazione standard di ogni feature su un file.
@@ -427,9 +431,16 @@ Per effettuare le varie tipologie di attacchi sono stati usati software open-sou
 \paragraph{hping3} è un tool in grado di generare pacchetti di rete TCP/IP personalizzati. Il nostro utilizzo è stato per generare attacchi di tipo SYN flood, ICMP flood e UDP flood. Il tool, oltre a permettere di generare i pacchetti personalizzati da mandare alla vittima, permette di regolare la portata dell'attacco, tramite le possibilità di sceltà del rate a cui inviare i pacchetti.
 % https://linux.die.net/man/8/hping3
 
+
 Per cosa è stato usato, quali sono i limiti di hping3 e perchè dobbiamo
 
 \paragraph{Il nostro toool}
-Parlare come funzionano i tool che ho fatto
+
+Hping3 non consente di riprodurre tutte le tipologie di attacco a noi necessarie, per questo motivo è stato sviluppata un'applicazione per costruire pacchetti di tipo DNS da utilizzare per creare attacchi di tipo DNS flood e DNS amplification.
+Il tool è sviluppato in C++, per una maggiore efficienza e per raggiungere un maggiore throughput durante gli attacchi, utilizzando la libreria ``libtins''\footnote{ http://libtins.github.io/}.
+Il programma genera delle DNS query indirizzate verso i DNS server configurati in un file di configurazione. A scopo di test, per non sovraccaricare il server DNS aziendale, abbiamo utilizzato dei Raspberry Pi, con in esecuzione dei container di CoreDNS: semplici istanze DNS configurate in modo da mantenere in cache le risposte alle richieste effettuate e abbiamo effettuato solo richieste di risoluzione di un particolare dominio da parte del software di attacco.
+Inoltre per semplicità d'uso il software permette anche di effettuare attacchi di tipo syn flood con ip spoofing.
+
+% todo: immagini di wireshark / gestione attività durante gli attacchi
 
 \subsection{Risultati}
