@@ -9,12 +9,30 @@ Gli attacchi maggiormente presi in considerazione in questa tesi sono gli attacc
 Inoltre raccogliere informazioni sull'utilizzo della rete può portare anche alla risoluzioni di problemi non derivanti da attacchi.
 
 \section{Scenario}
+\begin{figure}[]
+    \label{fig:scenario}
+    \includegraphics[width=\hsize]{images/introduzione/scenario_2.png}
+    \caption{Scenario rete Tiesse e clienti}
+    \centering
+\end{figure}
+
 Per fare questa tesi abbiamo preso in considerazione un tipico scenario aziendale, in cui esiste una sede centrale, ben protetta e su cui sono ospitati i servizi dell'azienda e tante sedi periferiche: uffici, negozi o altro, collegati ai servizi della sede centrale tramite un overlay MPLS o una VPN.
 Le sedi periferiche sono quelle più esposte sotto l'aspetto della sicurezza (todo: magari spiegare i motivi. anche solo perchè sono tante e spesso non ci sono i responsabili dell it in sede), per questo motivo il nostro obiettivo è quello di proteggere i servizi aziendali e la rete centrale dai pc connessi alle reti degli uffici.
-L'organizzazione di Tiesse e di molti suoi clienti è caratterizzata da questo scenario, per questo motivo le prove da me effettuate si basano sull'analisi del traffico proveniente dall'ufficio di Torino e mirano a proteggere i servizi aziendali presenti nella sede centrale di Ivrea a cui l'ufficio di Torino è collegato tramite una VPN.
+L'organizzazione di Tiesse e di molti suoi clienti è caratterizzata da questo scenario \ref{fig:scenario}, per questo motivo le prove da me effettuate si basano sull'analisi del traffico proveniente dall'ufficio di Torino e mirano a proteggere i servizi aziendali presenti nella sede centrale di Ivrea a cui l'ufficio di Torino è collegato tramite una VPN.
 Un altro caso possibile di utilizzo di questa soluzione è la distribuzione dei servizi in cloud, in cui l'azienda non ha il controllo dell'infrastruttura di rete.
 
+
 % todo: sostituire servizi con applicativi aziendali
+
+\begin{figure}[]
+    \label{fig:scenario_2}
+    %https://lucid.app/lucidchart/8119c7e9-e2e1-4dbb-b55f-bebf6c97af2d/edit?beaconFlowId=3612F8C43004D8D2&page=0_0#
+    \includegraphics[width=\hsize]{images/introduzione/scenario.png}
+    \caption{Scenario rete Tiesse e clienti}
+    \centering
+\end{figure}
+
+
 
 
 \section{Gli attacchi DDoS}
