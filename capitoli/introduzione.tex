@@ -68,9 +68,11 @@ L'obiettivo di questa sarà concentrato sul rilevamento e la mitigazione della s
 Gli attacchi di denial of service che mirano ad esaurire le risorse di rete si basano sull'invio di molti pacchetti che consumino totalmente la banda della vittima, queste tipologia di attacco può essere effettuata in maniera diretta: \emph{flooding attacks} e \emph{protocol exploitation attacks}, nel primo caso la vittima viene inondata di pacchetti (UDP flood, ICMP flood, DNS flood, VoIP flood an etc.), in questo caso la banda aggregata in uscita di tutti gli attaccanti deve essere superiore a quella del servizio che si vuole interrompere, nel secondo caso vengono sfruttane delle caratteristiche dei protocolli della vittima in modo da consumare una grande quantità di risorse (es. TCP SYN flood, TCP SYN-ACK flood, RST/FIN flood e ecc).
 
 Gli attacchi che non vengono che non vengono effettuati in maniera diretta invece sfruttano la riflessione o l'amplificazione: nella \emph{Reflection-based flooding attacks} chi attacca manda un particolare pacchetto, indirizzandolo ad un riflettore e questo riflettore manda le sue risposte alla vittima, in modo da esaurire le risorse della vittima. Un esempio di questo attacco sono lo Smurf e il Fraggle, nel primo vengono mandati ICMP Echo Request ad una sottorete, usando come ip di destinazione l'indirizzo broadcast e con ip spoofing, specificando come ip sorgente l'ip della vittima, causando la risposta di tutti gli host verso l'indirizzo della vittima \cite{ddos_survey_2}.
-Gli \emph{Amplification-based flooding attacks} sfruttano servizi che restituiscono risposte più grandi della richiesta ricevuta, un esempio è il DNS amplification, che riesce a moltiplicare più di 20 volte il pacchetto in arrivo e sfruttando l'ip spoofing la risposta viene manda alla vittima \cite{ddos_survey_1}.
-% todo: verificare il 20 volte
+Gli \emph{Amplification-based flooding attacks} sfruttano servizi che restituiscono risposte più grandi della richiesta ricevuta, un esempio è il DNS amplification, che riesce a moltiplicare dalle 30 alle 50 volte\cite{imperva_amplification} la banda in uscita dell'attaccante, il suo funzionamento si basa sull'utilizzo dell'ip spoofing mandando un pacchetto con indirizzo ip sorgente della vittima, così il servizio DNS risponderà alla vittima con un flood di pacchetti di dimensioni maggiori \cite{ddos_survey_1}. Lo stesso principio è sfruttato anche dal NTP amplification che può amplificare il traffico con un rapporto tra 20:1 e 200:1, arrivando in alcuni casi a 556:1 \cite{imperva_amplification}. 
+
 % todo: Amplification-based flooding attack, negli attacchi di rete: qua non so giustificarla bene pagina 3 \cite{ddos_survey_1}
+% qua parla bene del fattore di moltiplicazione degli attacchi https://www.imperva.com/blog/ntp-flood-explained/
+
 \paragraph{Application-level DDoS flooding attacks} % todo: rivedere titolo
 % qua taglio un po' corto sugli attacchi applicativi perchè approfondirò maggiormente quelli di rete
 Gli attacchi DDoS al livello applicativo hanno lo scopo di terminare le risorse del server(sockets, cpu, memory, disk/db bandwidth, I/O bandwidth) e di solito usano meno banda, rispetto gli attacchi di alla rete, per questo motivo è anche più difficile identificarli. Le tecniche utilizzate sono simili alle precedenti. Degli esempi sono l'HTTP flooding che grazie con molte richieste, obbliga il server a produrre risposte che possono essere computazionalmente pesanti, oppure l'SQL Injection per imporre un lock sul database e bloccare il funzionamento dell'applicazione, altri attacchi possono essere l'HTTP fragmentation, lo slowpost attack, slowreading attack e lo slowloris attack, tutte che mirano a mantenere la connessione aperta mandando o ricevendo pochi dati per volta \cite{ddos_survey_1}.
@@ -113,7 +115,6 @@ Nel mondo gli attacchi a fine 2020 la quasi totalità degli attacchi DDoS proven
 
 \subsubsection{Attacchi DDoS famosi}
 
-% todo: qua parla bene del fattore di moltiplicazione degli attacchi https://www.imperva.com/blog/ntp-flood-explained/
 %todo: qua parla del flood dns https://www.cloudflare.com/it-it/learning/ddos/dns-flood-ddos-attack/
 
 Prova prova
@@ -125,11 +126,11 @@ Prova prova
 
 Gli attacchi basati su botnets sono un grande problema per l'implementazione di sistemi anti-DDoS perché un grande numero di ``zombie'' rende l'attacco più distruttivo e spesso utilizzano ip spoofing, il che rende più difficile il tracciamento all'indietro per determinare i bot. \cite{ddos_survey_1}
 % todo: qui dovrei magari differenziare le botnet controllate direttamente e indirettamente e dilungarmi meno, magari nominare le tre fasi degli attacchi \cite{ddos_motivations} pagina 5 \cite{ddos_survey_4} pagina 37
-I bot possono essere controllati dell'artefice dell'attacco tramite tre architetture: 
+I bot possono essere controllati dell'artefice dell'attacco tramite tre architetture \cite{ddos_survey_4}: % pagina 46
 \begin{itemize}
     \item IRC-based: architettura client-server in cui ad ogni server si possono collegare centinaia di dispositivi, utilizza un protocollo testuale e utilizzando porte non standard rende molto difficile il riconoscimento del comando per lanciare un DDoS, il quale si può nascondere facilmente nel grande traffico dei server IRC, ma il singolo server a cui si connettono tutti i client può essere considerato un single point of failure.
     \item Web based: ogni bot scarica periodicamente delle informazioni tramite una richiesta web ad un server, i comandi di questa tipologia di controllo sono i più difficili da tracciare.
-    \item P2P based: \cite{ddos_survey_4} pagina 46
+    \item P2P based:le moderne botnet utilizzano una struttura più robusta e flessibile, invece di avere un singolo server centrale chi è al controllo della botnet manda un comando in broadcast a tutti gli agent, questo lo rende più affidabile e l'eliminazione di un agent non rende la rete non funzionante, ma rende la rete più difficile da mantenere e la scoperta di un agent può mostrare tutti gli altri. 
 \end{itemize}
 
 \begin{figure}[h]

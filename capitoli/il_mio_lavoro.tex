@@ -22,11 +22,11 @@ Qui in seguito approfondirò maggiormente il flusso della gestione dei dati.
     \centering
 \end{figure}
 
-\paragraph{collectd} è un demone che raccoglie metriche di sistema e di applicazioni, trasferisce e salva dati di computer e dispositivi di rete. Collect ha una struttura modulare in cui è possibile abilitare centinaia di plugin per la raccolta di metriche di sistema dai casi più generali a quelli più specifici ed inoltre è possibile scrivere i propri plugin per integrarlo ulteriormente. I plugin da me usati sono ``write\_graphite'': plugin che permette di scrivere le metriche raccolte su un database graphite, ``conntrack'': plugin che permette di contare il numero di voci nella connection tracking table di Linux, ``interface'' : plugin che colleziona informazioni sul traffico su un'interfaccia, quindi pacchetti al secondo, bytes al secondo ed errori sull'interfaccia. 
+\paragraph{collectd} è un demone che raccoglie metriche di sistema e di applicazioni, trasferisce e salva dati di computer e dispositivi di rete. Collect ha una struttura modulare in cui è possibile abilitare centinaia di plugin per la raccolta di metriche di sistema dai casi più generali a quelli più specifici ed inoltre è possibile scrivere i propri plugin per integrarlo ulteriormente. I plugin usati sono ``write\_graphite'': plugin che permette di scrivere le metriche raccolte su un database graphite, ``conntrack'': plugin che permette di contare il numero di voci nella connection tracking table di Linux, ``interface'' : plugin che colleziona informazioni sul traffico su un'interfaccia, quindi pacchetti al secondo, bytes al secondo ed errori sull'interfaccia. 
 
 Inoltre per avere ulteriori dati a disposizione ho scritto un plugin che si occupa di aggiungere delle metriche sul conteggio dei pacchetti non possibile con i plugin standard.
 
-\paragraph{Il mio plugin di collect}
+\paragraph{Il nostro plugin di collect}
 %todo: posso parlare della prima versione, dei problemi riscontrati e dell'utilizzo di ebpf al suo posto
 
 \paragraph{NDPI} è un software per il deep-packet inspection basato su OpenDPI
@@ -114,16 +114,16 @@ La scelta della features è nata da un compromesso tra i dati necessari per rile
  
 \section{Il mio tool}
 
-Cosa fa?
-Perchè l'ho fatto?
+% Cosa fa?
+% Perchè l'ho fatto?
 
-Per rilevare le anomalie, una volta decise le features da analizzare, ho dovuto decidere quale sistema dei precedentemente elencati adottare. La scelta è ricaduta sull'utilizzo di una rete neurale di autoencoder, la quale permette di allenare facilmente il modello in modo semi-supervisionato, grazie all'utilizzo della sola classe normale di traffico.
+% Per rilevare le anomalie, una volta decise le features da analizzare, abbiamo dovuto decidere quale sistema dei precedentemente elencati adottare. La scelta è ricaduta sull'utilizzo di una rete neurale di autoencoder, la quale permette di allenare facilmente il modello in modo semi-supervisionato, grazie all'utilizzo della sola classe normale di traffico.
 
 \subsection{Struttura}
 
-Posso parlare di come è strutturato il programma, che librerie ho usato 
+% Posso parlare di come è strutturato il programma, che librerie ho usato 
 Il programma è scritto in Python 3, con l'utilizzo di TensorFlow e Keras librerie per il ``machine learning'', effettua le richieste http tramite la libreria requests e gestisce i dati grazie a NumPy e Pandas: librerie per il calcolo matriciale e la gestione di tabelle e serie.
-Il tutto per assicurare una maggiore portabilità, ed assicurare la possibilità di effettuare il deploy su qualsiasi macchina, viene eseguito all'interno di un container Docker, la cui immagine viene creata e avviata tramite ``docker-compose''.
+Il tutto, per assicurare una maggiore portabilità, ed assicurare la possibilità di effettuare il deploy su qualsiasi macchina, viene eseguito all'interno di un container Docker, la cui immagine viene creata e avviata tramite ``docker-compose''.
 
 
 I dati all'interno del repository sono organizzati nel seguente modo:
@@ -158,12 +158,14 @@ I dati all'interno del repository sono organizzati nel seguente modo:
 Come ricevo i dati dal server? Come li elaboro? Che api uso?
 Genero tante piccole sequenze di 8 elementi (spiegare il motivo della scelta della sequence length => trade-off tra tempo di rilevamento dell'anomalia e mitigazione dei picchi e dei falsi positivi) e perchè lo faccio, come normalizzo i dati e perchè. Come fornisco i dati in input alla rete.
 
+
 Le metriche relative alle applicazioni vengono aggiornate ogni 30 secondi, a differenza dei 10 secondi con cui aggiorno i dati collezionati da collectd, per questo motivo ogni volta che devo richiedere dei dati al server devo effettuare due richieste, tramite la libreria requests, alle carbonapi.
 
 % (Viene usato http con basic auth, questo mi provoca un colpo al cuore lato sicurezza, ma lo posso giustificare dicendo che è un ambiente di test, in produzione come minimo verrà usato https.)
 
-Un esempio di dati che mi restituisce la prima richiesta è (qui per ridurre la quantità di dati ipotizzo che la richiesta sia di 20 secondi):
-\begin{lstlisting}[language=json]
+Un esempio di dati restituiti dalla prima richiesta è mostrata nel codice \ref{code:carbonapijson}, in cui per ridurre la quantità di dati da mostare nell'esempio, ipotizzo che l'intervallo di tempo richiesto sia di venti secondi.
+
+\begin{lstlisting}[language=json,caption={Esempio di risposta delle carbonapi}\label{code:carbonapijson}]
 [
     {
         "target": "Tiesse-EnvironmentPark.conntrack.conntrack",
@@ -215,8 +217,7 @@ Un esempio di dati che mi restituisce la prima richiesta è (qui per ridurre la 
     }
 ]
 \end{lstlisting}
-
-Per elaborare i dati ricevuti devo avere una tabella con il corretto formato, vedi l'esempio di tabella \ref{table:tabella_dati_1}, per questo motivo elaboro i dati del json ricevuto precedentemente, sostituendo per prima cosa il timestamp, trasformandolo da un unix timestamp ad uno che indica i secondi passati dalla mezzanotte e successivamente aggiungo tutti gli elementi ad un json con il corretto formato, come mostrato nell'estratto di codice \ref{code:get_data}.
+I dati ricevuti per essere elaborati devono essere memorizzati in una tabella con il corretto formato, vedi l'esempio di tabella \ref{table:tabella_dati_1}, per questo motivo i dati del json appena ricevuto vengono elaborati, sostituendo per prima cosa il timestamp, il quale viene trasformandolo da un unix timestamp ad uno che indica i secondi passati dalla mezzanotte e successivamente tutti gli elementi verranno aggiunti ad un dizionario con il corretto formato, come mostrato nell'estratto di codice \ref{code:get_data}.
 
 % todo: e i syn?
 \begin{table}[]
@@ -303,7 +304,7 @@ def get_data(s_time, e_time, hostname: str, interface: str,
 
 \end{lstlisting}
 
-Una volta ricevuti i dati e organizzati nel formato corretto, effettuo una nuova richiesta alle carbon api, per ricevere i dati relativi alle applicazioni, il procedimento è simile a quello precedentemente descritto, l'unica differenza è che estendo i dati, mostrando lo stesso dato più volte, in modo da avere lo stesso numero di elementi ottenuti precedentemente.
+Ricevuti i dati e organizzati nel formato corretto, effettuo una nuova richiesta alle carbon api, per ricevere le statistiche relative alle applicazioni, il procedimento è simile a quello precedentemente descritto, l'unica differenza è che i dati sul database vengono salvati da ndpi ogni 30 secondi, per questo motivo devo estenderli mostrando lo stesso dato più volte, in modo da avere lo stesso numero degli elementi ottenuti precedentemente.
 
 \begin{lstlisting}[language=Python]
 for element in app_list:
@@ -322,26 +323,29 @@ for j in range(3):
 % differenziare i casi tra l'evaluate e il train
 Durante il train calcolo la media e la deviazione standard sui dati per ogn, successivamente standardizzo e salvo la media e deviazione standard di ogni feature su un file.
 Durante la fase di evaluate per standardizzare i dati uso i dati salvati precedentemente sul file e standardizzo i dati.
-% Un problema della standardizzazione dei dati è la gestione dei picchi le reti neurali lavorano meglio con dati piccoli, quindi i picchi potrebbero essere un problema, si può pensare un modo diverso per standardizzare i dati
+%todo: Un problema della standardizzazione dei dati è la gestione dei picchi le reti neurali lavorano meglio con dati piccoli, quindi i picchi potrebbero essere un problema, si può pensare un modo diverso per standardizzare i dati
 
 \paragraph{Scelta della lunghezza delle sequenze dei dati.} Utilizzando i dati standardizzati genero ``N-K'' sequenze di lunghezza ``K'' elementi, dove ``N'' è il numero di elementi ricevuti precedentemente. Queste sequenze mi servono per uniformare i dati di allenamento e valutazione usando una lunghezza fissa per la sequenza di dati da dare in input alla rete neurale.
 La scelta della lunghezza della sequenza è molto importante, perchè da essa dipende la capacità di rilevamento delle anomalie: più il valore sarà grande e più sarà preciso il riconoscimento delle anomalie e meno il programma sarà soggetto a falsi positivi, ma al tempo stesso renderà di difficile identificazione i picchi anomali e il tempo necessario per rilevare un'anomalia sarà maggiore.
 %todo: aggiungo il codice per creare le sequenze?
 %todo: qua spiego cosa ho scelto allegando delle immagini
-Abbiamo scelto una lunghezza della sequenza di otto elementi
-%https://keras.io/examples/timeseries/timeseries_anomaly_detection/
+Abbiamo scelto una lunghezza della sequenza di otto elementi, perchè analizzando il report \cite{imperva_ddos_report} il 25\% degli attacchi ha una durata inferiore ai 10 minuti e ...
 
+% todo: citare https://keras.io/examples/timeseries/timeseries_anomaly_detection/
+% todo: citare la lunghezza media degli attacchi \cite{ddos_kaspersky_q3_2020, imperva_ddos_report}
+% todo: la sequenza si potrebbe allungare vedendo questi dati
 \subsection{Modello della rete}
 
-Spiego come ho usato Keras per generarlo.
-Spiego come sono arrivato a scegliere il modello e comparo i risultati tra 2/3 modelli totalmente diversi come numero di nodi, sarebbe interessante provare a mettere anche un modello con retroazione visto che stiamo usando sequenze temporali.
+%Spiego come ho usato Keras per generarlo.
+%todo: Spiego come sono arrivato a scegliere il modello e comparo i risultati tra 2/3 modelli totalmente diversi come numero di nodi, sarebbe interessante provare a mettere anche un modello con retroazione visto che stiamo usando sequenze temporali.
 
 Il modello di una rete neurale serve a descrivere le interconnessioni, le diverse tipologie e la composizione dei livelli di una rete neurale, è un oggetto della libreria Keras, che può essere facilmente creato grazie alla funzione ``tf.keras.Model()''.
 Nel nostro caso ogni livello prevedeva un solo livello in ingresso e uno in uscita, per questo motivo abbiamo usato il ``sequential model'' di Keras.
 La nostra rete è composta da un semplice autoencoder a cinque livelli: uno di input e uno di output con dimensioni (lunghezza\_sequenza, numero\_features) e livelli con prima una riduzione e poi un incremento dei nodi, come nei classici autoencoders.
-Avendo in ingresso dei dati con più dimensioni ho dovuto linearizzare i dati in ingresso (flatten) e ricostruire il vettore multidimensionale in uscita (reshape), nei nodi intermedi invece ho usato progressivamente un layer con 25 nodi, uno spazio latente con 8 e un livello successivo di nuovo con 25 nodi. La scelta delle dimensioni dei livelli centrali è stata presa analizzando più configurazioni e considerando che usando una lunghezza della sequenza di otto elementi, con dieci features significa avere 80 nodi in input e output, di conseguenza i nodi nei livelli centrali devono essere meno.
+Avendo in ingresso dei dati con più dimensioni ho dovuto linearizzare i dati in ingresso (flatten) e ricostruire il vettore multidimensionale in uscita (reshape), nei nodi intermedi invece ho usato progressivamente un layer con 25 nodi, uno spazio latente con 8 nodi e un livello successivo di nuovo con 25. La scelta delle dimensioni dei livelli centrali è stata presa analizzando più configurazioni e considerando che usando una lunghezza della sequenza di otto elementi, con dieci features significa avere 80 nodi in input e output, di conseguenza i nodi nei livelli centrali devono essere meno.
 Per creare la rete sono stati usati ``Dense layers'', in cui cui i nodi di due livelli sono interamente connessi tra loro e sono state usate come funzioni di attivazioni ``relu'' (Equazione \ref{eq:relu}) per i nodi intermedi e ``linear'', una funzione lineare, per i nodi dell'ultimo livello, questo permette di rappresentare anche i numeri negativi.
 %https://keras.io/api/models/model/
+Inoltre aggiungo dei ``Dropout layers'', un livello che imposta casualmente l'input del livello a zero, con una frequenza determinata, durante la fase di train, questo permette di ridurre il problema dell'overfitting.
 
 \begin{equation} \label{eq:relu}
     f(x) = x^+ = max(0, x)

@@ -21,29 +21,15 @@ Le anomalie sono definite come un pattern che non rispetta il normale comportame
 
 \section{Sistemi di rilevamento delle anomalie}
 
-
-
-\subsection{Metodo di detection}
-% \cite{anomaly_detection_survey_1_network} pagina 24
-\begin{itemize}
-    \item Classification based
-    \item Statistical anomaly detection
-    \item Information theory
-    \item Clustering-based
-\end{itemize}
-
-
-
-\subsection{Dati in input}
-pagina 6 \cite{anomaly_detection_survey_3}
-
-\subsection{Output of Anomaly Detection}
-
-Un'importante caratteristica è come sono rappresentate le anomalie in uscita dal modello, esistono due metodi: le etichette, tecnica con la quale i dati vengono etichettati con una categoria, tendenzialmente binaria per esempio possiamo etichettare i dati come normali o anomali. L'altro metodo è l'uso di un ``anomaly score'': un punteggio per ogni istanza di dati, che indica quando si discosta dalla normalità, imponendo delle soglie possiamo verificare quali dati sono anomali \cite{anomaly_detection_survey_2_deep_learning,anomaly_detection_survey_3,anomaly_detection_survey_1_network}.
-
 \subsection{Modalità di apprendimento}
 
-I sistemi di classificazione (e gli altri metodi?) necessitano di dataset con esempi di traffico per poter capire in che modo effettuare la classificazione. Per effettuare questo apprendimento esistono tre metodi:
+% Abnormal in test data and most likely used as a
+% specific type of the supervised techniques. Nearest neighbor
+% techniques utilize the similarity or distance between samples to
+% detect the anomalous data. Clustering techniques group the data
+% to detect the individo}
+
+I sistemi di anomaly detection necessitano di dataset con esempi di traffico per capire quando devono segnalare un'anomalia. In base alla tipologia di dataset di cui hanno bisogno per effettuare l'apprendimento, i sistemi di anomaly detection possono essere classificati in tre modi.
 
 \paragraph{Apprendimento superivisionato}
 
@@ -60,6 +46,43 @@ L'apprendimento semi-supervisionato è una tecnica che che per funzionare assume
 
 Questa tecnica si basa su un set di dati normali che contengono che contengono una piccola quantità di dati anomali, l'algoritmo i occuperà di creare un punteggio di separazione basandosi su proprietà intrinseche dei dati.
 %magari aggiungere altro pagina 23 \cite{anomaly_detection_survey_2_deep_learning}
+
+
+\subsection{Metodo di detection}
+
+Una volta classificati i sistemi di anomaly detection in base al metodo di apprendimento, possono essere ulteriormente suddivisi in sei sottocategorie basate sulla tecnica di rilevamento \cite{anomaly_detection_techniques, anomaly_detection_classification}.
+
+
+\begin{figure}[]
+    \begin{center}
+        
+    % todo: capire come gestire citazioni imsmagini a livello di copyright
+    %  e capire come funzionano le label per richiamare le immagini
+    \label{fig:anomaly_classification}
+    \includegraphics[width=\hsize]{images/reti_neurali/classification.jpg}
+    \caption{Classificazione metodi di anomaly detection}
+    \centering
+    \end{center}
+\end{figure}
+
+% \cite{anomaly_detection_survey_1_network} pagina 24
+\begin{itemize}
+    \item Classification based: si basano su un set di dati etichettato che distingue una o più categorie e si basa su un modello (classificatore) che impara a distinguere le classi durante la fase di allenamento.
+    \item Statistical based: assumono che i dati normali si presentino con una maggiore probabili rispetto a quelli anomali e segnalano come anomali regioni di dati a bassa probabilità.
+    \item Information theory: analizzano il contenuto dei dati per verificare se sono presenti irregolarità.
+    \item Nearest neighbor: si basa sull'assunzione che i dati normali si concentrino in zone dense e le anomalie si presentino lontano da queste zone.
+    \item Clustering-based: raggruppano le istanze di dati simili in gruppi, i dati che non appartengono a nessun gruppo sono considerati anomali.
+    \item Spectral: trasferisce i dati in un sottospazio con minore dimensionalità in modo che le istanze anomale siano significativamente differenti.
+\end{itemize}
+
+
+% \subsection{Dati in input}
+% pagina 6 \cite{anomaly_detection_survey_3}
+
+\subsection{Output of Anomaly Detection}
+
+Un'importante caratteristica è come sono rappresentate le anomalie in uscita dal modello, esistono due metodi: le etichette, tecnica con la quale i dati vengono etichettati con una categoria, tendenzialmente binaria per esempio possiamo etichettare i dati come normali o anomali. L'altro metodo è l'uso di un ``anomaly score'': un punteggio per ogni istanza di dati, che indica quando si discosta dalla normalità, imponendo delle soglie possiamo verificare quali dati sono anomali \cite{anomaly_detection_survey_2_deep_learning,anomaly_detection_survey_3,anomaly_detection_survey_1_network}.
+
 
 \section{Classificazione delle anomalie}
 

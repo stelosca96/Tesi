@@ -95,7 +95,14 @@ I vantaggi di un programma eBPF rispetto alla scrittura di un modulo kernel sono
 % https://ebpf.io/
 
 \subsection{eXpress Data Path (XDP)}
-
+\begin{figure}[]
+    % todo: capire come gestire citazioni imsmagini a livello di copyright
+    % https://www.researchgate.net/publication/333998355_Securing_Linux_with_a_Faster_and_Scalable_Iptables
+    \label{fig:hooks}
+    \includegraphics[width=\hsize]{images/mitigazione/hooks.png}
+    \caption{Hooks eBPF}
+    \centering
+\end{figure}
 Il kernel Linux supporta più punti dello stack di rete in cui è possibile agganciare l'esecuzione dei programmi eBPF.
 XDP (eXpress Data Path) è un hook ad alte performance che permette di eseguire un programma eBPF al primo punto possibile, questo permette grandi performance, perchè il processamento avviene prima che qualsiasi altro processamento possa avvenire. XDP è un punto d'aggancio ideale per il filtering dei pacchetti malevoli o inaspettati e in qualsiasi comune protezione anti DDoS \cite{cilium_xdp}.
 Il programma inserito su un hook XDP può compiere cinque azioni possibili:
@@ -106,14 +113,7 @@ Il programma inserito su un hook XDP può compiere cinque azioni possibili:
     \item XDP\_ABORTED: è un valore di ritorno che il programmatore non dovrebbe utilizzare, segnala un che si è verificato un errore nel programma eBPF, per esempio una divisione per zero e contemporaneamente ignora il pacchetto come l'XDP\_DROP
     \item XDP\_REDIRECT: reindirizza il pacchetto verso un'altra scheda di rete, o in user space
 \end{itemize}
-\begin{figure}[]
-    % todo: capire come gestire citazioni imsmagini a livello di copyright
-    % https://www.researchgate.net/publication/333998355_Securing_Linux_with_a_Faster_and_Scalable_Iptables
-    \label{fig:hooks}
-    \includegraphics[width=\hsize]{images/mitigazione/hooks.png}
-    \caption{Hooks eBPF}
-    \centering
-\end{figure}
+
 
 \subsection{BPF Compiler Collection (BCC)}
  
