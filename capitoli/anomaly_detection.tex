@@ -81,7 +81,7 @@ Una volta classificati i sistemi di anomaly detection in base al metodo di appre
 
 \subsection{Output of Anomaly Detection}
 
-Un'importante caratteristica è come sono rappresentate le anomalie in uscita dal modello, esistono due metodi: le etichette, tecnica con la quale i dati vengono etichettati con una categoria, tendenzialmente binaria per esempio possiamo etichettare i dati come normali o anomali. L'altro metodo è l'uso di un ``anomaly score'': un punteggio per ogni istanza di dati, che indica quando si discosta dalla normalità, imponendo delle soglie possiamo verificare quali dati sono anomali \cite{anomaly_detection_survey_2_deep_learning,anomaly_detection_survey_3,anomaly_detection_survey_1_network}.
+Un'importante caratteristica è come sono rappresentate le anomalie in uscita dal modello, esistono due metodi: le etichette, tecnica con la quale i dati vengono etichettati con una categoria, tendenzialmente binaria per esempio possiamo etichettare i dati come normali o anomali. L'altro metodo è l'uso di un ``anomaly score'': un punteggio per ogni istanza di dati, che indica quando si discosta dalla normalità, imponendo delle soglie possiamo verificare quali dati sono anomali \cite{anomaly_detection_survey_1_network, anomaly_detection_survey_2_deep_learning, anomaly_detection_survey_3}.
 
 
 \section{Classificazione delle anomalie}
@@ -96,25 +96,37 @@ Un aspetto importante dell'anomaly detection è l'analisi delle anomalie che pos
 
 \subsection{Applicazione anomaly detection}
 % \subsection{Tipologie anomaly detection}
+
+Le applicazioni dell'anomaly detection possono essere molteplici, qui un breve elenco delle possibili applicazioni \cite{anomaly_detection_survey_3}
+
 \begin{itemize}
 %todo: dire per ogni tipologia di applicazione quale sistema per l'anomaly detection è usato: esempio nids autoencoders, va, o altro 
 %todo: terminare l'elenco delle applicazioni
+
     \item Fraud detection: sono sistemi con lo scopo di riconoscere frodi, i occupano di rilevare attività illegali in diversi campi come quella assicurativo, finanziario e telefonico.
     \item Medical and Public Health Anomaly Detection: lavorano sui dati dei pazienti, che possono avere anomalie per diverse ragioni: errori di registrazione, errori degli strumenti di misura o una condizione anormale delle condizioni del paziente. Questi sistemi mirano a riconoscere anomalie puntuali usando sistemi semi supervisionati.
-    \item Industrial Damage Detection
-    \item Image Processing
-    \item Anomaly Detection in Text Data
-    \item Sensor Networks
+    \item Industrial Damage Detection: i dispositivi industriali sono soggetti ad usura e danneggiamenti, sistemi di anomaly detection applicati in queste situazioni possono permettere di prevenire o rilevare in anticipo questi problemi.
+    \item Image Processing: permette di riconoscere anomalie significative in immagini durante il tempo (motion detection) o regioni anomale in immagini statiche.
+    % todo: non ho capito bene
+    \item Anomaly Detection in Text Data: questi sistemi riconoscono principalmente gli argomenti o gli eventi in una collezione di documenti, le anomalie sono causate da nuovi eventi interessanti o argomenti anomali.
+    \item Sensor Networks: anomalie nei rilevamenti dei sensori possono significare un difetto o un'intrusione.
     \item Intrusion detection systems(IDS): sono dei sistemi che puntano ad identificare attività malevole nei sistemi informativi, gli IDS possono essere installati su un computer, in quel caso si parla di ``Host Intrusion Detection (HIDS)'' oppure su una rete, in quel caso si parla di ``Network Intrusion Detection (NIDS)'', gli IDS possono essere signature-based oppure anomaly based, nel primo caso non si è in grado di riconoscere nuove tipologie di attacchi. In questo contesto vengono analizzate le anomalie collettive e sono preferiti sistemi di apprendimento semi-supervionato o non supervisionato, perchè le etichette per i dati anomali non sono quasi mai disponibili. In questa tesi mi concentrerò sull'analisi di anomalie di rete basandomi su sistemi di anomaly detection. 
 \end{itemize}
 
 \subsection{Tipologia degli attacchi di rete}
 %parlare di Network IDS E Host IDS pagina 9 \cite{anomaly_detection_survey_2_deep_learning}
-Analizzando 
+Lo scopo della sicurezza di rete è di proteggere la confidenzialità, l'integrità e di assicurare la disponibilità delle risorse, quindi una minaccia viene definita come qualunque cosa cosa che ha caratteristiche finalizzate a compromettere la rete \cite{anomaly_detection_survey_1_network}. Un elenco di possibili minacce è:
+
+\begin{itemize}
+    \item Denial of service (DoS)
+    \item Probe: viene sondata la rete per ottenere informazione sulla struttura della rete target o degli host, principalmente per scopi di ricognizione.
+    \item User to root (U2R): è una tipologia di attacco, quando l'attaccante ha l'obiettivo di ottenere illegalmente accesso ad un account amministrativo per manipolare o fare uso illecito di risorse.
+    \item Remote to user (R2U): è un attacco in cui l'attaccante  ottenere l'accesso di una macchina target, in modo di avere i privilegi di utilizzare la sua rete.
+\end{itemize}
 
 \section{Le reti neurali}
 
-Spiego cosa sono le reti neurali, come funzionano e come vengono allenate.
+% Spiego cosa sono le reti neurali, come funzionano e come vengono allenate.
 \subsection{Funzionamento delle reti neurali}
 
 Le reti neurali sono composte da diversi strati (layer) di nodi, ciascuno collegato al successivo.
@@ -155,6 +167,10 @@ Le reti neurali sono composte da gruppi di neuroni artificiali organizzati in li
 %https://www.spindox.it/it/blog/ml1-reti-neurali-demistificate/
 % fonte immagine https://towardsdatascience.com/what-the-hell-is-perceptron-626217814f53
 
+%% todo: parlare di come vengono allenate
+\paragraph{ALLENAMENTO}
+
+parlare di come vengono allenate
 
 \subsection{Autoencoders}
 \begin{figure}[h]

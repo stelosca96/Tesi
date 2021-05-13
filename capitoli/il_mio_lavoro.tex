@@ -2,7 +2,7 @@
 
 \section{Introduzione}
 %spiegare obiettivo
-Il nostro obiettivo è di creare un sistema di anomaly detection con struttura distribuita: nei router delle sedi periferiche vengono raccolte informazioni sul traffico e in un server posizionato fisicamente nella sede centrale lo analizzo e prendo decisioni sulle azioni da compiere. Questa tipologia di architettura permette di sfruttare dispositivi già esistenti e non aggiunge molta complessità all'infrastruttura informatica aziendale,quindi per svolgere questo lavoro ci siamo basati su alcuni software e sull'hardware aziendale con i relativi vantaggi e svantaggi rispetto ad una soluzione completamente ex-novo.
+Il nostro obiettivo è di creare un sistema di anomaly detection con struttura distribuita: nei router delle sedi periferiche dell'azienda vengono raccolte informazioni sul traffico e in un server posizionato fisicamente nella sede centrale vengono analizzati e in base al risultato vengono prese decisioni sulle future azioni da intraprendere. Questa tipologia di architettura permette di sfruttare dispositivi già esistenti e non aggiunge molta complessità all'infrastruttura informatica aziendale, quindi per svolgere questo lavoro ci siamo basati su alcuni software e sull'hardware aziendale con i relativi vantaggi e svantaggi rispetto ad una soluzione completamente ex-novo.
 Inoltre essendo una soluzione distribuita permette di bloccare gli attacchi e il traffico malevolo lontano dalla sede centrale, in modo da essere più efficace e non influenzare il comportamento di altre sedi in caso di un attacco proveniente da una o più sedi periferiche.
 % spiegare come vengono gestiti i dati
 La raccolta e l'analisi dei dati viene effettuata utilizzando un sistema centralizzato, questo permette di avere un unico dispositivo con la capacità necessaria a svolgere l'elaborazione, che al tempo stesso possiede una visione completa sulle sorgenti e quindi sarà in grado di identificare facilmente da quale sede proviene il traffico anomalo.
@@ -11,7 +11,7 @@ La raccolta e l'analisi dei dati viene effettuata utilizzando un sistema central
 
 \subsection{Gestione dei dati}
 
-I dati vengono collezionati tramite un demone sui router (collectd), inviati al server (go-graphite) e visualizzati tramite una dashboard(graphana). Il tool di anomaly detection da me pensato si interfaccia direttamente con il database per la lettura dei dati e la scrittura dei risultati.
+I dati vengono collezionati tramite un demone sui router (collectd), inviati ad un server (go-graphite) e visualizzati tramite una dashboard (graphana). Il tool di anomaly detection da noi sviluppato si interfaccia direttamente con il database per la lettura dei dati e la scrittura dei risultati.
 Qui in seguito approfondirò maggiormente il flusso della gestione dei dati.
 
 \begin{figure}[]
