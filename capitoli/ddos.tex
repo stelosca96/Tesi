@@ -20,19 +20,28 @@ I metodi più diffusi si basano su metodi statistici, di data mining o intellige
 
 \section{Contromisure attacchi DDoS}
 
-Gli attacchi DDoS si ramificano ad imbuto dalle sorgenti verso la vittima, per questa ragione più si è vicini alla vittima e più l'attacco sarà facile da riconoscere, ma più difficile da mitigare. Per questa ragione le tecniche di mitigazione vengono suddivise in base al luogo in cui vengono azionate.
+Gli attacchi DDoS si raggruppano ad imbuto dalle sorgenti verso la vittima, per questa ragione più si è vicini alla vittima e più l'attacco sarà facile da riconoscere, ma più difficile da mitigare. Per questa ragione le tecniche di mitigazione vengono suddivise in base al luogo in cui vengono azionate.
+
+\begin{figure}[]
+    % todo: capire come gestire citazioni imsmagini a livello di copyright
+    %  e capire come funzionano le label per richiamare le immagini
+    \label{fig:classificazione_ddos}
+    \includegraphics[width=\hsize]{images/ddos/classificazione_difese.png}
+    \caption{Classificazione dei sistemi di difesa in base al luogo di applicazione \cite{ddos_survey_1}}
+    \centering
+\end{figure}
 
 \subsection{Soluzioni alla sorgente}
-Questa tipologia di soluzioni sono adottate vicino alle sorgenti dell'attacco per impedire agli utenti della sottorete di generare attacchi DDoS. Queste soluzioni possono essere applicate agli edge router degli Autonomous System (AS) di accesso.
+Questa tipologia di soluzioni sono adottate vicino alle sorgenti dell'attacco per impedire agli utenti di una sottorete di generare attacchi DDoS. Queste soluzioni possono essere applicate agli edge router degli Autonomous System (AS) di accesso.
 
-Degli esempi di soluzioni sono:
+Degli esempi di soluzioni sono \cite{ddos_survey_1}:
 
 % todo: completare elenco delle soluzioni alla sorgente
 \begin{itemize}
-    \item Filtri in ingresso e uscita agli edge router delle sorgenti:
-    \item D-WARD:
-    \item MULTOPS:
-    \item MANAnet’s Reverse Firewall: 
+    \item Filtri in ingresso e uscita agli edge router delle sorgenti: gli attacchi che si basano sulla riflessione sfruttano la tecnica dell'ip spoofing, lo scopo di questi filtri è di bloccare il traffico che utilizza ip spoofing senza interferire sul traffico legittimo.
+    \item D-WARD: sistema che mira a rilevare attacchi di tipo DDoS flooding monitorando il traffico in ingresso e uscita e comparandolo con dei flussi normali di traffico. I flussi sono filtrati se non rispettano il modello. Per esempio può essere imposto un rapporto massimo tra pacchetti inviati e ricevuti per un flusso TCP che se superato può segnalare il flusso come anomalo.
+    \item MULTOPS (MUlti-Level Tree for Online Packets Statistics): è un'euristica e un struttura dati che permette di rilevare attacchi provenienti da una subnet. Normalmente il traffico in una direzione è proporzionale a quello in quella opposta, una significativa differenza possono indicare che la rete è la sorgente o la vittima di un attacco DDoS.
+    \item MANAnet’s Reverse Firewall: è un firewall che a differenza di quelli tradizionali, protegge l'esterno dal traffico in uscita dalla subnet.
 \end{itemize}
 
 I problemi di questa soluzione sono che dovrebbe essere implementata su gli edge router ti tutti gli AS di accesso per permettere una copertura totale, inoltre è difficile differenziare il traffico legittimo, da quello malevolo e non meno importante non è chiaro chi sia il responsabile del mantenimento economico di questo servizio \cite{ddos_survey_1}.
@@ -41,6 +50,8 @@ I problemi di questa soluzione sono che dovrebbe essere implementata su gli edge
 
 Esistono soluzioni che si possono applicare agli edge router della vittima, possono analizzare il comportamento della vittima e il suo traffico usuale e riconoscere le anomalie \cite{ddos_survey_1,ddos_survey_2}.
 Delle soluzioni posizionate in questi luoghi possono essere dei proxy, firewall che gestiscono le connessioni semi aperte in caso di syn flood oppure l'utilizzo sistemi di tracciamento implementati in alcuni router (in caso di ip spoofing), per risalire alla vera sorgente dell'attacco e bloccarla. % todo: non so come concludere le soluzioni alla destinazione, sicuramente c'è qualche meccanismo che ho dimenticato \cite{ddos_survey_2, ddos_survey_1}
+
+% todo: potrei descriverli in maniera più dettagliata 
 
 Questi sistemi di difesa possono diventare i target degli attacchi, poiché spesso richiedono una grande quantità di memoria e potenza di processamento per effettuare le osservazioni delle misure statistiche \cite{ddos_survey_4}.
 
@@ -54,5 +65,19 @@ Altre soluzioni mirano ad identificare i router nel core di internet che sono st
 
 Le soluzioni distribuite creano una cooperazione tra i luoghi di installazione delle difese, alla sorgente vengono installati i sistemi di difesa per filtrare l'attacco, mentre sulla rete della vittima viene effettuato il riconoscimento dell'attacco. Questa soluzione porta sia il vantaggio della facilità di riconoscimento degli attacchi possibile alla destinazione, sia l'efficienza dei sistemi per mitigare gli attacchi alla sorgente.
 
+
+\section{Momenti in cui mettere in atto le difese}
+
+Esistono più momenti in cui mettere in atto le difese contro attacchi DDoS e un buon sistema deve agire su tutti.
+Il primo momento è prima dell'attacco (attack prevention), in cui vengono installati sistemi di monitoring, sistemi da usare in caso di emergenza, meccanismi per tollerare l'attacco (firewall, IDS, filtri, load balancer e flow control, strategie per identificare gli utenti legittimi e protezioni lato server).Successivamente durante l'attacco devono essere lanciate le adeguate contromisure e dopo l'attacco il sistema di difesa deve identificare la fonte e provvedere con le opportune contromisure, anche collaborando con altri segnalare l'attacco per permettere di difendersi da successivi.
+
+\begin{figure}[]
+    % todo: capire come gestire citazioni imsmagini a livello di copyright
+    %  e capire come funzionano le label per richiamare le immagini
+    \label{fig:albero_difese}
+    \includegraphics[width=\hsize]{images/ddos/grafico_difese.png}
+    \caption{Meccanismi di difesa contro DDoS di tipo flooding \cite{ddos_survey_1}}
+    \centering
+\end{figure}
 
 \section{Tolleranza}
