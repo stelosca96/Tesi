@@ -1,4 +1,4 @@
-\chapter{Soluzione proposta - Titolo provvisorio}
+\chapter{Soluzione proposta}
 
 \section{Introduzione}
 %spiegare obiettivo
@@ -317,6 +317,23 @@ for j in range(3):
     data_list.append(line.copy())
 \end{lstlisting}
 
+\begin{table}[]
+
+    \begin{tabular}{||c c c c c||} 
+    \hline
+    index & timestamp  & .conntrack.conntrack & ..if\_packets.tx & ..if\_octets.tx \\ [0.5ex] 
+    \hline\hline
+    1 & 45810 & 71.0 & 7.500424 & 2416.445886 \\ 
+    \hline
+    2 & 45820 & 74.0 & 4.89923 & 51069.831629415 \\
+    \hline
+    3 & 45830 & 72.0 & 5.000281 & 1224.055123 \\
+    \hline
+    \end{tabular}
+    \caption{Tabella di esempio dei dati ricevuti relativi alle app di nDPI}
+    \label{table:tabella_dati_2}
+    \end{table}
+
 %todo: tabella con i dati di tutte le features
 
 \paragraph{La standardizzazione dei dati} è la fase subito successiva, 
@@ -387,6 +404,9 @@ Per calcolare l'anomaly score calcolo il valore medio dei valori assoluti delle 
     % \caption{Formula per il calcolo dell'anomaly score}
     anomaly\_score = \frac{\sum_{elementi\_sequenza}\lvert valore\_originale - valore\_ricostruito \rvert}{lunghezza\_sequenza}
 \end{equation}
+
+La scelta di questo sistema permette di evidenziare sia anomalie sul traffico anomalo dovuto a variazioni verso l'alto dei valori normali, sia verso il basso, ma anche i valori ondulatori possono essere notificati, perchè la somma delle distanze delle ricostruzioni del valore assoluto di ogni istante da quello reale si discosterà molto, nonostante il valore medio sia in linea con quello aspettato.
+
 Le soglie calcolate vengono salvate su un file, da potere usare successivamente per la valutazione delle anomalie.
 
 Quando eseguire il train?
@@ -414,6 +434,7 @@ Allenato il modello a ricostruire l'input e calcolate sopra le quali considerare
 Per mettere in atto questa fase, dopo avere trattato i dati in ingresso nello stesso modo dei dati per l'allenamento, leggo dal file generato precedentemente le soglie e verifico se ogni sequenza di k elementi è anomala, calcolando gli anomaly score come effettuato nell'ultima fase del train. Se gli anomaly score superano le soglie si è verificata un'anomalia, a questo punto viene segnalata all'amministratore di rete e viene attivata la fase di mitigazione sul router.
 % come viene attivata questa fase? C'è una comunicazione tra server e router?
 Questa fase viene ripetuta automaticamente dal software ogni periodo di tempo definito (nell'ordine dei trenta secondi) per i dati di ogni router di cui si vogliono monitorare le anomalie.
+
 
 \section{Test sulle anomalie}
 
@@ -448,3 +469,5 @@ Inoltre per semplicità d'uso il software permette anche di effettuare attacchi 
 % todo: immagini di wireshark / gestione attività durante gli attacchi
 
 \subsection{Risultati}
+
+

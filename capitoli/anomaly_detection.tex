@@ -34,7 +34,7 @@ I sistemi di anomaly detection necessitano di dataset con esempi di traffico per
 \paragraph{Apprendimento superivisionato}
 
 I sistemi di anomaly detection basati su apprendimento supervisionato hanno prestazioni superiori ai metodi non supervisionati, poichè usano esempi etichettati di dati. I metodi supervisionati imparano il limite di separazione da un set di dati annotato durante una fase di allenamento e successivamente classifica le istanze da testare basandosi sul modello imparato. Avendo bisogno di etichette di difficile reperibilità, questo metodo è poco usato rispetto a quello semi-supervisionato e a quello non supervisionato, ma ha come vantaggi oltre al fatto di essere più preciso anche la velocità della fase di test, basandosi su un modello pre calcolato.
-Le tipologie di reti c
+% Le tipologie di reti c
 % Deep supervised techniques fail to separate normal from anomalous data if the feature space is highly complex and non-linear.
 
 \paragraph{Apprendimento semi-superivisionato}
@@ -171,7 +171,7 @@ Le reti neurali sono composte da gruppi di neuroni artificiali organizzati in li
 
 %To reduce overfitting, aDropoutlayer was applied (Srivastava et al.,﻿2014) to the output of layers 1 and 2 (dropout rate equal to 0.2).
 
-Cosa sono gli autoencoder e perchè sono utili nell'anomaly detection.
+% Cosa sono gli autoencoder e perchè sono utili nell'anomaly detection.
 
 Gli autoencoder sono una tipologia di reti neurali non supervisionata, anche se quasi sempre vengono usati in maniera semi-supervisionata, che permettono di generare nuovi dati, effettuando in uscita la ricostruzione dei dati forniti in ingresso.
 Gli autoencoder sono composti da tre parti, l'encoder, lo spazio latente e il decoder, negli autoencoder la dimensione dell'input è uguale a quella dell'output, e nel mezzo ci sono dei livelli che si occupano prima di comprimere (encoder) le dimensioni, fino a raggiungere lo spazio latente, una forma ``compressa'' dell'input, seguita da una serie di livelli (decoder) che si occupano ti ritornare alle dimensioni originarie ~\ref{fig:autoencoder}.
