@@ -196,18 +196,18 @@ Una popolare applicazione degli autoencoder è l'anomaly detection. Gli autoenco
 % https://towardsdatascience.com/applied-deep-learning-part-3-autoencoders-1c083af4d798#f686
 % https://www.deeplearningitalia.com/introduzione-agli-autoencoder/
 
-%todo: citare articoli autoencoders
-Gli autoencoders sono stati usati da questo, quello e quell'altro ancora per sviluppare questi sistemi di anomaly detection:
-\begin{itemize}
-    \item articolo 1  \url{https://www-sciencedirect-com.ezproxy.biblio.polito.it/science/article/pii/S0952197619301721}
-    \item articolo 2 \url{https://ieeexplore-ieee-org.ezproxy.biblio.polito.it/abstract/document/8363930}
-    \item articolo 3 il più importante \url{https://ieeexplore.ieee.org/abstract/document/8438865}
-    % \item \url{https://ieeexplore-ieee-org.ezproxy.biblio.polito.it/stamp/stamp.jsp?tp=&arnumber=8336654}
-\end{itemize}
 
 \section{Soluzioni esistenti di Anomaly Detection}
 
-Qua illustro delle soluzioni esistenti prese dagli articoli.
+Esistono in letteratura sistemi di anomaly detection basati su autoencoders, che possono essere allenati per il riconoscimento di anomalie di rete basandosi su correlazioni non lineari tra le features, degli esempi sono:
+
+\begin{itemize}
+\item Kitsune \cite{kitsune}: un NIDS, basato sistema di anomaly detection basato su autoencoders, che permette il riconoscimento di traffico normale e anomalo senza una supervisione per l'allenamento. Il sistema ha l'obiettivo di rilevare attacchi di tipo DDoS, Man in the Middle, scansioni di rete e botnet in una rete con dispositivi tradizionali e IoT.
+\item La soluzione proposta nell'articolo  \uline{(come lo cito?)} \cite{chen_autoencoders}, la quale sfrutta una rete convoluzionari di autoencoders (per una riduzione dei tempi di training) per superare le prestazioni dei sistemi di rilevamento tradizionali.
+\item L'obiettivo della soluzione \cite{vae_autoencoders} è di rilevare attacchi in di rete utilizzando i dati provenienti dai router di rete, generati tramite NetFlow, inoltre si pone l'obiettivo di spiegare in cosa consiste l'anomalia nei dati. Per il rilevamento delle anomalie si basa sui Variational Autoencoder, uno sviluppo della versione tradizionale.
+%todo: citare articoli autoencoders delle soluzioni esistenti prese dagli articoli.
+
+\end{itemize}
 
 \section{Motivazione}
 Prova 
