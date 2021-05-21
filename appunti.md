@@ -1,18 +1,18 @@
-aggiungere una sezione Tesi in collaborazione con Tiesse spa:
+<!-- aggiungere una sezione Tesi in collaborazione con Tiesse spa: -->
 
-Scrivo quello dell'abstractafd
-lavoro svolto in collaborazione e in parte in presenza presso l'azienda spa di Ivrea
+<!-- Scrivo quello dell'abstractafd
+lavoro svolto in collaborazione e in parte in presenza presso l'azienda spa di Ivrea -->
 
-Sezione in cui parlo di cui fa Tiesse spa
+<!-- Sezione in cui parlo di cui fa Tiesse spa
 - presento azienda
 - location e sedi distaccate
 - parlare della collaborazione con il poli => sempre in collaborazione per ricerca e sviluppo in particolare negli ultimi anni con un focus sugli aspetti di sicurezza e analisi dati di rete e non solo hw => prendere spunto anche dal sito
-- prendere ispirazione dalla slide tiesse di itasec
+- prendere ispirazione dalla slide tiesse di itasec -->
 
-TITOLO TESI => Anomaly detection per il rilevamento di attacchi DDoS o trovarne altri
+<!-- TITOLO TESI => Anomaly detection per il rilevamento di attacchi DDoS o trovarne altri -->
 
 
-il mio tool => cambiare nome
+<!-- il mio tool => cambiare nome -->
 
 
 fare stare esempi di codice in una pagina
@@ -20,10 +20,10 @@ fare stare esempi di codice in una pagina
 figura 4.1 => togliere logo
 
 
-
+<!-- 
 
 Sistem anti-DDoS: stato dell'arte
-Anomaly Detection: stato dell'arte
+Anomaly Detection: stato dell'arte -->
 
 
 
@@ -72,3 +72,6 @@ Accennare come vengono allenate le reti
 Il focus non è solo sulle reti, per la produzione si può lavorare meglio per trovare la rete ottima
 
 applicazione alternativa dell'anomaly detection tramite autoencoders => vedi slide itasec
+
+
+rimuovere logo kaspersky e diritti tiesse

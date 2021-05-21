@@ -22,14 +22,17 @@ Qui in seguito approfondirò maggiormente il flusso della gestione dei dati.
     \centering
 \end{figure}
 
-\paragraph{collectd} è un demone che raccoglie metriche di sistema e di applicazioni, trasferisce e salva dati di computer e dispositivi di rete. Collect ha una struttura modulare in cui è possibile abilitare centinaia di plugin per la raccolta di metriche di sistema dai casi più generali a quelli più specifici ed inoltre è possibile scrivere i propri plugin per integrarlo ulteriormente. I plugin usati sono ``write\_graphite'': plugin che permette di scrivere le metriche raccolte su un database graphite, ``conntrack'': plugin che permette di contare il numero di voci nella connection tracking table di Linux, ``interface'' : plugin che colleziona informazioni sul traffico su un'interfaccia, quindi pacchetti al secondo, bytes al secondo ed errori sull'interfaccia. 
+\subsection{collectd}
+
+Collectd è un demone che raccoglie metriche di sistema e di applicazioni, trasferisce e salva dati di computer e dispositivi di rete. Collect ha una struttura modulare in cui è possibile abilitare centinaia di plugin per la raccolta di metriche di sistema dai casi più generali a quelli più specifici ed inoltre è possibile scrivere i propri plugin per integrarlo ulteriormente. I plugin usati sono ``write\_graphite'': plugin che permette di scrivere le metriche raccolte su un database graphite, ``conntrack'': plugin che permette di contare il numero di voci nella connection tracking table di Linux, ``interface'' : plugin che colleziona informazioni sul traffico su un'interfaccia, quindi pacchetti al secondo, bytes al secondo ed errori sull'interfaccia. 
 
 Inoltre per avere ulteriori dati a disposizione ho scritto un plugin che si occupa di aggiungere delle metriche sul conteggio dei pacchetti non possibile con i plugin standard.
 
-\paragraph{Il nostro plugin di collect}
+\subsection{Il nostro plugin di collect}
 %todo: posso parlare della prima versione, dei problemi riscontrati e dell'utilizzo di ebpf al suo posto
 
-\paragraph{NDPI} è un software open-source per il deep-packet inspection basato su OpenDPI, il suo scopo è di riconoscere protocolli conosciuti anche su porte non standard, \uline{inoltre può essere personalizzato per il riconoscimento di applicazioni aziendali (è vera questa cosa?)}. nDPI è implementato nei router Tiesse e permette l'analisi dei pacchetti senza un degrado prestazionale.
+\subsection{NDPI} 
+NDPI è un software open-source per il deep-packet inspection basato su OpenDPI, il suo scopo è di riconoscere protocolli conosciuti anche su porte non standard, \uline{inoltre può essere personalizzato per il riconoscimento di applicazioni aziendali (è vera questa cosa?)}. nDPI è implementato nei router Tiesse e permette l'analisi dei pacchetti senza un degrado prestazionale.
 %http://luca.ntop.org/nDPI.pdf
 %todo: completare ndpi
 
@@ -112,7 +115,7 @@ Tutte le feature vengono poi \underline{derivate su un tempo di 10/30s, per aver
 La scelta della features è nata da un compromesso tra i dati necessari per rilevare al meglio le anomalie, la riduzione dei dati da salvare sul server e di conseguenza l'uso di banda usata per il trasferimento. Inoltre un problema che ho dovuto tenere in considerazione è l'utilizzo di un \underline{acceleratore hardware} nei router Tiesse, il quale permette un incremento della velocità di routing, ma non permette di analizzare nel kernel i pacchetti.
  %todo: approfondire meglio come funziona il fast path
  
-\section{Il mio tool}
+\section{Il nostro tool}
 
 % Cosa fa?
 % Perchè l'ho fatto?
