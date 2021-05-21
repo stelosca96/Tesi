@@ -7,11 +7,10 @@ Inoltre essendo una soluzione distribuita permette di bloccare gli attacchi e il
 % spiegare come vengono gestiti i dati
 La raccolta e l'analisi dei dati viene effettuata utilizzando un sistema centralizzato, questo permette di avere un unico dispositivo con la capacità necessaria a svolgere l'elaborazione, che al tempo stesso possiede una visione completa sulle sorgenti e quindi sarà in grado di identificare facilmente da quale sede proviene il traffico anomalo.
 
-\section{Obiettivo}
 
-\subsection{Gestione dei dati}
+\section{Gestione dei dati}
 
-I dati vengono collezionati tramite un demone sui router (collectd), inviati ad un server (go-graphite) e visualizzati tramite una dashboard (graphana). Il tool di anomaly detection da noi sviluppato si interfaccia direttamente con il database per la lettura dei dati e la scrittura dei risultati.
+I dati vengono collezionati tramite un demone sui router (collectd), inviati ad un server (go-graphite) e visualizzati tramite una dashboard (Grafana). Il tool di anomaly detection da noi sviluppato si interfaccia direttamente con il database per la lettura dei dati e la scrittura dei risultati.
 Qui in seguito approfondirò maggiormente il flusso della gestione dei dati.
 
 \begin{figure}[]
