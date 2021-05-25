@@ -1,4 +1,6 @@
-\chapter{Soluzione proposta}\label{chapter:our_work}
+\chapter{Soluzione proposta}
+% \chapter{16}
+ %\label{chapter:our_work}
 
 \section{Introduzione}
 %spiegare obiettivo
@@ -24,22 +26,23 @@ Qui in seguito approfondirò maggiormente il flusso della gestione dei dati.
 
 \subsection{collectd}
 
-
-\begin{figure}[h]
+\begin{figure}[]
     % todo: capire come gestire citazioni imsmagini a livello di copyright
     %  e capire come funzionano le label per richiamare le immagini
     \label{fig:collectd}
-    \includegraphics[width=\hsize]{images/my_work/collectd.png}
+    \begin{center}
+        \includegraphics[height=300pt]{images/my_work/collectd.png}
+    \end{center}
     \caption{Architettura di collectd}
     \centering
 \end{figure}
 
-Collectd è un demone che raccoglie metriche di sistema e di applicazioni, trasferisce e salva dati di computer e dispositivi di rete. Collect ha una struttura modulare in cui è possibile abilitare centinaia di plugin per la raccolta di metriche di sistema dai casi più generali a quelli più specifici ed inoltre è possibile scrivere i propri plugin per integrarlo ulteriormente. I plugin usati sono ``write\_graphite'': plugin che permette di scrivere le metriche raccolte su un database graphite, ``conntrack'': plugin che permette di contare il numero di voci nella connection tracking table di Linux, ``interface'' : plugin che colleziona informazioni sul traffico su un'interfaccia, quindi pacchetti al secondo, bytes al secondo ed errori sull'interfaccia. 
+Collectd è un demone che raccoglie metriche di sistema e di applicazioni, trasferisce e salva dati di computer e dispositivi di rete. Collect ha una struttura modulare, vedi figurra \ref{fig:collectd} in cui è possibile abilitare centinaia di plugin per la raccolta di metriche di sistema dai casi più generali a quelli più specifici ed inoltre è possibile scrivere i propri plugin per integrarlo ulteriormente. I plugin usati sono ``write\_graphite'': plugin che permette di scrivere le metriche raccolte su un database graphite, ``conntrack'': plugin che permette di contare il numero di voci nella connection tracking table di Linux, ``interface'' : plugin che colleziona informazioni sul traffico su un'interfaccia, quindi pacchetti al secondo, bytes al secondo ed errori sull'interfaccia. 
 
 Inoltre per avere ulteriori dati a disposizione ho scritto un plugin che si occupa di aggiungere delle metriche sul conteggio dei pacchetti non possibile con i plugin standard.
 
-\subsection{Il nostro plugin di collect}
-%todo: posso parlare della prima versione, dei problemi riscontrati e dell'utilizzo di ebpf al suo posto
+
+
 
 \subsection{NDPI} 
 NDPI è un software open-source per il deep-packet inspection basato su OpenDPI, il suo scopo è di riconoscere protocolli conosciuti anche su porte non standard, \uline{inoltre può essere personalizzato per il riconoscimento di applicazioni aziendali (è vera questa cosa?)}. nDPI è implementato nei router Tiesse e permette l'analisi dei pacchetti senza un degrado prestazionale.
@@ -61,9 +64,7 @@ Graphite è composto da tre parti (come si può vedere dalla figura ~\ref{fig:gr
 \end{itemize}
 
 \begin{figure}[h]
-    % todo: capire come gestire citazioni imsmagini a livello di copyright
-    %  e capire come funzionano le label per richiamare le immagini
-    \label{fig:graphite}
+     \label{fig:graphite}
     \includegraphics[width=\hsize]{images/my_work/graphite.png}
     \caption{Architettura di Graphite}
     \centering
@@ -114,6 +115,7 @@ La scelta delle feature da utilizzare dipende da quale obiettivo su vuole ottene
     \item \emph{tls throughput}: tutto il traffico inviato su un canale sicuro tls non può essere analizzato più nello specifico, quindi viene raggruppato in questa categoria.
     \item \emph{dns throughput}: conoscere il traffico relativo al traffico dns può essere utile come indice di un attacco contro il server DNS aziendale oppure di un attacco di DNS amplification.
     \item \emph{ssh throughput}: potrebbe segnalare anomalie sull'utilizzo improprio di macchine nella sede centrale tramite delle connessioni ssh.
+    \item \emph{ntp throughput}: potrebbe segnalare anomalie riguardanti attacchi DDoS di NTP amplification.
     %todo: da rivedere come funzionano gli icmp durante un syn flood
     \item \emph{icmp throughput}: è un indicatore di attacchi, per esempio durante un syn flood usando ip spoofing, con ip della sottorete dell'attaccante, al ritorno dei syn ack si vede un aumento degli icmp che indicano che l'host non è esistente o che la porta destinazione a cui è destinato il pacchetto è chiusa. Inoltre gli icmp possono anche essere usati direttamente per degli attacchi.
     \item \emph{ora del giorno}: l'ora del giorno viene aggiunta per caratterizzare al meglio il traffico lungo la giornata.
@@ -260,23 +262,20 @@ index & timestamp  & .conntrack.conntrack & ..if\_packets.tx & ..if\_octets.tx \
 % \end{lstlisting}
 
 % todo: come metto le lettere accentate?
-\begin{lstlisting}[language=Python, label={code:get_data}, caption={Funzione usata per scaricare i dati dal server}]
+\begin{lstlisting}[language=python3, label={code:get_data}, caption={Funzione usata per scaricare i dati dal server}]
 def get_data(s_time, e_time, hostname: str, interface: str,
     username: str = None, password: str = None):
-
     r = requests.get(
     f"http://{host}:{port}/api/datasources/proxy/4/render?"
     f"target={'&target='.join(target_list(hostname,interface))}"
     f"&from={s_time}&until={e_time}&format=json",
     auth=HTTPBasicAuth(username, password)
     )
-
-    # se il valore ritornato non e' un'eccezione,
-    # che verra' gestita a livelli superiori
+    # se il valore ritornato non e' 200 OK viene
+    # lanciata un'eccezione, gestita a livelli superiori
     print(r.status_code, '-', r.url)
     if r.status_code != 200:
-    raise Exception('Get features data error')
-
+        raise Exception('Get features data error')
 
     # converto la risposta in un json 
     # e poi in un dizionario con chiave il target
@@ -323,7 +322,7 @@ def get_data(s_time, e_time, hostname: str, interface: str,
 
 Ricevuti i dati e organizzati nel formato corretto, effettuo una nuova richiesta alle carbon api, per ricevere le statistiche relative alle applicazioni, il procedimento è simile a quello precedentemente descritto, l'unica differenza è che i dati sul database vengono salvati da ndpi ogni 30 secondi, per questo motivo devo estenderli mostrando lo stesso dato più volte, in modo da avere lo stesso numero degli elementi ottenuti precedentemente.
 
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}[language=python3]
 for element in app_list:
     # se l'app non esiste nella risposta metto uno 0
     line[element] =
@@ -350,7 +349,7 @@ for j in range(3):
     \end{tabular}
     \caption{Tabella di esempio dei dati ricevuti relativi alle app di nDPI}
     \label{table:tabella_dati_2}
-    \end{table}
+\end{table}
 
 %todo: tabella con i dati di tutte le features
 
@@ -396,7 +395,7 @@ Nelle reti di tipo LSTM
 
 Il modello viene infine compilato e salvato su file, in modo da potere essere usato successivamente.
 
-\begin{lstlisting}[language=Python, label={code:get_data}, caption={Funzione usata per generale il modello della rete neurale}]
+\begin{lstlisting}[language=python3, label={code:get_data}, caption={Funzione usata per generale il modello della rete neurale}]
     sequential_model = keras.Sequential(
         [
             layers.Flatten(input_shape=shape),
@@ -500,8 +499,72 @@ Inoltre per semplicità d'uso il software permette anche di effettuare attacchi 
 
 \section{Risultati}
 
+Le reti neurali sono sistemi non lineari decisamente complessi, con risultati abbastanza imprevedibili, difficili da padroneggiare nella loro interezza. Per questo motivo abbiamo svolto alcuni test sperimentali sui dati reali generati come spiegato precedentemente.
+
+Le reti neurali usata per i test sono state allenate usando i dati di circa due mesi e i test sono stati effettuati per verificare sia l'esistenza di falsi positivi, che di falsi negativi.
+
+\subsection{Test effettuati}
+
+Per verificare qual'è la migliore lunghezza della finestra da utilizzare o qual'è il migliore modello di rete neurale, sono stati effettuati dei test su 20 intervalli di dati (Tabella \ref{table:test}) che presentano delle peculiarità e su cui la rete non era stata precedentemente allenata. 
+\uline{Inoltre oltre ad analizzare i risultati dei test controllo che il modello approssimi veramente i dati in ingresso e che i buoni risultati non siano dovuti solo a valori di soglie calcolate durante l'allenamento molto alte.}
+
+Per mostrare un risultato visivo delle ricostruzioni sono stati disegnati dei grafici approssimati, mostrare un grafico con i dati ricostruiti dell'intervallo iniziale sarebbe impossibile, perchè fornisco alla rete in input delle sequenze di N elementi e non l'intero intervallo, quindi per avere un'idea di come potrebbe essere il grafico ricostruito sono stati presi i primi valori di ogni sequenza, in modo da avere tutti i dati per ricomporre l'intero intervallo.
+\begin{table}
+    \begin{tabularx}{\textwidth}{||c c c c X X||} 
+        \hline
+        \#test & data  & inizio & fine & Tipologia & Da considerare anomalo? \\ [0.5ex] 
+        \hline\hline
+        1 & 10/03/21 & 12.13 & 12.19 & Syn Flood 100pps 40s & SI\\ 
+        \hline
+        2 & 10/03/21 & 11.24 & 11.30
+         & Upload 500MB su Google Drive & SI (è un evento mai successo)\\ 
+        \hline
+        3 & 10/03/21 & 11.16 & 11.21 & Download 600MB da Google Drive & NO\\ 
+        \hline 
+        4 & 22/03/21 & 08.01 & 08.24 & Traffico di una normale mattinata & NO\\
+        \hline
+        5 & 09/03/21 & 17.12 & 17.19 & Picco di traffico NTP & NO\\
+        \hline
+        6 & 23/03/21 & 08.57 & 17.46
+         & Traffico di una giornata normale & NO\\ 
+        \hline
+        7 & 31/03/21 & 10.28 & 10.42 & Picchi di traffico NTP & NO\\ 
+        \hline 
+        8 & 31/03/21 & 10.50 & 11.02 & Syn Flood di 2min 50pps & SI\\
+        \hline
+        9 & 31/03/21 & 11.01 & 11.09 & Syn Flood di 30s 50pps & SI\\        
+        \hline
+        10 & 31/03/21 & 11.05 & 11.15 & Port scanning (nmap) & SI\\
+        \hline
+        11 & 31/03/21 & 11.24 & 11.33 & ICMP Flood 100 pps & SI\\
+        \hline
+        12 & 31/03/21 & 11.33 & 11.43
+         & UDP Flood 100pps & SI\\ 
+        \hline
+        13 & 31/03/21 & 11.57 & 12.06 & DNS Amplification (4Mbps) & SI\\ 
+        \hline 
+        14 & 31/03/21 & 12.11 & 12.20 & DNS Flood (4Mbps) & SI\\
+        \hline
+        15 & 18/05/21 & 13.49 & 14.00 & Picco di connessioni (2500) & Dipende\\        
+        \hline 
+        16 & 18/05/21 & 12.57 & 13.19 & Picco di connessioni & NO\\        
+        \hline
+        17 & 18/05/21 & 12.47 & 13.05 & Picco di trasmissione & NO\\        
+        \hline
+        18 & 18/05/21 & 08.50 & 10.30 & Connessioni alte & NO\\
+        \hline
+        19 & 19/05/21 & 7.47 & 11.05 & Traffico di una normale mattinata & NO\\ 
+        \hline
+        20 & 19/05/21 & 11.24 & 17.28 & Traffico di un pomeriggio con dei picchi di traffico NTP & NO\\ 
+        \hline
+    \end{tabularx}
+    \caption{Tabella dei test}
+    \label{table:test}
+\end{table}
+
 \subsection{Scelta della finestra}
 
 Per la scelta della lunghezza della finestra abbiamo effettuato alcuni test
 
 \subsection{Scelta del modello e risultati}
+

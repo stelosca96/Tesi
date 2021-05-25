@@ -1,6 +1,7 @@
 <!-- aggiungere una sezione Tesi in collaborazione con Tiesse spa: -->
 
-<!-- Scrivo quello dell'abstractafd
+<!-
+- Scrivo quello dell'abstractafd
 lavoro svolto in collaborazione e in parte in presenza presso l'azienda spa di Ivrea -->
 
 <!-- Sezione in cui parlo di cui fa Tiesse spa
@@ -39,12 +40,12 @@ Quali sono i vantaggi rispetto ad altre soluzioni:
 
 Il nostro tool
 
-Metologia per collezione dei dati:
+<!-- Metologia per collezione dei dati:
 - Metodo classico: modulo kernel
 - eBPF: trattato successivamente
 
 Mettere immagine netfilter in orizzontale
-Per l'impossibilità di introdurre i syn su un router in produzione, ma abbiamo fatto un 
+Per l'impossibilità di introdurre i syn su un router in produzione, ma abbiamo fatto un  -->
 
 Mettere immagine collectd https://collectd.org/images/architecture-schematic.png
 
@@ -76,3 +77,5 @@ applicazione alternativa dell'anomaly detection tramite autoencoders => vedi sli
 
 rimuovere logo kaspersky 
 <!-- e diritti tiesse -->
+
+com'è il flusso di dati ndpi?

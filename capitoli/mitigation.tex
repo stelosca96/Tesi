@@ -54,7 +54,7 @@ Nella caso in cui si vogliano aggiungere dei software per collezionare dati magg
 %Todo: Cercare articolo dove ne parla
 
 La prima versione del nostro software è stata sviluppata scrivendo un modulo kernel che utilizzava netfilter. Questa soluzione è la strada tradizionalmente usata nel mondo Linux e in Tiesse per l'implementazione delle proprie personalizzazioni nei prodotti.
-
+Netfilter è un componente di tutte le moderne distribuzioni Linux, che permette di intercettare e manipolare pacchetti in transito dal router, usato nel kernel permette di registrare delle callback, eseguite alla ricezione di ogni pacchetto su un determinato punto d'aggancio.
 Per la scrittura del modulo siamo partiti dalla compilazione del codice sorgente del kernel del router. successivamente è stato scritto un programma in linguaggio C, che sfruttando netfilter aggancia ad un hook, più in particolare ``NF\_INET\_POST\_ROUTING'', una funzione da eseguire alla ricezione di ogni pacchetto, la quale incrementa dei contatori di un vettore.
 Terminata la scrittura, il modulo deve essere compilato, nel nostro caso cross compilato per architecture ``arm64''. La compilazione generare un file con estensione .ko e dopo averlo copiato sul router, dovrà essere inserito dinamicamente nel kernel del router tramite il comando ``insmod [nome\_modulo].ko''.
 
