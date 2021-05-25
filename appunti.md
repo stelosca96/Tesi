@@ -48,10 +48,10 @@ Per l'impossibilità di introdurre i syn su un router in produzione, ma abbiamo 
 
 Mettere immagine collectd https://collectd.org/images/architecture-schematic.png
 
-Gestione dati: parlo della raccolta dati, cosa è stato fatto: raccolta features più granulari oltre che il syn rate, come è stato fatto netfilter/modulo kernel(soluzione classica) e rimando alla capitolo 5 per una discussione più approfondita.
+<!-- Gestione dati: parlo della raccolta dati, cosa è stato fatto: raccolta features più granulari oltre che il syn rate, come è stato fatto netfilter/modulo kernel(soluzione classica) e rimando alla capitolo 5 per una discussione più approfondita.
 Discussione su perchè non è stato usato e limite dell'accelleratore hardware non è stato reso ancora compatibile, quindi l'accelleratore dovrebbe essere disabilitato.
 Solo i primi pacchetti del flusso passano dal kernel e poi passano dal fast path, solo in caso di pesanti modifiche hw e software possono essere analizzati.
-Dove è stato usato e dove no e perchè non è stato usato per i test.
+Dove è stato usato e dove no e perchè non è stato usato per i test. -->
 
 4.4 Il nostro tool
 
@@ -63,9 +63,9 @@ Stazionarietà dei dati => Quanto variano, periodo in cui variano => Più sono s
 paper cisco da citare
 http://library.usc.edu.ph/ACM/KKD%202017/pdfs/p1723.pdf
 
-Giustificare il margine
+<!-- Giustificare il margine -->
 
-Scrivere che le reti neurali non sono facili da padroneggiare a 360° => sono sistemi non lineari decisamente complessi con risultati abbastanza impredibile
+Scrivere che le reti neurali non sono facili da padroneggiare a 360° => sono sistemi non lineari decisamente complessi con risultati abbastanza imprevedibili
 
 Accennare come vengono allenate le reti
 
@@ -74,4 +74,5 @@ Il focus non è solo sulle reti, per la produzione si può lavorare meglio per t
 applicazione alternativa dell'anomaly detection tramite autoencoders => vedi slide itasec
 
 
-rimuovere logo kaspersky e diritti tiesse
+rimuovere logo kaspersky 
+<!-- e diritti tiesse -->

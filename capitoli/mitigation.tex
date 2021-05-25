@@ -46,6 +46,37 @@ Netflow è un software introdotto inizialmente nei router Cisco nel 1996, succes
 Poichè non è possibile estendere le features di netflow e non rispecchiano completamente i nostri interessi abbiamo deciso di progettare il nostro agent utilizzando altre soluzioni.
 % todo: le features di netflow le posso modificare?
 
+\subsection{Modulo Kernel}
+
+Nella sezione \cite{chapter:our_work} è stata accennata la possibiltà di raccogliere dati con maggiore granularità tramite l'utilizzo di un modulo kernel scritto appositamente.
+
+Nella caso in cui si vogliano aggiungere dei software per collezionare dati maggiormente granulari bisogna intervenire lato kernel, perchè in userspace non esistono meccanismi per analizzare tutti i pacchetti in transito su un'interfaccia. Di conseguenza per aggiungere delle funzioni al kernel Linux esisto solitamente tre soluzioni: la prima è quella di fare aggiungere il codice ufficialmente al suo interno, questa soluzione è la più complicata: sono necessarie le giuste motivazioni per convincere i manteiner ad adottare quella soluzione e inoltre passeranno anni prima della distribuzione in distribuzioni stabili. La seconda è quella di creare un modulo kernel personalizzato, i moduli kernel sono una porzione di codice compilato che possono essere inseriti nel kernel a run-time. Questo metodo è sicuramente più rapido, ma potrebbe portare a vulnerabilità, problemi di compatibilità all'aggiornamento del kernel e rischi di deadlock per l'intero sistema.La terza possibilità è l'uso di eBPF, che esploreremo successivamente.
+%Todo: Cercare articolo dove ne parla
+
+La prima versione del nostro software è stata sviluppata scrivendo un modulo kernel che utilizzava netfilter. Questa soluzione è la strada tradizionalmente usata nel mondo Linux e in Tiesse per l'implementazione delle proprie personalizzazioni nei prodotti.
+
+Per la scrittura del modulo siamo partiti dalla compilazione del codice sorgente del kernel del router. successivamente è stato scritto un programma in linguaggio C, che sfruttando netfilter aggancia ad un hook, più in particolare ``NF\_INET\_POST\_ROUTING'', una funzione da eseguire alla ricezione di ogni pacchetto, la quale incrementa dei contatori di un vettore.
+Terminata la scrittura, il modulo deve essere compilato, nel nostro caso cross compilato per architecture ``arm64''. La compilazione generare un file con estensione .ko e dopo averlo copiato sul router, dovrà essere inserito dinamicamente nel kernel del router tramite il comando ``insmod [nome\_modulo].ko''.
+
+Inoltre in userspace è stato scritto un plugin per collectd, il quale ogni volta che necessita dei dati effettua una lettura su un ``process file system'' (procfs), uno pseudo-filesystem usato per accedere alle informazioni fornite dai processi kernel, tramite il quale il nostro modulo kernel ritorna un JSON con il nome della metrica presa in considerazione e il valore.
+
+Questa soluzione, nonostante fosse la soluzione usata da sempre in azienda, presentava alcuni problemi come la maggior difficoltà di comunicazione tra user-space e kernel-space, la mancanza di strutture dati già esistenti e soprattutto un problema in questo modulo kernel rischiava di portare ad un completo malfunzionamento dell'intero router, per questa ragione abbiamo deciso di adottare una soluzione più moderna.
+
+
+
+\begin{figure}[hbtp]
+    % todo: capire come gestire citazioni imsmagini a livello di copyright
+    %  e capire come funzionano le label per richiamare le immagini
+    \label{fig:netfilter}
+    \begin{center}
+        \includegraphics[height=670pt]{images/mitigazione/netfilter.png}
+    \end{center}
+
+    \caption{Flusso dei pacchetti in Netfilter}
+    \centering
+\end{figure}  
+
+
 \subsection{Berkley Packet Filter (BPF)}
 
 Il Berkley Packet Filter (BPF) è una tecnologia introdotta nel kernel di alcuni sistemi operativi, tra cui il kernel linux, su cui è stata introdotta a partire dalla versione 2.1.75 del kernel, nel 1997. BPF consiste in una macchina virtuale, con una virtual cpu special purpose, integrata nel kernel, che permette il filtraggio e l'analisi dei pacchetti in transito su un'interfaccia.
@@ -55,8 +86,6 @@ Un esempio del suo utilizzo è tcpdump che sfrutta BPF per effettuare il filtrag
 
 %todo: cite https://drive.google.com/file/d/14dRWGwAJKBqB1N6-NOBHUxoeOILPYQjN/view
 % https://docs.cilium.io/en/stable/bpf/
-
-% todo: esempio tcpdump codice => vedi slide risso
 
 \begin{lstlisting}[caption={Esempio delle istruzioni per il filtering dei pacchetti IP in BPF assembly}\label{code:esempiobpf}]
 user@linux$ tcpdump -d ip
@@ -72,8 +101,6 @@ user@linux$ tcpdump -d ip
 La extended Berkeley Packet Filter è una versione che estende la versione originale ed è stata introdotta nella versione 3.18 del kernel Linux, ai giorni nostri la versione originale è completamente obsoleta e anche il codice scritto per la vecchia versione, per esempio tcpdump, viene tradotto trasparentemente per la nuova \cite{cilium_ebpf}.
 
 \begin{figure}[]
-    % todo: capire come gestire citazioni imsmagini a livello di copyright
-    %  e capire come funzionano le label per richiamare le immagini
     \label{fig:ebpf}
     \includegraphics[width=\hsize]{images/mitigazione/ebpf_architecture.png}
     \caption{Architettura eBPF \cite{ebpf.io}.}
