@@ -1,6 +1,6 @@
 <!-- aggiungere una sezione Tesi in collaborazione con Tiesse spa: -->
 
-<!-
+<!-- <!-
 - Scrivo quello dell'abstractafd
 lavoro svolto in collaborazione e in parte in presenza presso l'azienda spa di Ivrea -->
 
@@ -16,7 +16,7 @@ lavoro svolto in collaborazione e in parte in presenza presso l'azienda spa di I
 <!-- il mio tool => cambiare nome -->
 
 
-fare stare esempi di codice in una pagina
+<!-- fare stare esempi di codice in una pagina -->
 
 figura 4.1 => togliere logo
 
@@ -66,11 +66,11 @@ http://library.usc.edu.ph/ACM/KKD%202017/pdfs/p1723.pdf
 
 <!-- Giustificare il margine -->
 
-Scrivere che le reti neurali non sono facili da padroneggiare a 360° => sono sistemi non lineari decisamente complessi con risultati abbastanza imprevedibili
+<!-- Scrivere che le reti neurali non sono facili da padroneggiare a 360° => sono sistemi non lineari decisamente complessi con risultati abbastanza imprevedibili -->
 
 Accennare come vengono allenate le reti
 
-Il focus non è solo sulle reti, per la produzione si può lavorare meglio per trovare la rete ottima
+<!-- Il focus non è solo sulle reti, per la produzione si può lavorare meglio per trovare la rete ottima -->
 
 applicazione alternativa dell'anomaly detection tramite autoencoders => vedi slide itasec
 
@@ -79,3 +79,29 @@ rimuovere logo kaspersky
 <!-- e diritti tiesse -->
 
 com'è il flusso di dati ndpi?
+
+Nella caso in cui si vogliano aggiungere dei software per monitorare questi servizi esisto solitamente tre soluzioni: la prima e la più complicata è quella di fare aggiungere il codice all'interno del kernel linux, ma bisogna avere le giuste motivazionie e passeranno anni prima della distribuzione, la seconda è quella di creare un modulo kernel personalizzato da integrare, questo potrebbe portare a vulnerabilità blbla, la terza la esporeremo succesivamente.
+
+%Todo: Cercare articolo dove ne parla
+
+La prima versione del nostro software è stata sviluppata scrivendo un modulo kernel che utilizzasse netfilter. Questa soluzione è la strada tradizionalmente usata nel mondo Linux e in Tiesse per l'implementazione delle proprie personalizzazioni nei prodotti.
+
+
+tabella lsmt
+
+immagini ricostruzioni
+
+<!-- conclusioni anomaly detection -->
+
+spiegare il motivo della scelta degli autoencoders => leggere articolo
+
+spiegare funzionamento mitigation:
+
+- versione A semplificata
+  - ordina in flussi da quello che trasmette di più in base alla feature che ha scatenato l'anomalia
+  - interfaccia per bloccare e blocco inserito tramite ebpf
+- versione B con anomaly detection
+  - versione automatica con una rete per flussi
+  - spiegare vantaggi e svantaggi
+  - spiegare come funziona
+  - se riesco parlare dei test
