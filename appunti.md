@@ -79,17 +79,15 @@ rimuovere logo kaspersky
 <!-- e diritti tiesse -->
 
 com'è il flusso di dati ndpi?
-
+<!-- 
 Nella caso in cui si vogliano aggiungere dei software per monitorare questi servizi esisto solitamente tre soluzioni: la prima e la più complicata è quella di fare aggiungere il codice all'interno del kernel linux, ma bisogna avere le giuste motivazionie e passeranno anni prima della distribuzione, la seconda è quella di creare un modulo kernel personalizzato da integrare, questo potrebbe portare a vulnerabilità blbla, la terza la esporeremo succesivamente.
 
 %Todo: Cercare articolo dove ne parla
 
-La prima versione del nostro software è stata sviluppata scrivendo un modulo kernel che utilizzasse netfilter. Questa soluzione è la strada tradizionalmente usata nel mondo Linux e in Tiesse per l'implementazione delle proprie personalizzazioni nei prodotti.
+La prima versione del nostro software è stata sviluppata scrivendo un modulo kernel che utilizzasse netfilter. Questa soluzione è la strada tradizionalmente usata nel mondo Linux e in Tiesse per l'implementazione delle proprie personalizzazioni nei prodotti. -->
 
 
-tabella lsmt
 
-immagini ricostruzioni
 
 <!-- conclusioni anomaly detection -->
 
@@ -105,3 +103,19 @@ spiegare funzionamento mitigation:
   - spiegare vantaggi e svantaggi
   - spiegare come funziona
   - se riesco parlare dei test
+
+
+
+
+- l test di nmap è adatto anche a identificare port scanning di botnet
+- Attacchi DDoS famosi
+- Allenamento rete neurale
+- stazionarietà dei dati
+- ogni quanto eseguire il train
+- confronto con altre soluzioni
+- esempi soluzioni anti ddos distibuite
+- https://blog.cloudflare.com/building-rakelimit/
+- https://blog.cloudflare.com/cloudflare-architecture-and-how-bpf-eats-the-world/
+- tabella lsmt
+- immagini ricostruzioni
+- listing 4.3 e 4.4 con lo stesso formato

@@ -196,6 +196,7 @@ Una popolare applicazione degli autoencoder è l'anomaly detection. Gli autoenco
 % https://towardsdatascience.com/applied-deep-learning-part-3-autoencoders-1c083af4d798#f686
 % https://www.deeplearningitalia.com/introduzione-agli-autoencoder/
 
+\subsection{Stazionarietà dei dati}
 
 \section{Soluzioni esistenti di Anomaly Detection}
 
@@ -221,4 +222,26 @@ Esistono in letteratura sistemi di anomaly detection basati su autoencoders, che
 % - facili da usare, si passa velocemente da una fase experimental a prodution grazie al python e alla semplicità
 
 
+
+La scelta del sistema di anomaly detection è ricaduta sull'utilizzo di una rete neurale basata su autoencoders a causa della loro semplicità d'uso, poichè non necessitano di dati etichetti per la fase di allenamento, è facile ottenere grandi quantità di dati in qualsiasi contesto aziendale, rendendo veloce l'introduzione di questo sistema in molte aziende, unita alla facilità di utilizzo delle api messe a disposizione da Keras e TensorFlow consentono di creare facilmente un modello.
+Inoltre secondo l'articolo \cite{anomaly_detection_comparativa}, la precisione dei sistemi, utilizzanti autoencoders vanilla o varianti, è paragonabile ad altri sistemi a scapito, in alcuni casi, di un piccolo aumento di tempo in fase di test.
+Basando il nostro sistema di detection su informazioni quantitative riguardanti i dati e non qualitative, è possibile identificare le anomalie anche in situazioni in cui sono utilizzati nuovi pattern di attacco ed è possibile aggiornare il modello in caso di nuovi pattern di traffico di dati aziendali semplicemente rieffettuando un allenamento della rete, nel nostro caso con i dati già memorizzati su un database.
+
+\begin{figure}[]
+    \begin{center}
+    \label{fig:anomaly_comparazione_1}
+    \includegraphics[width=\hsize]{images/reti_neurali/precisione_media.png}
+    \caption{Comparazione precisione media dei metodi di anomaly detection \cite{anomaly_detection_comparativa}.}
+    \centering
+    \end{center}
+\end{figure}
+
+\begin{figure}[]
+    \begin{center}
+    \label{fig:anomaly_comparazione_2}
+    \includegraphics[width=\hsize]{images/reti_neurali/comparazione.png}
+    \caption{Comparazione dei metodi di anomaly detection \cite{anomaly_detection_comparativa}.}
+    \centering
+    \end{center}
+\end{figure}
 
