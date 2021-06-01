@@ -91,6 +91,9 @@ La prima versione del nostro software è stata sviluppata scrivendo un modulo ke
 
 <!-- conclusioni anomaly detection -->
 
+Per dati stazionari si intende quando le proprietà statistiche dei dati non si evolvono nel tempo, questo non significa che i dati puntuali non variano, ma che il valore medio e la varianza rimangano costanti. Questa condizione sarebbe ideale per i nostri meccanismi di anomaly detection, ma è difficilmente attuabile in un contesto reale, in cui sono presenti dei trend e i dati potrebbero essere soggetti ad una stagionalità.
+
+
 spiegare il motivo della scelta degli autoencoders => leggere articolo
 
 spiegare funzionamento mitigation:
@@ -105,17 +108,36 @@ spiegare funzionamento mitigation:
   - se riesco parlare dei test
 
 
-
-
 - l test di nmap è adatto anche a identificare port scanning di botnet
 - Attacchi DDoS famosi
 - Allenamento rete neurale
-- stazionarietà dei dati
+- stazionarietà dei dati => https://towardsdatascience.com/why-does-stationarity-matter-in-time-series-analysis-e2fb7be74454
 - ogni quanto eseguire il train
-- confronto con altre soluzioni
-- esempi soluzioni anti ddos distibuite
+<!-- - esempi soluzioni anti ddos distibuite -->
 - https://blog.cloudflare.com/building-rakelimit/
 - https://blog.cloudflare.com/cloudflare-architecture-and-how-bpf-eats-the-world/
 - tabella lsmt
-- immagini ricostruzioni
+<!-- - immagini ricostruzioni -->
 - listing 4.3 e 4.4 con lo stesso formato
+
+<!-- Still dangerous to block/modify traffic belonging to
+mission-critical apps without human intervention -->
+
+specificare che la protezione può essere effettuata solo verso i servizi aziendali o con una maggiore attenzione verso quelli
+
+rifare figura 2.2
+
+<!-- conclusioni => 
+Gli attacchi informatici nelle reti business sono sempre più pericolosi a causa della sempre maggiore dipendenza delle aziende dai sistemi informatici, per questo motivo il problema di un singolo distaccamento non deve creare malfunzionamenti all'intera azienda.
+parlo dell'architettura e dei vantaggi dati
+Un sistema con filtraggio distribuito come quello da noi proposto permette di non intasare il centro della rete, ma cerca di limitare i problemi direttamente nei CPE.
+La soluzione da noi proposta permette di usare l'infrastruttura già esistente e permette di essere facilmente modellata per il monitoraggio di servizi specifici.
+parlo della scelta del sistema per rilevare gli attacchi, gli attacchi DDoS tendenzialmente creano delle grandi differenze nel traffico dati, per questo motivo abbiamo adottato un meccanismo basato sul riconoscimento delle anomalie.
+Lavorando su dei dati aggregati nella prima fase il sistema è in grado di ottenere migliori prestazioni rispetto ai sistemi signature-based, i quali devono analizzare ogni flusso e ha il vantaggio di non dovere effettuare aggiornamenti delle regole per riconoscere nuovi attacchi, ma solamente dei nuovi allenamenti del modello, in caso di traffico non stazionario.
+Inoltre per i successivi allenamenti della rete si sarà a conoscenza degli intervalli di tempo in cui si sono verificate delle anomalie e se saranno confermate da un amministratore di rete, quei dati potranno essere esclusi e si continuerà a considerarli anomali.
+Il sistema mirando al riconoscimento di anomalie generiche potrà essere facilmente esteso per riconoscimento di altre tipologie di attacchi.
+ e degli autoencoders, tramite i quali analizziamo informazioni quantitative riguardo al traffico, il sistema è paragonabile ad altri sistemi di anomaly detection. Un sistema di a
+Se il traffico generato da un attacco non scatena anomalie, potrà essere facilmente tollerato dalla rete senza creare disservizi.
+In presenza di anomalia possiamo decidere il comportamento da tenere in base alla criticità del servizio protetto, ma in ogni caso l'amministratore di rete si troverà molto aiutato nel prendere le decisioni. -->
+
+ Aggregare il traffico di tutte le sedi, per avere una panoramica ancora maggiore in caso di attacchi a basso low rate (vedi capitolo x) non riconosciuti.

@@ -1,3 +1,13 @@
 \chapter{Conclusioni}
 
-Sicuramente una cosa da migliorare è la sicurezza per assicurarsi che neanche le sedi periferiche non siano infettate
+Gli attacchi informatici nelle reti business sono sempre più pericolosi a causa della sempre maggiore dipendenza delle aziende dai sistemi informatici, per questo motivo il problema di un singolo distaccamento non deve creare malfunzionamenti all'intera azienda.
+% parlo dell'architettura e dei vantaggi dati
+Un sistema con filtraggio distribuito come quello da noi proposto permette di non intasare il centro della rete, ma cerca di limitare i problemi direttamente nei CPE.
+Inoltre la nostra proposta permette di usare l'infrastruttura già esistente e di essere facilmente modellata per il monitoraggio di servizi specifici, differenti per ogni azienda.
+% parlo della scelta del sistema per rilevare gli attacchi, gli attacchi DDoS tendenzialmente creano delle grandi differenze nel traffico dati, per questo motivo abbiamo adottato un meccanismo basato sul riconoscimento delle anomalie.
+Lavorando su dei dati aggregati nella prima fase il sistema è in grado di ottenere migliori prestazioni rispetto ai sistemi signature-based, i quali devono analizzare ogni flusso e ha il vantaggio di non dovere effettuare aggiornamenti delle regole per riconoscere nuovi attacchi, ma solamente dei nuovi allenamenti del modello in caso di traffico non stazionario. Negli allenamenti della rete successivi al primo si sarà a conoscenza degli intervalli di tempo in cui si sono verificate delle anomalie e se saranno confermate da un amministratore di rete, quei dati potranno essere esclusi e si continuerà a considerarli anomali.
+Il sistema mirando al riconoscimento di anomalie generiche potrà essere facilmente esteso per riconoscimento di altre tipologie di attacchi.
+Usando gli autoencoder il lavoro necessario per la preparazione del dataset da usare per l'allenamento della rete è incredibilmente ridotto e il risultato ottenuto può essere paragonato ad altri sistemi di anomaly detection che sfruttano altre tecniche.
+%  e degli autoencoder, tramite i quali analizziamo informazioni quantitative riguardo al traffico, il sistema è paragonabile ad altri sistemi di anomaly detection. Un sistema di a
+Se il traffico generato da un attacco non scatena anomalie, potrà essere facilmente tollerato dalla rete senza creare disservizi.
+In presenza di anomalia possiamo decidere il comportamento da tenere in base alla criticità del servizio protetto, ma in ogni caso l'amministratore di rete si troverà molto aiutato nel prendere le decisioni.

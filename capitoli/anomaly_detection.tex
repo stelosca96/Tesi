@@ -19,6 +19,9 @@ Le anomalie sono definite come un pattern che non rispetta il normale comportame
     \item Spesso i dati contengono rumore che tende ad essere simile alle anomalie ed è difficile rimuoverlo o distinguerlo.
 \end{itemize}
 
+\subsection{Stazionarietà dei dati}
+Per dati stazionari si intende quando le proprietà statistiche dei dati non si evolvono nel tempo, questo non significa che i dati puntuali non variano, ma che il valore medio e la varianza rimangono costanti. Questa condizione sarebbe ideale per i nostri meccanismi di anomaly detection, ma è difficilmente attuabile in un contesto reale, in cui sono presenti dei trend e i dati potrebbero essere soggetti ad una stagionalità.
+
 \section{Sistemi di rilevamento delle anomalie}
 
 \subsection{Modalità di apprendimento}
@@ -48,7 +51,7 @@ Questa tecnica si basa su un set di dati normali che contengono che contengono u
 %magari aggiungere altro pagina 23 \cite{anomaly_detection_survey_2_deep_learning}
 
 
-\subsection{Metodo di detection}
+\subsection{Metodi di detection}
 
 Una volta classificati i sistemi di anomaly detection in base al metodo di apprendimento, possono essere ulteriormente suddivisi in sei sottocategorie basate sulla tecnica di rilevamento \cite{anomaly_detection_techniques, anomaly_detection_classification}.
 
@@ -196,7 +199,6 @@ Una popolare applicazione degli autoencoder è l'anomaly detection. Gli autoenco
 % https://towardsdatascience.com/applied-deep-learning-part-3-autoencoders-1c083af4d798#f686
 % https://www.deeplearningitalia.com/introduzione-agli-autoencoder/
 
-\subsection{Stazionarietà dei dati}
 
 \section{Soluzioni esistenti di Anomaly Detection}
 
@@ -223,7 +225,7 @@ Esistono in letteratura sistemi di anomaly detection basati su autoencoders, che
 
 
 
-La scelta del sistema di anomaly detection è ricaduta sull'utilizzo di una rete neurale basata su autoencoders a causa della loro semplicità d'uso, poichè non necessitano di dati etichetti per la fase di allenamento, è facile ottenere grandi quantità di dati in qualsiasi contesto aziendale, rendendo veloce l'introduzione di questo sistema in molte aziende, unita alla facilità di utilizzo delle api messe a disposizione da Keras e TensorFlow consentono di creare facilmente un modello.
+La scelta del sistema di anomaly detection è ricaduta sull'utilizzo di una rete neurale basata su autoencoders a causa della loro semplicità d'uso, poichè non necessitano di dati etichetti per la fase di allenamento è facile ottenere grandi quantità di dati in qualsiasi contesto aziendale, rendendo veloce l'introduzione di questo sistema in molte aziende, unita alla facilità di utilizzo delle api messe a disposizione da Keras e TensorFlow consentono di creare facilmente un modello.
 Inoltre secondo l'articolo \cite{anomaly_detection_comparativa}, la precisione dei sistemi, utilizzanti autoencoders vanilla o varianti, è paragonabile ad altri sistemi a scapito, in alcuni casi, di un piccolo aumento di tempo in fase di test.
 Basando il nostro sistema di detection su informazioni quantitative riguardanti i dati e non qualitative, è possibile identificare le anomalie anche in situazioni in cui sono utilizzati nuovi pattern di attacco ed è possibile aggiornare il modello in caso di nuovi pattern di traffico di dati aziendali semplicemente rieffettuando un allenamento della rete, nel nostro caso con i dati già memorizzati su un database.
 
