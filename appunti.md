@@ -139,5 +139,38 @@ Il sistema mirando al riconoscimento di anomalie generiche potrà essere facilme
  e degli autoencoders, tramite i quali analizziamo informazioni quantitative riguardo al traffico, il sistema è paragonabile ad altri sistemi di anomaly detection. Un sistema di a
 Se il traffico generato da un attacco non scatena anomalie, potrà essere facilmente tollerato dalla rete senza creare disservizi.
 In presenza di anomalia possiamo decidere il comportamento da tenere in base alla criticità del servizio protetto, ma in ogni caso l'amministratore di rete si troverà molto aiutato nel prendere le decisioni. -->
-
+<!-- 
  Aggregare il traffico di tutte le sedi, per avere una panoramica ancora maggiore in caso di attacchi a basso low rate (vedi capitolo x) non riconosciuti.
+
+  -->
+
+Tolleranza => ntrusion tolerance is the ability of a system to continue providing (possibly degraded but) adequate services after a penetration.  the  intrusion  tolerance  of  DDoS  attacks  is  an﻿important issue to mitigate the damage during DDoS attacksfor providing the critical services continuously on Interne Per sviluppare un sistema tollerante agli attacchi DDoS bisogna agire preventivamente tramite l'introduzione per la differenziazione del servizio, 
+https://www.sciencedirect.com/science/article/abs/pii/S0957417404000417
+Tolerance
+When the results of the detection algorithm come out to
+be unsuccessful or when it becomes hard to apply a
+detection process, it is important to find out the alterna-
+tives. Tolerance mechanism is the alternative to this. 136
+The techniques of tolerance mechanism work with a
+very little or even no knowledge about the result of the
+detection. Thus, it is the final stage of defense when
+the other stages (prevention and detection) fail. Thus,
+the goal of this mechanism is to provide maximum pos-
+sible quality of service by minimizing the impacts of the
+attack. The research found in this field can be classified
+into congestion policing and fault tolerance.
+Congestion policing. The main target of a bandwidth
+flooding attack is to congest the resource. 45,66 The
+impact of this type of attacks can be reduced or elimi-
+nated by applying congestion policing mechanism. Re-
+feedback 137 and NetFence 138 are two example mechan-
+isms where congestion policing is applied to defend
+DDoS attacksFault tolerance. Fault tolerance ensures high availability
+of the system. In fault tolerance system, the basic idea
+is to replicate or multiply the resource of a system such
+as software, hardware. There are some research found
+in this field which works to identify the applicability of
+the fault toleran
+
+
+in cloudfare usano la stessa soluzione per ovviare ai limiti della granularità delle metriche da collezionare https://blog.cloudflare.com/cloudflare-architecture-and-how-bpf-eats-the-world/

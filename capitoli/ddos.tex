@@ -62,23 +62,39 @@ I sistemi anti-DDoS sulla rete si basano sui router o su firewall installati sul
 Una prima soluzione adottata è quella del Router based packet filter, la quale si basa sui criteri dell'ingress filtering, ma applicandola ai router nel core della rete. Il traffico per ogni link tendenzialmente viene generato da un ristretto intervalli di indirizzi ip, quando appare un indirizzo ip sospetto viene filtrato, questa soluzione è adatta a rilevare attacchi che utilizzano ip spoofing, ma è inutile nel caso di utilizzo di ip genuini.
 Altre soluzioni mirano ad identificare i router nel core di internet che sono stati compromessi e si comportano in anomalo, oppure mirano all'installazione di detection systems (DSs) che permettono di rilevare pattern anomali, ma sono computazionalmente molto dispendiose.
 
+I problemi di questa soluzione è l'introduzione di un overhead per il processamento sui router e il rilevamento degli attacchi è difficile a causa dei dati troppo poco aggregati.
+
 \subsection{Soluzioni distribuite}
 
 Le soluzioni distribuite creano una cooperazione tra i luoghi di installazione delle difese, alla sorgente vengono installati i sistemi di difesa per filtrare l'attacco, mentre sulla rete della vittima viene effettuato il riconoscimento dell'attacco. Questa soluzione porta sia il vantaggio della facilità di riconoscimento degli attacchi possibile alla destinazione, sia l'efficienza dei sistemi per mitigare gli attacchi alla sorgente.
+Gli svantaggi di questa soluzione sono la complessità e l'overhead dovuto alla comunicazione tra le componenti distribuite e il bisogno di comunicazioni/componenti fidati tra le varie parti responsabili della cooperazione.
 
+Degli esempi di soluzioni distribuite sono i seguenti:
+\begin{itemize}
+    \item Hybrid packet marking and throttling/filtering mechanisms: sono meccanismi in cui viene rilevato l'attacco vicino alla vittima e informa i router in upstream di limitare o filtrare quel traffico. Degli esempi di applicazione di questa tecnica sono:
+    \begin{itemize}
+        \item Aggregate-based  congestion Control (ACC and Pushback: rileva un sottogruppo di traffico aggregato secondo alcune caratteristi e richiede ai router in upstream di limitare o filtrare quel traffico.
+        \item Attack diagnosis (AD) and parallel-AD: la vittima attiva l'AD quando un attacco viene rilevato, mandando i comandi correlati ai router in upstream, che contrassegneranno i pacchetti in transito con l'interfaccia di provenienza. Completato il traceback fino alla sorgente verrà mandato il comando AD per filtrare i pacchetti in arrivo alla sorgente.
+        \item TRACK
+    \end{itemize}
+    \item DEFensive Cooperative Overlay Mesh (DEFCOM): è un framework distribuito per abilitare lo scambio di informazioni tra tutti i nodi di difesa, prova a passare da un'architettura di difesa isolata ad una distribuita.
+    \item Capability-based mechanisms: questo meccanismo permette alla destinazione di autorizzare esplicitamente il traffico che vuole ricevere.
+    \item StopIt: meccanismo distribuito che permette tramite un sistema di autenticazione, con cui viene prevenuto l'ip spoofing, e a dei pacchetti che permettono il filtraggio del traffico il più vicino possibile alla sorgente del traffico.
+
+\end{itemize}
 
 \section{Momenti in cui mettere in atto le difese}
 
 Esistono più momenti in cui mettere in atto le difese contro attacchi DDoS e un buon sistema deve agire su tutti.
-Il primo momento è prima dell'attacco (attack prevention), in cui vengono installati sistemi di monitoring, sistemi da usare in caso di emergenza, meccanismi per tollerare l'attacco (firewall, IDS, filtri, load balancer e flow control, strategie per identificare gli utenti legittimi e protezioni lato server).Successivamente durante l'attacco devono essere lanciate le adeguate contromisure e dopo l'attacco il sistema di difesa deve identificare la fonte e provvedere con le opportune contromisure, anche collaborando con altri segnalare l'attacco per permettere di difendersi da successivi.
+Il primo momento è prima dell'attacco (attack prevention), in cui vengono installati sistemi di monitoring, sistemi da usare in caso di emergenza, meccanismi per tollerare l'attacco (firewall, IDS, filtri, load balancer e flow control, strategie per identificare gli utenti legittimi e protezioni lato server). Successivamente durante l'attacco devono essere lanciate le adeguate contromisure e dopo l'attacco il sistema di difesa deve identificare la fonte e provvedere con le opportune contromisure, anche collaborando con altri segnalare l'attacco per permettere di difendersi da successivi.
 
 \begin{figure}[]
     % todo: capire come gestire citazioni imsmagini a livello di copyright
     %  e capire come funzionano le label per richiamare le immagini
     \label{fig:albero_difese}
-    \includegraphics[width=\hsize]{images/ddos/grafico_difese.png}
-    \caption{Meccanismi di difesa contro DDoS di tipo flooding \cite{ddos_survey_1}}
+    \includegraphics[width=\hsize]{images/ddos/ddos_flooding_defence.png}
+    \caption{Meccanismi di difesa contro DDoS di tipo flooding.}
     \centering
 \end{figure}
 
-\section{Tolleranza}
+% \section{Tolleranza}
