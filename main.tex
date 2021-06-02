@@ -52,6 +52,9 @@ evenboxes,
 % Vedere la documentazione toptesi-it.pdf per le
 % attenzioni che bisogna usare al fine di ottenere un file
 % veramente conforme alle norme per l'archiviabilità.
+\usepackage[style=numeric-comp,useprefix,hyperref,backend=bibtex]{biblatex}
+\bibliography{biblio.bib}
+
 
 \usepackage{amsmath}
 \usepackage{dirtree}
@@ -201,7 +204,6 @@ Dedica qui
 \include{capitoli/conclusioni}
 
 \listoffigures
-\include{capitoli/bibliografia}
-% \printbibliography
-
+% \include{capitoli/bibliografia}
+\printbibliography
 \end{document}
