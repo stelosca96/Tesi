@@ -58,7 +58,18 @@ evenboxes,
 
 \usepackage{amsmath}
 \usepackage{dirtree}
-\usepackage{listings}             % Include the listings-package per il codice
+\usepackage{listingsutf8}             % Include the listings-package per il codice
+\lstset{
+    basicstyle=\ttfamily\small,
+    extendedchars=false,
+    inputencoding=utf8,
+    escapeinside={\%*}{*)},
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+}
+% \lstset{
+%     escapeinside={\%*}{*)},
+%      literate={á}{{\'a}}1 {í}{{\'i}}1 {é}{{\'e}}1 {ú}{{\'u}}1 {ó}{{\'o}}1    
+% }
 %%% codice per supportare i json
 \usepackage{xcolor}
 

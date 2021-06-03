@@ -18,8 +18,12 @@ Iptables è un firewall integrato nel kernel linux basato su netfilter.
 % https://wiki.archlinux.org/title/Iptables_(Italiano)#:~:text=Iptables%20%C3%A8%20un%20potente%20firewall,%C3%A8%20usato%20per%20gli%20IPv6.
 
 % todo: la regola è corretta?
-\begin{lstlisting}[caption={Esempio di regola iptables}\label{code:iptablesrule}]
-    mettere la regola qui
+\begin{lstlisting}[caption={Esempio di regole iptables}\label{code:iptablesrule}]
+    # Accetta i pacchetti della sottorete
+    iptables -A INPUT -i internal_interface -s 192.168.0.0/16  -j ACCEPT
+    # Fa il drop di tutto ciò che
+    # non è esplicitamente accettato
+    iptables -P INPUT DROP
 \end{lstlisting}
 Questa soluzione impedisce solo parzialmente l'utilizzo dell'ip spoofing, perchè sarà sempre possibile generare pacchetti con ip spoofing provenienti da qualsiasi indirizzo ip della sottorete in cui si trova l'attaccante.
 

@@ -174,3 +174,6 @@ the fault toleran
 
 
 in cloudfare usano la stessa soluzione per ovviare ai limiti della granularità delle metriche da collezionare https://blog.cloudflare.com/cloudflare-architecture-and-how-bpf-eats-the-world/
+
+
+come limitare la banda eBPF 
