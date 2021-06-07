@@ -2,7 +2,7 @@
 \chapter{Introduzione}
 
 \section{Motivazione}
-% Spiegare il perchè l'ho fatto Dati importanti, piccole e medie imprese devono sfruttare software opensource disponibili a tutti che permetto di passare da una frase experimental a production ready
+% Spiegare il perché l'ho fatto Dati importanti, piccole e medie imprese devono sfruttare software opensource disponibili a tutti che permetto di passare da una frase experimental a production ready
 
 Le piccole e medie imprese sono sempre più informatizzate e dipendenti da servizi informatici per poter svolgere il loro lavoro. Per questo motivo scoprire e analizzare il traffico anomalo in transito sulle reti aziendali è sempre più importante, il nostro obiettivo è farlo ad un basso costo, senza aggiungere hardware o applicativi che richiedano molta potenza di calcolo o di banda, sfruttando i router che compongono la rete. Punteremo a scoprire le anomalie nei dati di rete sui singoli flussi e nei dati aggregati analizzando alcune metriche su un server aggiuntivo che si occuperà anche di mitigare l'attacco informando i router sui flussi da bloccare o limitare.
 Gli attacchi maggiormente presi in considerazione in questa tesi saranno gli attacchi di ``Distributed Denial of Service'', ma gli stessi principi potranno essere applicati anche ad altre tipologie di anomalie.
@@ -90,7 +90,7 @@ Gli \emph{Amplification-based flooding attacks} sfruttano servizi che restituisc
 % qua parla bene del fattore di moltiplicazione degli attacchi https://www.imperva.com/blog/ntp-flood-explained/
 
 \paragraph{Application-level DDoS flooding attacks} % todo: rivedere titolo
-% qua taglio un po' corto sugli attacchi applicativi perchè approfondirò maggiormente quelli di rete
+% qua taglio un po' corto sugli attacchi applicativi perché approfondirò maggiormente quelli di rete
 Gli attacchi DDoS al livello applicativo hanno lo scopo di terminare le risorse del server(cpu, memory, disk/db bandwidth, I/O bandwidth),  solitamente usano meno banda rispetto gli attacchi rivolti verso l'infrastruttura di rete rete, per questo motivo è anche più difficile identificarli. Le tecniche utilizzate sono simili alle precedenti. Degli esempi sono l'HTTP flooding che effettuando l'invio di molte richieste HTTP, obbliga il server a produrre risposte che possono essere computazionalmente pesanti, oppure possono sfruttare l'SQL Injection per imporre un lock sul database e bloccare il funzionamento dell'applicazione. Altri attacchi di questa tipologia possono essere l'HTTP fragmentation, lo slowpost attack, slowreading attack e lo slowloris attack, tutte tecniche che mirano a mantenere molte connessioni aperte mandando o ricevendo pochi dati per volta \cite{ddos_survey_1}.
 Gli attacchi di tipo applicativo sono molto eterogenei e non possono essere mitigati a livello di rete/trasporto, per questo motivo questa tesi prenderà in considerazione solo gli attacchi trattati al paragrafo precedente.
 

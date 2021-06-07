@@ -113,7 +113,7 @@ Le applicazioni dell'anomaly detection possono essere molteplici, qui un breve e
     % todo: non ho capito bene
     \item Anomaly Detection in Text Data: questi sistemi riconoscono principalmente gli argomenti o gli eventi in una collezione di documenti, le anomalie sono causate da nuovi eventi interessanti o argomenti anomali.
     \item Sensor Networks: anomalie nei rilevamenti dei sensori possono significare un difetto o un'intrusione.
-    \item Intrusion detection systems(IDS): sono dei sistemi che puntano ad identificare attività malevole nei sistemi informativi, gli IDS possono essere installati su un computer, in quel caso si parla di ``Host Intrusion Detection (HIDS)'' oppure su una rete, in quel caso si parla di ``Network Intrusion Detection (NIDS)'', gli IDS possono essere signature-based oppure anomaly based, nel primo caso non si è in grado di riconoscere nuove tipologie di attacchi. In questo contesto vengono analizzate le anomalie collettive e sono preferiti sistemi di apprendimento semi-supervionato o non supervisionato, perchè le etichette per i dati anomali non sono quasi mai disponibili. In questa tesi mi concentrerò sull'analisi di anomalie di rete basandomi su sistemi di anomaly detection. 
+    \item Intrusion detection systems(IDS): sono dei sistemi che puntano ad identificare attività malevole nei sistemi informativi, gli IDS possono essere installati su un computer, in quel caso si parla di ``Host Intrusion Detection (HIDS)'' oppure su una rete, in quel caso si parla di ``Network Intrusion Detection (NIDS)'', gli IDS possono essere signature-based oppure anomaly based, nel primo caso non si è in grado di riconoscere nuove tipologie di attacchi. In questo contesto vengono analizzate le anomalie collettive e sono preferiti sistemi di apprendimento semi-supervionato o non supervisionato, perché le etichette per i dati anomali non sono quasi mai disponibili. In questa tesi mi concentrerò sull'analisi di anomalie di rete basandomi su sistemi di anomaly detection. 
 \end{itemize}
 
 \subsection{Tipologia degli attacchi di rete}
@@ -190,11 +190,11 @@ parlare di come vengono allenate
 
 %To reduce overfitting, aDropoutlayer was applied (Srivastava et al.,﻿2014) to the output of layers 1 and 2 (dropout rate equal to 0.2).
 
-% Cosa sono gli autoencoder e perchè sono utili nell'anomaly detection.
+% Cosa sono gli autoencoder e perché sono utili nell'anomaly detection.
 
 Gli autoencoder sono una tipologia di reti neurali non supervisionata, anche se quasi sempre vengono usati in maniera semi-supervisionata, che permettono di generare nuovi dati, effettuando in uscita la ricostruzione dei dati forniti in ingresso.
 Gli autoencoder sono composti da tre parti, l'encoder, lo spazio latente e il decoder, negli autoencoder la dimensione dell'input è uguale a quella dell'output, e nel mezzo ci sono dei livelli che si occupano prima di comprimere (encoder) le dimensioni, fino a raggiungere lo spazio latente, una forma ``compressa'' dell'input, seguita da una serie di livelli (decoder) che si occupano ti ritornare alle dimensioni originarie ~\ref{fig:autoencoder}.
-La capacità di comprimere i dati e decomprimerli si basa sull'allenamento della rete, di conseguenza ogni rete è specifica per una tipologia di dati da comprimere e decomprimere, questo la caratterizza dagli altri sistemi di compressione, per esempio gzip, inoltre è una tipologia di compressione ``lossy'', con perdita, perchè l'uscita sarà simile all'ingresso, ma degradata.
+La capacità di comprimere i dati e decomprimerli si basa sull'allenamento della rete, di conseguenza ogni rete è specifica per una tipologia di dati da comprimere e decomprimere, questo la caratterizza dagli altri sistemi di compressione, per esempio gzip, inoltre è una tipologia di compressione ``lossy'', con perdita, perché l'uscita sarà simile all'ingresso, ma degradata.
 Una popolare applicazione degli autoencoder è l'anomaly detection. Gli autoencoder si occupano di ricostruire i dati iniziali, imparando effettivamente a riprodurre una funzione identità, per questo motivo allenandoli solo con dati di istanze normali quando si troveranno davanti ad un dato anomalo falliranno la ricostruzione dell'input e di conseguenza produrranno un grande errore di ricostruzione \cite{anomaly_detection_survey_2_deep_learning}. 
 % https://towardsdatascience.com/applied-deep-learning-part-3-autoencoders-1c083af4d798#f686
 % https://www.deeplearningitalia.com/introduzione-agli-autoencoder/
@@ -215,10 +215,10 @@ Esistono in letteratura sistemi di anomaly detection basati su autoencoders, che
 \section{Motivazione scelte}
 
 % todo: da motivare le scelte per l'anomaly detection
-% Perchè autoencoders
+% Perché autoencoders
 % Quali sono i vantaggi rispetto ad altre soluzioni:
 
-% - parlo del fatto che sfruttiamo le api messe a disposizione di keras e tensorflow perchè sono facili da usare, ci sono soluzioni alternative da citare (tool di twitter scritto in R => informarsi)
+% - parlo del fatto che sfruttiamo le api messe a disposizione di keras e tensorflow perché sono facili da usare, ci sono soluzioni alternative da citare (tool di twitter scritto in R => informarsi)
 % - gli autoencoders si prestano bene nel caso in cui non sappiamo a priori definire delle features astratte => ci basiamo solo sulla forma e non sul contenuto => non cerchiamo feature particolari per determinati  pattern https://blog.keras.io/building-autoencoders-in-keras.html
 % - le forme possono cambiare da cliente a clientee
 % - facili da usare, si passa velocemente da una fase experimental a prodution grazie al python e alla semplicità

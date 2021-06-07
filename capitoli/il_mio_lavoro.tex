@@ -4,10 +4,10 @@
 
 \section{Introduzione}
 %spiegare obiettivo
-Il nostro obiettivo è di creare un sistema di anomaly detection con struttura distribuita: nei router delle sedi periferiche dell'azienda vengono raccolte informazioni sul traffico e in un server posizionato fisicamente nella sede centrale vengono analizzati e in base al risultato vengono prese decisioni sulle future azioni da intraprendere. Questa tipologia di architettura permette di sfruttare dispositivi già esistenti e non aggiunge molta complessità all'infrastruttura informatica aziendale, quindi per svolgere questo lavoro ci siamo basati su alcuni software e sull'hardware aziendale con i relativi vantaggi e svantaggi rispetto ad una soluzione completamente ex-novo.
-Inoltre essendo una soluzione distribuita permette di bloccare gli attacchi e il traffico malevolo lontano dalla sede centrale, in modo da essere più efficace e non influenzare il comportamento di altre sedi in caso di un attacco proveniente da una o più sedi periferiche.
-% spiegare come vengono gestiti i dati
-La raccolta e l'analisi dei dati viene effettuata utilizzando un sistema centralizzato, questo permette di avere un unico dispositivo con la capacità necessaria a svolgere l'elaborazione, che al tempo stesso possiede una visione completa sulle sorgenti e quindi sarà in grado di identificare facilmente da quale sede proviene il traffico anomalo.
+Il nostro obiettivo è costruire un sistema di anomaly detection con struttura distribuita: nei router delle sedi periferiche dell'azienda vengono raccolte informazioni sul traffico e in un server posizionato nella sede centrale essi vengono analizzati. In base al risultato verranno prese decisioni sulle azioni da intraprendere. Questa tipologia di architettura permette di sfruttare dispositivi già esistenti e non aggiunge molta complessità all'infrastruttura informatica aziendale. Per il raggiungimento di questo obiettivo ci siamo basati su alcuni software e sull'hardware aziendale già presenti con i relativi vantaggi e svantaggi rispetto ad una soluzione completamente ex-novo.
+Utilizzando una soluzione distribuita è possibile bloccare gli attacchi e il traffico malevolo lontano dalla sede centrale, questo le permette di essere più efficiente nel contrastare un attacco proveniente da una o più sedi periferiche, senza influenzare il comportamento di altre sedi.
+
+La raccolta e l'analisi dei dati viene effettuata utilizzando un sistema centralizzato, questo permette di avere un unico dispositivo con la capacità necessaria a svolgere l'elaborazione, che al tempo stesso possiede una visione completa sulle sorgenti del traffico e quindi sarà in grado di identificare facilmente da quale sede proviene il traffico anomalo.
 
 
 \section{Gestione dei dati}
@@ -16,8 +16,6 @@ I dati vengono collezionati tramite un demone sui router (collectd), inviati ad 
 Qui in seguito approfondirò maggiormente il flusso della gestione dei dati.
 
 \begin{figure}[]
-    % todo: capire come gestire citazioni imsmagini a livello di copyright
-    %  e capire come funzionano le label per richiamare le immagini
     \label{fig:mos}
     \includegraphics[width=\hsize]{images/my_work/tiesse_mos.png}
     \caption{Architettura di MOS (Monitor System di Tiesse)}
@@ -27,8 +25,6 @@ Qui in seguito approfondirò maggiormente il flusso della gestione dei dati.
 \subsection{collectd}
 
 \begin{figure}[]
-    % todo: capire come gestire citazioni imsmagini a livello di copyright
-    %  e capire come funzionano le label per richiamare le immagini
     \label{fig:collectd}
     \begin{center}
         \includegraphics[height=300pt]{images/my_work/collectd.png}
@@ -37,9 +33,9 @@ Qui in seguito approfondirò maggiormente il flusso della gestione dei dati.
     \centering
 \end{figure}
 
-Collectd è un demone che raccoglie metriche di sistema e di applicazioni, trasferisce e salva dati di computer e dispositivi di rete. Collect ha una struttura modulare, vedi figurra \ref{fig:collectd} in cui è possibile abilitare centinaia di plugin per la raccolta di metriche di sistema dai casi più generali a quelli più specifici ed inoltre è possibile scrivere i propri plugin per integrarlo ulteriormente. I plugin usati sono ``write\_graphite'': plugin che permette di scrivere le metriche raccolte su un database graphite, ``conntrack'': plugin che permette di contare il numero di voci nella connection tracking table di Linux, ``interface'' : plugin che colleziona informazioni sul traffico su un'interfaccia, quindi pacchetti al secondo, bytes al secondo ed errori sull'interfaccia. 
+Collectd è un demone che raccoglie metriche di sistema e di applicazioni, trasferisce e salva dati di computer e dispositivi di rete. Collect ha una struttura modulare, vedi figura \ref{fig:collectd} in cui è possibile abilitare centinaia di plugin per la raccolta di metriche di sistema dai casi più generali a quelli più specifici ed inoltre è possibile scrivere i propri plugin per integrarlo ulteriormente. I plugin usati nella nostra soluzione sono ``write\_graphite'': plugin che permette di scrivere le metriche raccolte su un database graphite, ``conntrack'': plugin che permette di contare il numero di voci nella connection tracking table di Linux, ``interface'' : plugin che colleziona informazioni sul traffico su un'interfaccia, quindi pacchetti al secondo, bytes al secondo ed errori sull'interfaccia. 
 
-Inoltre per avere ulteriori dati a disposizione ho scritto un plugin che si occupa di aggiungere delle metriche sul conteggio dei pacchetti non possibile con i plugin standard.
+Inoltre per avere ulteriori dati a disposizione è stato scritto un plugin con lo scopo di aggiungere ulteriori metriche riguardanti il conteggio dei pacchetti per tipologia e per destinazione, conteggio non possibile con i plugin standard.
 
 
 
@@ -50,7 +46,7 @@ NDPI è un software open-source per il deep-packet inspection basato su OpenDPI,
 %todo: completare ndpi
 
 
-\subsection{graphite} è un software open source per il monitoraggio che può funzionare sia su hardware economico, che su un'infrastruttura cloud. Può essere usato per monitorare le performance di siti, applicazioni, server e nel caso di Tiesse è usato per monitorare informazioni sull'uso dei router, come per esempio il numero totale di router connessi, quelli raggiungibili, il throughput, l'uptime e la velocità della connessione xDSL.
+\subsection{graphite} è un software open source per il monitoraggio funzionante sia su hardware economico, che su un'infrastruttura cloud. Può essere usato per monitorare le performance di siti, applicazioni, server e nel caso di Tiesse per monitorare informazioni sull'utilizzo dei router. Degli esempi di informazioni raccolte sono: il numero totale di router connessi, quelli raggiungibili, il throughput, l'uptime e la velocità della connessione xDSL.
 L'obiettivo di graphite è il salvataggio di serie temporali di dati numerici e la successiva condivisione e visualizzazione.
 Graphite è composto da tre parti (come si può vedere dalla figura ~\ref{fig:graphite}):
 
@@ -75,8 +71,6 @@ go-carbon è più veloce in tutte le condizioni (la differenza di prestazioni va
 Le carbonapi invece sono un subset delle api di graphite-web e le vanno a sostituire essendo dalle 5 alle 10 volte più veloci.
 
 \begin{figure}[h]
-    % todo: capire come gestire citazioni imsmagini a livello di copyright
-    %  e capire come funzionano le label per richiamare le immagini
     \label{fig:gocarbon}
     \includegraphics[width=\hsize]{images/my_work/go-carbon.png}
     \caption{Differenza di prestazioni tra carbon e go-carbon}
@@ -86,19 +80,17 @@ Le carbonapi invece sono un subset delle api di graphite-web e le vanno a sostit
 
 
 \begin{figure}[h]
-    % todo: capire come gestire citazioni imsmagini a livello di copyright
-    %  e capire come funzionano le label per richiamare le immagini
     \label{fig:grafana}
     \includegraphics[width=\hsize]{images/my_work/grafana_dashboard.png}
     \caption{La dashboard per l'anomaly detection su Grafana}
     \centering
 \end{figure}
 
-\subsection{Grafana} è un software open source che permette la visualizzazione e la generazione delle metriche tramite una web application. Permette di creare dashboard dinamiche interrogando le api di graphite-web. Nel mio caso ho organizzato una dashboard in modo da visualizzare sia i dati provenienti dai router da analizzate, sia gli anomaly score calcolati dal software di anomaly-detection ~\ref{fig:grafana}.
+\subsection{Grafana} è un software open source che permette la visualizzazione e la generazione delle metriche tramite una web application. Permette di creare dashboard dinamiche interrogando le api di graphite-web. Nel nostro caso è stata organizzata una dashboard in modo da visualizzare sia i dati provenienti dai router da analizzate, sia gli anomaly score calcolati dal software di anomaly-detection ~\ref{fig:grafana}.
 
 
 %todo: come vengono mandati i dati di ndpi?
-Riassumendo i dati provenienti dai plugin di collect, dal mio plugin e da NDPI vengono collezionati da collectd e inviati tramite il plugin write\_graphite al backend go-carbon, che si occupa di ricevere i dati e salvarli sul file system. Per la visualizzazione dei dati viene usato grafana, che permette di visualizzare i dati richiedendo i dati alle carbonapi e contemporaneamente il mio tool di anomaly detection richiede i dati per analizzarli, ogni volta che ottiene dei risultati li manda a go-carbon per salvarli nel database ~\ref{fig:mos}.
+Riassumendo i dati provenienti dai plugin di collect, dal mio plugin e da NDPI vengono collezionati da collectd e inviati tramite il plugin write\_graphite al backend go-carbon, che si occupa di ricevere i dati e salvarli sul file system. Per la visualizzazione dei dati viene usato grafana, che permette di visualizzare i dati richiedendo i dati alle carbonapi e contemporaneamente il nostro tool di anomaly detection richiede i dati per analizzarli. Una volta analizzati i dati e ottenuti dei risultati, vengono mandati a go-carbon per salvarli nel database ~\ref{fig:mos}.
 % todo: approfondire MOS
 % todo: fare immagine con la gestione dei dati
 
@@ -122,6 +114,7 @@ La scelta delle feature da utilizzare dipende da quale obiettivo su vuole ottene
     %todo: aggiungere http e ntp
 \end{itemize}
 
+% todo: sistemare frase
 Tutte le feature vengono poi \uline{derivate su un tempo di 10/30s, per avere dei "rate"} confrontabili tra lavoro.
 
 La scelta della features è nata da un compromesso tra i dati necessari per rilevare al meglio le anomalie, la riduzione dei dati da salvare sul server e di conseguenza l'uso di banda usata per il trasferimento. Inoltre un problema che ho dovuto tenere in considerazione è l'utilizzo di un \underline{acceleratore hardware} nei router Tiesse, il quale permette un incremento della velocità di routing, ma non permette di analizzare nel kernel i pacchetti.
@@ -129,19 +122,19 @@ La scelta della features è nata da un compromesso tra i dati necessari per rile
  
 \section{Il nostro tool}
 
-Per una migliore raccolta e monitoraggio di features con diversa granularità, abbiamo sviluppato un ulteriore software in grado di estrarre metriche relative a \uline{server/servizi} aziendali specifici o metriche non disponibili tramite i plugin ufficiali di collectd, come per esempio il syn rate. Per svilupparlo abbiamo programmato un modulo kernel, che comunicava con un plugin per collectd da noi creato tramite un process file system (procfs), per una discussione più approfondita rimando al capitolo 5.
+Per una migliore raccolta e monitoraggio di features con diversa granularità, abbiamo sviluppato un ulteriore software in grado di estrarre metriche relative a \uline{server/servizi} aziendali specifici o metriche non disponibili tramite i plugin ufficiali di collectd, come per esempio il syn rate. Per svilupparlo abbiamo programmato un modulo kernel, che comunica con un plugin per collectd, anch'esso da noi creato, tramite un process file system (procfs). Per una discussione più approfondita rimando al capitolo 5.
 
-Questa soluzione è funzionante ed è stata testata in laboratorio, però non viene utilizzata per la raccolta di dati necessaria a causa dell'impossibilità di introdurre software aggiuntivo in un router in produzione, da cui dipendeva la produttività dell'ufficio. Inoltre i router Tiesse sfruttano un acceleratore hardware, in cui solo il primo pacchetto di ogni flusso passa tramite il kernel e i successivi vengono inoltrati automaticamente in hardware.
+Questa soluzione è funzionante ed è stata testata in laboratorio, però non viene utilizzata per la raccolta di dati necessaria a causa dell'impossibilità di introdurre software aggiuntivo in un router in produzione, da cui dipende la produttività di un intero ufficio. Inoltre i router Tiesse sfruttano un acceleratore hardware, in cui solo il primo pacchetto di ogni flusso passa tramite il kernel e i successivi vengono inoltrati automaticamente in hardware.
 % Cosa fa?
-% Perchè l'ho fatto?
+% Perché l'ho fatto?
 
-% todo: perchè è commentata?
+% todo: perché è commentata?
 % Per rilevare le anomalie, una volta decise le features da analizzare, abbiamo dovuto decidere quale sistema dei precedentemente elencati adottare. La scelta è ricaduta sull'utilizzo di una rete neurale di autoencoder, la quale permette di allenare facilmente il modello in modo semi-supervisionato, grazie all'utilizzo della sola classe normale di traffico.
 
 \subsection{Struttura}
 
 % Posso parlare di come è strutturato il programma, che librerie ho usato 
-Il programma è scritto in Python 3, con l'utilizzo di TensorFlow e Keras librerie per il ``machine learning'', effettua le richieste http tramite la libreria requests e gestisce i dati grazie a NumPy e Pandas: librerie per il calcolo matriciale e la gestione di tabelle e serie.
+Il programma è scritto in Python 3, con l'utilizzo di TensorFlow e Keras, librerie per il ``machine learning'', effettua le richieste http tramite la libreria requests e gestisce i dati grazie a NumPy e Pandas: librerie per il calcolo matriciale e la gestione di tabelle e serie.
 Il tutto, per assicurare una maggiore portabilità, ed assicurare la possibilità di effettuare il deploy su qualsiasi macchina, viene eseguito all'interno di un container Docker, la cui immagine viene creata e avviata tramite ``docker-compose''.
 
 
@@ -175,14 +168,14 @@ I dati all'interno del repository sono organizzati nel seguente modo:
 
 \subsection{Elaborazione dei dati in input}
 % Come ricevo i dati dal server? Come li elaboro? Che api uso?
-% Genero tante piccole sequenze di 8 elementi (spiegare il motivo della scelta della sequence length => trade-off tra tempo di rilevamento dell'anomalia e mitigazione dei picchi e dei falsi positivi) e perchè lo faccio, come normalizzo i dati e perchè. Come fornisco i dati in input alla rete.
+% Genero tante piccole sequenze di 8 elementi (spiegare il motivo della scelta della sequence length => trade-off tra tempo di rilevamento dell'anomalia e mitigazione dei picchi e dei falsi positivi) e perché lo faccio, come normalizzo i dati e perché. Come fornisco i dati in input alla rete.
 
 
 Le metriche relative alle applicazioni vengono aggiornate ogni 30 secondi, a differenza dei 10 secondi con cui aggiorno i dati collezionati da collectd, per questo motivo ogni volta che devo richiedere dei dati al server devo effettuare due richieste, tramite la libreria requests, alle carbonapi.
 
 % (Viene usato http con basic auth, questo mi provoca un colpo al cuore lato sicurezza, ma lo posso giustificare dicendo che è un ambiente di test, in produzione come minimo verrà usato https.)
 
-Un esempio di dati restituiti dalla prima richiesta è mostrata nel codice \ref{code:carbonapijson}, in cui per ridurre la quantità di dati da mostare nell'esempio, ipotizzo che l'intervallo di tempo richiesto sia di venti secondi.
+Un esempio di dati restituiti dalla prima richiesta è mostrata nel codice \ref{code:carbonapijson}, in cui per ridurre la quantità di dati da mostrare nell'esempio ipotizzo che l'intervallo di tempo richiesto sia di venti secondi.
 
 \begin{lstlisting}[language=json,caption={Esempio di risposta delle carbonapi}\label{code:carbonapijson}]
 [
@@ -238,7 +231,6 @@ Un esempio di dati restituiti dalla prima richiesta è mostrata nel codice \ref{
 \end{lstlisting}
 I dati ricevuti per essere elaborati devono essere memorizzati in una tabella con il corretto formato, vedi l'esempio di tabella \ref{table:tabella_dati_1}, per questo motivo i dati del json appena ricevuto vengono elaborati, sostituendo per prima cosa il timestamp, il quale viene trasformandolo da un unix timestamp ad uno che indica i secondi passati dalla mezzanotte e successivamente tutti gli elementi verranno aggiunti ad un dizionario con il corretto formato, come mostrato nell'estratto di codice \ref{code:get_data}.
 
-% todo: e i syn?
 \begin{table}[]
 
 \begin{tabular}{||c c c c c||} 
@@ -353,17 +345,18 @@ for j in range(3):
 
 %todo: tabella con i dati di tutte le features
 
-\paragraph{La standardizzazione dei dati} è la fase subito successiva, 
+\paragraph{La standardizzazione dei dati} è la faschee subito successiva, 
 % differenziare i casi tra l'evaluate e il train
-Durante il train calcolo la media e la deviazione standard sui dati per ogn, successivamente standardizzo e salvo la media e deviazione standard di ogni feature su un file.
-Durante la fase di evaluate per standardizzare i dati uso i dati salvati precedentemente sul file e standardizzo i dati.
+Durante il train calcolo la media e la deviazione chestandard sui dati, successivamente standardizzo  i dati per ogni istante di tempo e salvo la media e la deviazione standard di ogni feature su un file.
+Durante la fase di evaluate per standardizzare i dati uso i dati salvati precedentemente sul file durante l'allenamento.
+
 %todo: Un problema della standardizzazione dei dati è la gestione dei picchi le reti neurali lavorano meglio con dati piccoli, quindi i picchi potrebbero essere un problema, si può pensare un modo diverso per standardizzare i dati
 
 \paragraph{Scelta della lunghezza delle sequenze dei dati.} Utilizzando i dati standardizzati genero ``N-K'' sequenze di lunghezza ``K'' elementi, dove ``N'' è il numero di elementi ricevuti precedentemente. Queste sequenze mi servono per uniformare i dati di allenamento e valutazione usando una lunghezza fissa per la sequenza di dati da dare in input alla rete neurale.
-La scelta della lunghezza della sequenza è molto importante, perchè da essa dipende la capacità di rilevamento delle anomalie: più il valore sarà grande e più sarà preciso il riconoscimento delle anomalie e meno il programma sarà soggetto a falsi positivi, ma al tempo stesso renderà di difficile identificazione i picchi anomali e il tempo necessario per rilevare un'anomalia sarà maggiore.
+La scelta della lunghezza della sequenza è molto importante, perché da essa dipende la capacità di rilevamento delle anomalie: più il valore sarà grande e più sarà preciso il riconoscimento delle anomalie e meno il programma sarà soggetto a falsi positivi, ma al tempo stesso renderà di difficile identificazione i picchi anomali e il tempo necessario per rilevare un'anomalia sarà maggiore.
 %todo: aggiungo il codice per creare le sequenze?
 %todo: qua spiego cosa ho scelto allegando delle immagini
-Dopo un attenta analisi, spiegata successivamente, abbiamo scelto una lunghezza della sequenza pari a 12 elementi, tenendo anche in considerazione che il fatto che il 25\% degli attacchi ha una durata inferiore ai 10 minuti \cite{imperva_ddos_report}, quindi è importante rilevare attacchi di breve durata.
+Dopo un attenta analisi, illustrata successivamente, abbiamo scelto una lunghezza della sequenza pari a 12 elementi, tenendo anche in considerazione il fatto che il 25\% degli attacchi ha una durata inferiore ai 10 minuti \cite{imperva_ddos_report}, quindi è importante rilevare attacchi di breve durata.
 
 
 % todo: citare https://keras.io/examples/timeseries/timeseries_anomaly_detection/
@@ -375,15 +368,15 @@ Dopo un attenta analisi, spiegata successivamente, abbiamo scelto una lunghezza 
 %todo: Spiego come sono arrivato a scegliere il modello e comparo i risultati tra 2/3 modelli totalmente diversi come numero di nodi, sarebbe interessante provare a mettere anche un modello con retroazione visto che stiamo usando sequenze temporali.
 
 Il modello di una rete neurale serve a descrivere le interconnessioni, le diverse tipologie e la composizione dei livelli di una rete neurale, è un oggetto della libreria Keras, che può essere facilmente creato grazie alla funzione ``tf.keras.Model()''.
-Nel nostro caso ogni livello prevedeva un solo livello in ingresso e uno in uscita, per questo motivo abbiamo usato il ``sequential model'' di Keras.
+Nel nostro caso ogni livello prevede un solo livello in ingresso e uno in uscita, per questo motivo abbiamo usato il ``sequential model'' di Keras.
 La scelta della rete è molto importante per ottenere un buon risultato nel rilevamento delle anomalie, per questo motivo abbiamo effettuato molte prove con diverse tipologie di reti: sia Dense feedforward, sia LSTM recurrent, i cui risultati verranno analizzati alla conclusione del capitolo.
 
 
-Nelle reti dense abbiamo usato un modello a tre o cinque livelli: uno di input e uno di output con dimensioni (lunghezza\_sequenza, numero\_features) e livelli con prima una riduzione e poi un incremento dei nodi, come nei classici autoencoders.
-Avendo in ingresso dei dati con più dimensioni ho dovuto linearizzare i dati in ingresso (flatten) e ricostruire il vettore multidimensionale in uscita (reshape), nei nodi intermedi invece abbiamo fatto delle prove con diverse configurazioni di numero di nodi.
+Nelle reti dense abbiamo usato un modello a tre o cinque livelli: uno di input e uno di output con dimensioni (lunghezza\_sequenza, numero\_features) e livelli con all'interno prima una riduzione e poi un incremento dei nodi, come nei classici autoencoders.
+Avendo in ingresso dei dati con più dimensioni abbiamo dovuto linearizzare i dati in ingresso, tramite il metodo flatten, e ricostruire il vettore multidimensionale in uscita, con il metodo reshape. Nei nodi intermedi invece abbiamo fatto delle prove con diverse configurazioni di numero di nodi.
 Per creare la rete sono stati usati ``Dense layers'', in cui cui i nodi di due livelli sono interamente connessi tra loro e sono state usate come funzioni di attivazioni ``relu'' (Equazione \ref{eq:relu}) per i nodi intermedi e ``linear'', una funzione lineare, per i nodi dell'ultimo livello, questo permette di rappresentare anche i numeri negativi.
 %https://keras.io/api/models/model/
-Inoltre abbiamo aggiunto dei ``Dropout layers'', un livello che imposta casualmente l'input del livello a zero, con una frequenza determinata, durante la fase di train, questo permette di ridurre il problema dell'overfitting.
+Inoltre abbiamo aggiunto dei ``Dropout layers'', un livello che imposta casualmente l'input del livello a zero, con una frequenza determinata durante la fase di train, questo permette di ridurre il problema dell'overfitting.
 
 \begin{equation} \label{eq:relu}
     f(x) = x^+ = max(0, x)
@@ -392,7 +385,7 @@ Inoltre abbiamo aggiunto dei ``Dropout layers'', un livello che imposta casualme
 
 Le reti LSTM utilizzano un modello ricorsivo, che può processare non solo i singoli punti, ma intere sequenze di dati, sono molto usati per fare classificazioni o predizioni di sequenze temporali.
 In un autoencoder LSTM un livello ha tante celle quanto la lunghezza della sequenza, i livelli di droput hanno lo stesso scopo di quelli delle reti Dense e il TimeDistibuted layer prende le informazioni da precedente livello e crea un output della lunghezza corretta.
-I nodi LSTM sono delle celle da una porta di input, una di output e una per dimenticare e la cella ricorda i valori per un determinato periodo di tempo.
+I nodi LSTM sono delle celle composte da una porta di input, una di output e una per dimenticare, in questo modo la cella ricorda i valori per un determinato periodo di tempo.
 Un esempio di codice per la creazione di un modello di autoencoder LSTM è il seguente:
 \begin{lstlisting}[language=python3, caption={Modello di un autoencoder LSTM}]
 sequential_model = keras.Sequential(
@@ -435,30 +428,30 @@ sequential_model.summary()
 \end{lstlisting}
 
 \subsection{Train}
-Il train deve essere effettuato su degli intervalli di tempo in cui non si sono verificate anomalie, per questo motivo viene fatta l'assunzione che tutto il traffico generato non presenti anomalie a meno di piccoli intervalli in cui è stato volutamente generato traffico malevolo per scopo di test. Volendo se l'amministratore di sistema notasse altri periodi di traffico anomalo potrà escluderli dai dati di allenamento.
+Il train deve essere effettuato su intervalli di tempo in cui non si sono verificate anomalie, per questo motivo viene fatta l'assunzione che tutto il traffico generato non presenti anomalie a meno di piccoli intervalli conosciuti che è possibile specificare prima dell'avvio di questa fase, nel nostro caso abbiamo escluso gli intervalli in cui è stato generato traffico malevolo volutamente per scopo di test. Se l'amministratore di sistema notasse altri periodi di traffico anomalo potrebbe escluderli dai dati di allenamento.
 Inoltre per avere un maggiore numero di dati, e velocizzare l'apprendimento dell'allenamento della rete, è possibile utilizzare i dati provenienti da più router delle sedi periferiche, se ipotizziamo che il traffico generato sia simile tra loro.
-Dalla selezione degli intervalli di tempo su cui si vuole effettuare il train per semplicità in questa prima versione di algoritmo vengono esclusi i weekend: giorni della settimana in cui, nel nostro caso, il traffico è molto diverso dagli altri, volendo risolvere il problema si potrebbe usare una seconda rete da usare solo nei giorni festivi o %todo: proporre altre soluzioni per i weekend
-Nella fase di train per prima cosa verrà effettuato la raccolta e la trasformazione dei dati dal server, come spiegato precedentemente e avere caricato da file il modello generato.
+Dalla selezione degli intervalli di tempo su cui si vuole effettuare il train per semplicità in questa prima versione di algoritmo vengono esclusi i weekend: giorni della settimana in cui, nel nostro caso, il traffico è molto diverso dagli altri, volendo risolvere il problema si potrebbe usare una seconda rete da usare solo nei giorni festivi oppure considerare l'introduzione di nuove feature per considerarli. %todo: proporre altre soluzioni per i weekend
+Nella fase di train per prima cosa viene effettuata la raccolta e la trasformazione dei dati dal server, come spiegato precedentemente e viene caricato da file il modello generato.
 Successivamente prima di effettuare il train vero e proprio, grazie alla funzione ``train\_test\_split'' della libreria sklearn i dati vengono divisi in due insiemi, quello di train e quello di test, con il 15\% dei dati usati per il test e il restante per il train.
-L'allenamento viene effettuato usando il metodo ``fit'' della classe model e usando in input sia per le x, che per le y, l'insieme di train appena generato e l'insieme di test per validare il modello. Inoltre è abilitato l'EarlyStopping, in cui se per più di cinque iterazioni non si hanno miglioramenti, viene stoppato il processo di allenamento, questo serve per ridurre i tempi di train e ridurre la possibilità di overfitting.
+L'allenamento viene effettuato usando il metodo ``fit'' della classe model e usando in input sia per le x, che per le y: l'insieme di train appena generato e l'insieme di test per validare il modello. Inoltre abbiamo abilitato l'EarlyStopping, tramite il quale se per più di cinque iterazioni non si hanno miglioramenti, viene stoppato il processo di allenamento, questo serve per ridurre i tempi di train e ridurre la possibilità di overfitting.
 %todo: da valutare possibilità di overfitting.
 
 Come spiegato precedentemente, l'utilizzo degli autoencoders permette di ottenere degli ``anomaly score'' per ogni sequenza di dati, quindi terminata la fase di allenamento della rete devo decidere sopra quale valore devo considerare i dati anomali.
-Le soglie sopra i quali considero i dati anomali vengono prese dal massimi valore degli anomaly score per ogni feature: avendo ipotizzato che tutti i dati forniti per il train non siano anomali, devo assicurarmi che effettuando la valutazione delle anomalie su quei dati nulla risulti anomalo.
+Le soglie sopra le quali considero i dati anomali vengono prese dai massimi valori degli anomaly score per ogni feature: avendo ipotizzato che tutti i dati forniti per il train non siano anomali, devo assicurarmi che effettuando la valutazione delle anomalie su quei dati nulla risulti anomalo.
 Per calcolare l'anomaly score calcolo il valore medio dei valori assoluti delle differenze tra il valore originale e quello ricostruita.
 \begin{equation}
     % \caption{Formula per il calcolo dell'anomaly score}
     anomaly\_score = \frac{\sum_{elementi\_sequenza}\lvert valore\_originale - valore\_ricostruito \rvert}{lunghezza\_sequenza}
 \end{equation}
 
-La scelta di questo sistema permette di evidenziare sia anomalie sul traffico anomalo dovuto a variazioni verso l'alto dei valori normali, sia verso il basso, ma anche i valori ondulatori possono essere notificati, perchè la somma delle distanze delle ricostruzioni del valore assoluto di ogni istante da quello reale si discosterà molto, nonostante il valore medio sia in linea con quello aspettato.
+La scelta di questo sistema permette di evidenziare sia anomalie sul traffico anomalo dovuto a variazioni verso l'alto dei valori normali, sia verso il basso, ma anche i valori ondulatori possono essere notificati, perché la somma delle distanze delle ricostruzioni del valore assoluto di ogni istante da quello reale si discosterà molto, nonostante il valore medio sia in linea con quello aspettato.
 
 Le soglie calcolate vengono salvate su un file, da potere usare successivamente per la valutazione delle anomalie.
 
-Quando eseguire il train?
+% Quando eseguire il train?
 % todo: per quanto tempo faccio il train? 
 
-Un importante aspetto da tenere in considerazione è la stazionarietà dei dati
+% Un importante aspetto da tenere in considerazione è la stazionarietà dei dati
 %todo: Immagini di confronto dei valori ricostruiti e originali con anomalie e non
 
 
@@ -474,7 +467,7 @@ Un importante aspetto da tenere in considerazione è la stazionarietà dei dati
 % Assumo che gli intervalli di traffico utilizzati per il train non includa anomalie, que
 % Utilizzo il traffico di più uffici per velocizzare l'apprendimento se hanno caratteristiche simili
 
-% Scartati i weekend perchè i dati sono molto diversi rispetto al resto della settimana e la rete non tiene in considerazione il giorno della settimana.
+% Scartati i weekend perché i dati sono molto diversi rispetto al resto della settimana e la rete non tiene in considerazione il giorno della settimana.
 
 \subsection{Evaluate}
 % Come effettuo la valutazione? Su quali sequenze?
@@ -508,7 +501,7 @@ Per effettuare le varie tipologie di attacchi sono stati usati software open-sou
 % https://linux.die.net/man/8/hping3
 
 
-Per cosa è stato usato, quali sono i limiti di hping3 e perchè dobbiamo
+Per cosa è stato usato, quali sono i limiti di hping3 e perché dobbiamo
 
 \paragraph{Il nostro toool}
 
@@ -530,7 +523,7 @@ Le reti neurali usata per i test sono state allenate usando i dati di circa due 
 Per verificare qual'è la migliore lunghezza della finestra da utilizzare o qual'è il migliore modello di rete neurale, sono stati effettuati dei test su 20 intervalli di dati (Tabella \ref{table:test}) che presentano delle peculiarità e su cui la rete non era stata precedentemente allenata. 
 \uline{Inoltre oltre ad analizzare i risultati dei tes, è stato controllato che il modello approssimasse veramente i dati in ingresso e che i buoni risultati non fossero dovuti solo a valori di soglie calcolate durante l'allenamento molto alte.}
 
-Per mostrare un risultato visivo delle ricostruzioni sono stati disegnati dei grafici approssimati, mostrare un grafico con i dati ricostruiti dell'intervallo iniziale sarebbe impossibile, perchè fornisco alla rete in input delle sequenze di N elementi e non l'intero intervallo, quindi per avere un'idea di come potrebbe essere il grafico ricostruito sono stati presi i primi valori di ogni sequenza, in modo da avere tutti i dati per ricomporre l'intero intervallo.
+Per mostrare un risultato visivo delle ricostruzioni sono stati disegnati dei grafici approssimati, mostrare un grafico con i dati ricostruiti dell'intervallo iniziale sarebbe impossibile, perché fornisco alla rete in input delle sequenze di N elementi e non l'intero intervallo, quindi per avere un'idea di come potrebbe essere il grafico ricostruito sono stati presi i primi valori di ogni sequenza, in modo da avere tutti i dati per ricomporre l'intero intervallo.
 \begin{table}
     \begin{tabularx}{\textwidth}{||c c c c X X||} 
         \hline
@@ -640,9 +633,9 @@ Abbiamo effettuato test con lunghezza di: 4 (40s), 8 (1min20), 12 (2min) e 18 (3
 \end{table}
 
 Dai risultati nella tabella \ref{table:finestra} possiamo osservare che usando una finestra da 3min il modello non riconosce gli attacchi di breve durata, generando dei falsi negativi. La situazione si oppone usando la finestra da 40 secondi, in cui i picchi di traffico alto, ma legittimo, non vengono smorzati, questo porta al rilevamento di falsi positivi. Le migliori soluzioni sono le lunghezze intermedie, che tramite un compromesso tra le due lunghezze analizzate precedentemente, riescono ad essere più precise.
-Il primo test di breve durata e con un basso rate non viene rilevato da nessun modello, per migliorare il rilevamento in questo caso potrebbe essere utile l'utilizzo del syn rate precedentemente menzionato, che non abbiamo potuto utilizzare.
+Il primo test di breve durata e con un basso rate non viene rilevato da nessun modello, per migliorare il rilevamento in questo caso potrebbe essere utile l'utilizzo del syn rate precedentemente menzionato, ma che non abbiamo potuto utilizzare.
 
-Analizzando tutti i risultati, da questo momento in poi useremo 12 come valore della lunghezza della finestra, perchè nel nostro contesto è preferibile ricevere dei falsi negativi rispetto a dei falsi positivi.
+Analizzando tutti i risultati, da questo momento in poi useremo 12 come valore della lunghezza della finestra, perché nel nostro contesto è preferibile ricevere dei falsi negativi rispetto a dei falsi positivi.
 
 
 \subsection{Scelta del modello e risultati}
@@ -712,16 +705,14 @@ I test sono stati effettuati sulle seguenti tipologie di reti:
     \item Rete con un autoencoder con tre livelli, il primo con 15 nodi, il secondo con 8 e il terzo nuovamente con 15: Il modello non ricostruisce bene i picchi, come si può notare nelle figure, per questo motivo segnala anomalie quando non dovrebbero esserci.
     \item Rete con un autoencoder con tre livelli, il primo con 15 nodi, il secondo con 6 e il terzo nuovamente con 15: %todo: non ne ho idea
 
-    \item Rete con un autoencoder con tre livelli, il primo con 40 nodi, il secondo con 8 e il terzo nuovamente con 40:
-    \item Rete con un autoencoder con tre livelli, il primo con 25 nodi, il secondo con 8 e il terzo nuovamente con 25:
+    \item Rete con un autoencoder con tre livelli, il primo con 40 nodi, il secondo con 8 e il terzo nuovamente con 40:  %todo: non ne ho idea
+    \item Rete con un autoencoder con tre livelli, il primo con 25 nodi, il secondo con 8 e il terzo nuovamente con 25:  %todo: non ne ho idea
 
 \end{itemize}
 
 Nonostante i risultati simili, le reti che funzionano meglio sono quelle con 8 nodi in un singolo livello e quella con 25 nodi nei livelli più esterni e 8 in quello centrale.
 
 \begin{figure}[]
-    % todo: capire come gestire citazioni imsmagini a livello di copyright
-    %  e capire come funzionano le label per richiamare le immagini
     \label{fig:reconstructions}
     \includegraphics[width=\hsize]{images/my_work/confronto_modelli.png}
     \caption{Ricostruzione del grafico delle connessioni con diversi modelli.}
@@ -781,4 +772,4 @@ Nonostante i risultati simili, le reti che funzionano meglio sono quelle con 8 n
     \label{table:LSTM_tests}
 \end{table}
 
-I risultati sono buoni e paragonabili con i precedenti, ma una rete neurale ricorsiva richiede molto più tempo per essere allenata. Inoltre l'obiettivo principale di questa tesi non è la ricerca del modello di rete ottimale, quindi la scelta del modello è ricaduta su un modello denso, di quelli analizzati precedentemente. Per la messa in produzione del sistema verrà ricercato il modello ottimo.
+I risultati sono buoni e paragonabili con i precedenti, ma una rete neurale ricorsiva richiede molto più tempo per essere allenata. Inoltre l'obiettivo principale di questa tesi non è la ricerca del modello di rete ottimale, quindi la scelta del modello è ricaduta su un modello dense, di quelli analizzati precedentemente. Per la messa in produzione del sistema verrà ricercato il modello ottimo.

@@ -3,11 +3,11 @@
 
 \section{Introduzione}
 
-Mitigare gli attacchi DDoS è un problema di più difficile risoluzione rispetto alla sola rilevazione, perchè bisogna conoscere maggiori informazioni sulla provenienza del flusso malevolo e il problema dei ``false positive'' è maggiormente sentito: se durante la fase di detection rileviamo un falso positivo e lo notifichiamo all'amministratore di sistema \underline{non è un grande problema} perchè sarà lui ad effettuare una successiva analisi prima di intraprendere azioni correttive. Se ci prefiggiamo l'obiettivo di bloccare automaticamente i flussi malevoli dei falsi positivi significherà degradare la connessione ad utenti legittimi.
+Mitigare gli attacchi DDoS è un problema di più difficile risoluzione rispetto alla sola rilevazione, perché bisogna conoscere maggiori informazioni sulla provenienza del flusso malevolo e il problema dei ``false positive'' è maggiormente sentito: se durante la fase di detection rileviamo un falso positivo e lo notifichiamo all'amministratore di sistema \underline{non è un grande problema} perché sarà lui ad effettuare una successiva analisi prima di intraprendere azioni correttive. Se ci prefiggiamo l'obiettivo di bloccare automaticamente i flussi malevoli dei falsi positivi significherà degradare o impedire la connessione ad utenti legittimi.
 
 \subsection{Ip spoofing}
 
-L'ip spoofing è una tecnica che permette di costruire pacchetti IP con indirizzo IP sorgente modificato con lo scopo di fingersi un altro dispositivo o nascondere la propria identità.È un grande problema di sicurezza delle reti, principalmente perchè permette effettuare attacchi DDoS, permettendo di effettuare attacchi come l'amplificazione DNS oppure rendendo più difficile l'identificazione della sorgente dell'attacco nelle altre tipologie.
+L'ip spoofing è una tecnica che permette di costruire pacchetti IP con indirizzo IP sorgente modificato con lo scopo di fingersi un altro dispositivo o nascondere la propria identità. È un grande problema di sicurezza delle reti, principalmente perché permette effettuare attacchi DDoS, permettendo di effettuare attacchi come l'amplificazione DNS oppure rendendo più difficile l'identificazione della sorgente dell'attacco nelle altre tipologie.
 
 %todo: cite https://www.cloudflare.com/it-it/learning/ddos/glossary/ip-spoofing/
 
@@ -25,7 +25,7 @@ Iptables è un firewall integrato nel kernel linux basato su netfilter.
     # non è esplicitamente accettato
     iptables -P INPUT DROP
 \end{lstlisting}
-Questa soluzione impedisce solo parzialmente l'utilizzo dell'ip spoofing, perchè sarà sempre possibile generare pacchetti con ip spoofing provenienti da qualsiasi indirizzo ip della sottorete in cui si trova l'attaccante.
+Questa soluzione impedisce solo parzialmente l'utilizzo dell'ip spoofing, perché sarà sempre possibile generare pacchetti con ip spoofing provenienti da qualsiasi indirizzo ip della sottorete in cui si trova l'attaccante.
 
 
 \section{Tool utilizzati}
@@ -53,7 +53,7 @@ Poichè non è possibile estendere le features di netflow e non rispecchiano com
 
 Nella sezione \ref{chapter:our_work} è stata accennata la possibiltà di raccogliere dati con maggiore granularità tramite l'utilizzo di un modulo kernel scritto appositamente.
 
-Nella caso in cui si vogliano aggiungere dei software per collezionare dati maggiormente granulari bisogna intervenire lato kernel, perchè in userspace non esistono meccanismi per analizzare tutti i pacchetti in transito su un'interfaccia. Di conseguenza per aggiungere delle funzioni al kernel Linux esisto solitamente tre soluzioni: la prima è quella di fare aggiungere il codice ufficialmente al suo interno, questa soluzione è la più complicata: sono necessarie le giuste motivazioni per convincere i manteiner ad adottare quella soluzione e inoltre passeranno anni prima della distribuzione in distribuzioni stabili. La seconda è quella di creare un modulo kernel personalizzato, i moduli kernel sono una porzione di codice compilato che possono essere inseriti nel kernel a run-time. Questo metodo è sicuramente più rapido, ma potrebbe portare a vulnerabilità, problemi di compatibilità all'aggiornamento del kernel e rischi di deadlock per l'intero sistema.La terza possibilità è l'uso di eBPF, che esploreremo successivamente.
+Nella caso in cui si vogliano aggiungere dei software per collezionare dati maggiormente granulari bisogna intervenire lato kernel, perché in userspace non esistono meccanismi per analizzare tutti i pacchetti in transito su un'interfaccia. Di conseguenza per aggiungere delle funzioni al kernel Linux esisto solitamente tre soluzioni: la prima è quella di fare aggiungere il codice ufficialmente al suo interno, questa soluzione è la più complicata: sono necessarie le giuste motivazioni per convincere i maintainers ad adottare quella soluzione e inoltre passeranno anni prima della distribuzione in distribuzioni stabili. La seconda è quella di creare un modulo kernel personalizzato, i moduli kernel sono una porzione di codice compilato che possono essere inseriti nel kernel a run-time. Questo metodo è sicuramente più rapido, ma potrebbe portare a vulnerabilità, problemi di compatibilità all'aggiornamento del kernel e rischi di deadlock per l'intero sistema.La terza possibilità è l'uso di eBPF, che esploreremo successivamente.
 %Todo: Cercare articolo dove parla del confronto modulo kernel, modulo nativo, ebpf
 
 La prima versione del nostro software è stata sviluppata scrivendo un modulo kernel che utilizzava netfilter. Questa soluzione è la strada tradizionalmente usata nel mondo Linux e in Tiesse per l'implementazione delle proprie personalizzazioni nei prodotti.
@@ -63,9 +63,8 @@ Terminata la scrittura, il modulo deve essere compilato, nel nostro caso cross c
 
 Inoltre in userspace è stato scritto un plugin per collectd, il quale ogni volta che necessita dei dati effettua una lettura su un ``process file system'' (procfs), uno pseudo-filesystem usato per accedere alle informazioni fornite dai processi kernel, tramite il quale il nostro modulo kernel ritorna un JSON con il nome della metrica presa in considerazione e il valore.
 
-Questa soluzione, nonostante fosse la soluzione da sempre usata in azienda, presentava alcuni problemi come la maggior difficoltà di comunicazione tra user-space e kernel-space, la mancanza di strutture dati già esistenti e soprattutto un problema in questo modulo kernel rischiava di portare ad un completo malfunzionamento dell'intero router, per questa ragione abbiamo deciso di adottare una soluzione più moderna.
+Questa soluzione, nonostante fosse la soluzione da sempre usata in azienda, presenta alcuni problemi come la maggior difficoltà di comunicazione tra user-space e kernel-space, la mancanza di strutture dati già esistenti e soprattutto un problema in questo modulo kernel rischiava di portare ad un completo malfunzionamento dell'intero router, per questa ragione abbiamo deciso di adottare una soluzione più moderna.
 
-s
 \begin{figure}[hbtp]
     % todo: capire come gestire citazioni imsmagini a livello di copyright
     %  e capire come funzionano le label per richiamare le immagini
@@ -78,10 +77,9 @@ s
     \centering
 \end{figure}  
 
-
 \subsection{Berkley Packet Filter (BPF)}
 
-Il Berkley Packet Filter (BPF) è una tecnologia introdotta nel kernel di alcuni sistemi operativi, tra cui il kernel linux, su cui è stata introdotta a partire dalla versione 2.1.75 del kernel, nel 1997. BPF consiste in una macchina virtuale, con una virtual cpu special purpose, integrata nel kernel, che permette il filtraggio e l'analisi dei pacchetti in transito su un'interfaccia.
+Il Berkley Packet Filter (BPF) è una tecnologia introdotta nel kernel di alcuni sistemi operativi, tra cui il kernel Linux, su cui è stata introdotta nel 1997 a partire dalla versione 2.1.75. BPF consiste in una macchina virtuale, con una virtual cpu special purpose, integrata nel kernel, che permette il filtraggio e l'analisi dei pacchetti in transito su un'interfaccia.
 È una soluzione che permette di eseguire un bytecode in maniera sicura nello spazio kernel utilizzando una sandbox ed eliminando l'overhead delle system call e del context switching tra kernel e user. 
 Per effettuare il filtering tramite BPF deve essere generato del codice in un particolare assembly in grado di funzionare sulla CPU virtuale, che verrà richiamato alla ricezione di ogni pacchetto sull'interfaccia determinata (event driven). 
 Un esempio del suo utilizzo è tcpdump che sfrutta BPF per effettuare il filtraggio in maniera efficiente. L'esempio di bytecode \ref{code:esempiobpf} permette di filtrare i pacchetti IPV4, per farlo verifica se l'ethertype è uguale a 0x800 \cite{risso_ebpf}.
@@ -115,7 +113,7 @@ eBPF inoltre fornisce strumenti utili per lo sviluppo, come le mappe e gli helpe
 
 Le mappe sono un importante aspetto dei programmi eBPF, esse permettono di memorizzare dati in delle strutture chiave/valore in kernel space, che possono essere condivise con altri programmi eBPF oppure con applicazioni in user space \cite{cilium_ebpf}.
 
-La chiamata di generiche funzioni a livello kernel non è consentita, sia per mantenere la compatibilità del programma non solo con una determinata versione del kernel, per questo motivo sono stati introdotti gli ``helpers'', inoltre permettono l'esecuzione di istruzioni o permettono di eseguire alcuni task non permessi dall'assembly eBPF per motivi di sicurezza.
+La chiamata di generiche funzioni a livello kernel non è consentita, sia per mantenere la compatibilità del programma non solo con una determinata versione del kernel, per questo motivo sono stati introdotti gli ``helpers'', i quali inoltre permettono l'esecuzione di istruzioni o permettono di eseguire alcuni task non permessi dall'assembly eBPF per motivi di sicurezza.
 
 Un ulteriore caratteristica di eBPF è la possibilità di potere concatenare l'esecuzione dei programmi, chiamandoli a cascata,in maniera simile alla ``execve()'', durante l'esecuzione.
 
@@ -133,7 +131,7 @@ I vantaggi di un programma eBPF rispetto alla scrittura di un modulo kernel sono
     \centering
 \end{figure}
 Il kernel Linux supporta più punti dello stack di rete in cui è possibile agganciare l'esecuzione dei programmi eBPF.
-XDP (eXpress Data Path) è un hook ad alte performance che permette di eseguire un programma eBPF al primo punto possibile, questo permette grandi performance, perchè il processamento avviene prima che qualsiasi altro processamento possa avvenire. XDP è un punto d'aggancio ideale per il filtering dei pacchetti malevoli o inaspettati e in qualsiasi comune protezione anti DDoS \cite{cilium_xdp}.
+XDP (eXpress Data Path) è un hook ad alte performance che permette di eseguire un programma eBPF al primo punto possibile, questo permette grandi performance, poiché il processamento avviene prima che qualsiasi altra manipolazione possa avvenire. XDP è un punto d'aggancio ideale per il filtering dei pacchetti malevoli o inaspettati e in qualsiasi comune protezione anti DDoS \cite{cilium_xdp}.
 Il programma inserito su un hook XDP può compiere cinque azioni possibili:
 \begin{itemize}
     \item XDP\_PASS: lascia passare il pacchetto nel normale stack di rete
@@ -190,7 +188,7 @@ Alla ricezione di un pacchetto TCP, UDP e di pacchetti TCP con flag SYN, un RST,
 
 Grazie alle mappe implementate in eBPF è possibile accedere al loro contenuto anche in userspace. Nel programma in python facciamo accesso alle mappe, leggendo e resettando i contatori e in seguito abbiamo ipotizzato due strade per bloccare le anomalie.
 
-La prima coinvolge un intervento umano, conoscendo quali anomaly score hanno superato le soglie nei dati aggregati, è possibile mostrare una classifica dei flussi con i valori decrescenti relativi alla feature anomala. In questo modo l'operatore potrà, tramite un'interfaccia, bloccare o limitare il flusso per un determinato periodo di tempo. Questa soluzione può essere efficace, perchè le anomalie segnalate sui dati aggregati non saranno molte e l'intervento umano permette di bloccare utenti che stanno facendo un uso legittimo della rete, riducendone la loro produttività.
+La prima coinvolge un intervento umano, conoscendo quali anomaly score hanno superato le soglie nei dati aggregati, è possibile mostrare una classifica dei flussi con i valori decrescenti relativi alla feature anomala. In questo modo l'operatore potrà, tramite un'interfaccia, bloccare o limitare il flusso per un determinato periodo di tempo. Questa soluzione può essere efficace, perché le anomalie segnalate sui dati aggregati non saranno molte e l'intervento umano permette di bloccare utenti che stanno facendo un uso legittimo della rete, riducendone la loro produttività.
 
 La soluzione alternativa è più complessa e si basa sui principi della precedente fase di anomaly detection.
 Per sviluppare questo sistema di mitigazione ci siamo basati nuovamente su una rete neurale, ma a differenza della precedente, la quale lavorava su sequenze temporali di dati, in questo caso il rilevamento delle anomalie viene effettuato sul singolo flusso, con i relativi contatori.

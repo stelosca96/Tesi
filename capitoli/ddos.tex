@@ -12,7 +12,7 @@ La fase di riconoscimento degli attacchi DDoS è un importante passo per permett
 \subsection{Signature-based detection}
 
 La signature-based detection è un meccanismo che si basa su attacchi DDoS conosciuti, differenziando la loro firma dai normali flussi della rete. Queste soluzioni hanno un buon successo con attacchi DDoS noti, ma non sono in grado di rilevare nuove tipologie di attacco delle quali non si conosce ancora la signature. Questi sistemi si possono basare su pattern matching (es. Bro/Zeek), su regole (es. Snort, Suricata), sulla correlazione di informazioni di management sul traffico o sull'analisi spettrale.
-% todo: rivedere le ultime due perchè non so bene cosa siano
+% todo: rivedere le ultime due perché non so bene cosa siano
 
 \subsection{Anomaly-based detection}
 
@@ -79,7 +79,7 @@ Degli esempi di soluzioni distribuite sono i seguenti:
     \end{itemize}
     \item DEFensive Cooperative Overlay Mesh (DEFCOM): è un framework distribuito per abilitare lo scambio di informazioni tra tutti i nodi di difesa. Questo sistema prova a passare da un'architettura di difesa isolata ad una distribuita.
     \item Capability-based mechanisms: questo meccanismo permette alla destinazione di autorizzare esplicitamente il traffico che vuole ricevere.
-    \item StopIt: meccanismo distribuito che prevede un sistema di autenticazione: tramite il quale viene prevenuto l'ip spoofing, e a dei pacchetti che permettono il filtraggio del traffico il più vicino possibile alla sorgente del traffico.
+    \item StopIt: meccanismo distribuito che prevede un sistema di autenticazione: tramite il quale viene prevenuto l'ip spoofing, e a dei pacchetti costruiti per essere inoltrati ai router in upstream che permettono il filtraggio del traffico il più vicino possibile alla sorgente del traffico.
 
 \end{itemize}
 
@@ -89,8 +89,6 @@ Esistono più momenti in cui è opportuno mettere in atto le difese contro attac
 Il primo momento è prima dell'attacco (attack prevention), in cui vengono installati sistemi di monitoring, sistemi da usare in caso di emergenza, meccanismi per tollerare l'attacco (firewall, IDS, filtri, load balancer e flow control, strategie per identificare gli utenti legittimi e protezioni lato server). Successivamente durante l'attacco devono essere lanciate le adeguate contromisure e dopo l'attacco il sistema di difesa deve identificare la fonte e provvedere con le opportune contromisure, anche collaborando con altri segnalare l'attacco per permettere di difendersi da successivi.
 
 \begin{figure}[]
-    % todo: capire come gestire citazioni imsmagini a livello di copyright
-    %  e capire come funzionano le label per richiamare le immagini
     \label{fig:albero_difese}
     \includegraphics[width=\hsize]{images/ddos/ddos_flooding_defence.png}
     \caption{Meccanismi di difesa contro DDoS di tipo flooding.}

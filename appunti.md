@@ -30,10 +30,10 @@ Anomaly Detection: stato dell'arte -->
 
 3.7 Motivazione scelte
 
-Perchè autoencoders
+Perché autoencoders
 Quali sono i vantaggi rispetto ad altre soluzioni:
 
-- parlo del fatto che sfruttiamo le api messe a disposizione di keras e tensorflow perchè sono facili da usare, ci sono soluzioni alternative da citare (tool di twitter scritto in R => informarsi)
+- parlo del fatto che sfruttiamo le api messe a disposizione di keras e tensorflow perché sono facili da usare, ci sono soluzioni alternative da citare (tool di twitter scritto in R => informarsi)
 - gli autoencoders si prestano bene nel caso in cui non sappiamo a priori definire delle features astratte => ci basiamo solo sulla forma e non sul contenuto => non cerchiamo feature particolari per determinati  pattern https://blog.keras.io/building-autoencoders-in-keras.html
 - le forme possono cambiare da cliente a clientee
 - facili da usare, si passa velocemente da una fase experimental a prodution grazie al python e alla semplicità
@@ -50,14 +50,14 @@ Per l'impossibilità di introdurre i syn su un router in produzione, ma abbiamo 
 Mettere immagine collectd https://collectd.org/images/architecture-schematic.png
 
 <!-- Gestione dati: parlo della raccolta dati, cosa è stato fatto: raccolta features più granulari oltre che il syn rate, come è stato fatto netfilter/modulo kernel(soluzione classica) e rimando alla capitolo 5 per una discussione più approfondita.
-Discussione su perchè non è stato usato e limite dell'accelleratore hardware non è stato reso ancora compatibile, quindi l'accelleratore dovrebbe essere disabilitato.
+Discussione su perché non è stato usato e limite dell'accelleratore hardware non è stato reso ancora compatibile, quindi l'accelleratore dovrebbe essere disabilitato.
 Solo i primi pacchetti del flusso passano dal kernel e poi passano dal fast path, solo in caso di pesanti modifiche hw e software possono essere analizzati.
-Dove è stato usato e dove no e perchè non è stato usato per i test. -->
+Dove è stato usato e dove no e perché non è stato usato per i test. -->
 
 4.4 Il nostro tool
 
 
-Il picco da 2.5K non sappiamo come considerarlo perchè non è un attacco ma è anomalo, quindi cosa bisogna fare? Avvisare l'amministrattore o cosa
+Il picco da 2.5K non sappiamo come considerarlo perché non è un attacco ma è anomalo, quindi cosa bisogna fare? Avvisare l'amministrattore o cosa
 
 
 Stazionarietà dei dati => Quanto variano, periodo in cui variano => Più sono stazionari più è facile, altrimenti bisogna valutare di riallenarla o algoritmi di incremental learning, e dati che non so come trattare
@@ -177,3 +177,38 @@ in cloudfare usano la stessa soluzione per ovviare ai limiti della granularità 
 
 
 come limitare la banda eBPF 
+
+
+pag. 26
+API anzichè api
+"...e di passare da una fase sperimentale a una di produzione in maniera molto rapida con poche righe di codice. Questo è valido di per sè per qualsiasi strumento di ML scritto in Python."
+Manca riferimento a quell'articolo keras anomaly-detection.
+Per quanto riguarda la pag. 26 il virgolettato riguarda keras e tensorflow
+
+
+pag. 34
+Storage dati su base temporale: parlare di come funzionano a cosa servono: prima di selezione features aggiungere sezione relativa allo storage dei dati su base temporale. Qui dilungati perché oltre che essere interessante al fine della discussione, è anche utile andare nel dettaglio:
+https://graphite.readthedocs.io/en/latest/config-carbon.html
+Usare le sezioni storage-schemas e storage-aggregation del link. Usare molto del teso di cui sopra e anche le immagini. Usare le sezioni storage-schemas e storage-aggregation del link. Usare molto del teso di cui sopra e anche le immagini.
+Pagina 34 mi sembra una buona idea, parlo dei database temporali, ho approfondito molto l'argomento anche in generale oltre a capire come funziona grafite, perché vedendo come vengono gestiti i dati in Tiesse ho visto che i db temporali potevano tornare utilissimi anche per quanto riguardo il team studentesco e lo abbiamo iniziato ad usare anche per quello... Quindi posso aggiungere anche quello che è interessante e dire che è molto più comodo dei classici database. Comunque se per vedere la dimensione devo accedere da ssh non penso di avere l'accesso.
+
+
+pag. 35
+Acceleratore HW, parla di più! Spiega in generale come e cosa accelerano, indipendentemente dalla tecnologia Tiesse! Inoltre sei sicuro che questa sia la giusta sezione? Non è meglio parlarne quando descrivi il modulo Netfilter?
+Non si capisce bene qual'è il problema con cui ti sei dovuto scontrare! Perché collectd va bene e il tuo modulo custom no? A cosa serviva il tuo modulo custom per quanto concerne le feauture??
+Siccome l'impostazione della tesi è posata sul DoS, fai un ragionamento e una discussione delle feature legate ai DoS !!
+Per quanto riguarda collectd in realtà non è difficile capire come mai funziona anche con l'acceleratore HW, il motivo è che collectd semplicemente legge dei contatori da file
+Ma non c'è bisogno, se noti le metriche che raccogliamo noi non sono sul traffico specifico
+L'unico intorto pesante fu su ndpi che Ivano lo modificò per farlo funzionare con l'acceleratore e qui basta che citi che Tiesse ha modificato l'ndpi per le metriche applicative
+tutte le altre metriche n nriguarda il traffico specificoIl throughput sono i contatori delle interfacce che vengono aggiornati dal firmware delle NIC se non sbaglio; Il numero di connessioni necessità solamente del primo pacchettoE così via, comunque nella wiki di collectd qualcosa si trova riguardo ai pluginTutte queste cose scrivile, insomma fai una sorta di narrazione; va bene che la fai nella sezione featuresMa contestualizza bene cosa centra l'acceleratore con le metriche
+Sì ma poi dilungati anche sui plguin collectd che usiamo noi se può servir
+Ok grazie, vedo di sistemare, magari illustro il problema: ci servono ulteriori features per avere un anomaly detection più specifico verso le specifiche applicazioni. Poi dico come si potrebbe fare, ma illustro il problema dell'accelleratore hardware e di perché è un casino farlo, parlando di come mai ndpi e collectd non hanno quel problema
+
+pag. 36
+Schema della struttura del "nostro tool"
+
+Lo pseudo codice e il codice è ancora più largo del corpo del testo normale...Cerca di restringere che si allunga anche.
+
+
+Pag. 51
+Dilungati su cosa blocca l'IP spoofing e su cosa rende "inutile" quindi l'anomaly-detecton per DoS mitigation. Considera che la tesi la deve capire anche un tecnico non puro networking...Entra nei dettagli tecnici qui
