@@ -59,6 +59,11 @@ Graphite è composto da tre parti (come si può vedere dalla figura ~\ref{fig:gr
     \item graphite-web: è un'interfaccia utente e delle API le quali restituiscono i dati per renderizzare i grafici da visualizzare.
 \end{itemize}
 
+Per rendere permanenti i dati graphite utilizza un database temporale (time-series database TSDB), un sistema NoSQL progettato per il salvataggio e la visualizzazione di record facenti parte di sequenze temporali, in cui ad ogni istante di tempo sono associati un set di dati. Per questo motivo i database temporali sono più efficienti rispetto ai database relazionali. Le serie temporali possono anche essere grandi flussi di dati, come nel nostro caso e in molti casi è possibile eseguirne una compressione per gestirli in maniera maggiormente efficiente.
+Whisper è il time-series database usato da Graphite, è un database veloce e affidabile per dati numerici nel tempo. Esso è un fixed-size database, cioè è configurabile per avere una maggiore risoluzione per i dati recenti e una degradazione dei dati ad una minore risoluzione per lo storage di lungo termine, per farlo è necessario specificare il tempo per cui è necessario mantenere salvati i dati e con quale granularità, inoltre è possibile dichiarare diversi retention rate con granularità differente, definendo anche in che modo (min, max, average, last, sum) il database deve effettuare l'aggregazione dei dati.
+% todo: i numeri sono corretti?
+Nel nostro caso abbiamo scelto di mantenere salvati i dati usati come feature per l'anomaly detection per 4 mesi, con una granularità di 10 secondi, aggregata successivamente tramite il calcolo della media su intervalli crescenti con il passare del tempo. La scelta è ricaduta su un periodo di tempo così lungo prima di iniziare ad aggregare i dati perchè per l'allenamento del modello necessitiamo dei dati con maggiore granularità possibile e avevamo la necessità di allenare la rete su periodi differenti per valutare l'affidabilità del modello. Questa scelta verrà modificata in produzione in base alla stazionarietà dei dati dell'azienda presa in considerazione.
+
 \begin{figure}[h]
      \label{fig:graphite}
     \includegraphics[width=\hsize]{images/my_work/graphite.png}
@@ -122,9 +127,18 @@ La scelta della features è nata da un compromesso tra i dati necessari per rile
  
 \section{Il nostro tool}
 
-Per una migliore raccolta e monitoraggio di features con diversa granularità, abbiamo sviluppato un ulteriore software in grado di estrarre metriche relative a \uline{server/servizi} aziendali specifici o metriche non disponibili tramite i plugin ufficiali di collectd, come per esempio il syn rate. Per svilupparlo abbiamo programmato un modulo kernel, che comunica con un plugin per collectd, anch'esso da noi creato, tramite un process file system (procfs). Per una discussione più approfondita rimando al capitolo 5.
+Utilizzando unicamente i dati provenienti da nDPI e collectd non abbiamo accesso a features utili per monitorare una determinata tipologia di pacchetti, oppure una minore granularità dei dati per conoscere il numero dei pacchetti in transito verso certi applicativi aziendali. Per questo motivo, per una migliore raccolta e monitoraggio, abbiamo sviluppato un ulteriore software in grado di estrarre metriche relative a \uline{server/servizi} aziendali specifici o metriche non disponibili tramite i plugin ufficiali di collectd, come per esempio il syn rate. Per svilupparlo abbiamo programmato un modulo kernel, che comunica con un plugin per collectd, anch'esso da noi creato, tramite un process file system (procfs). Per una discussione più approfondita rimando al capitolo 5.
 
-Questa soluzione è funzionante ed è stata testata in laboratorio, però non viene utilizzata per la raccolta di dati necessaria a causa dell'impossibilità di introdurre software aggiuntivo in un router in produzione, da cui dipende la produttività di un intero ufficio. Inoltre i router Tiesse sfruttano un acceleratore hardware, in cui solo il primo pacchetto di ogni flusso passa tramite il kernel e i successivi vengono inoltrati automaticamente in hardware.
+Questa soluzione è funzionante ed è stata testata in laboratorio, però non viene utilizzata per la raccolta di dati necessaria a causa dell'impossibilità di introdurre software aggiuntivo in un router in produzione, da cui dipende la produttività di un intero ufficio. 
+ 
+% in cui solo il primo pacchetto di ogni flusso passa tramite il kernel e i successivi vengono inoltrati automaticamente in hardware.
+ 
+Inoltre i router Tiesse sfruttano un acceleratore hardware, che complica l'utilizzo di questo sistema. I router hanno lo scopo di analizzare il traffico proveniente dalle porte e cercare la corretta porta di destinazione su cui inoltrarlo. Insieme a questo compito si occupano anche di scartare del traffico in base a delle regole e effettuare la traduzione degli indirizzi nel caso in cui svolgano anche la funzione di NAT. Per prendere una decisione su dove inoltrare ogni pacchetto il router deve mandarli alla CPU, la quale si occupa di prendere una decisione e inoltrarli verso la porta corretta. Questa soluzione è usata solamente nei router economici, capaci di inoltrare centinaia di Mbps a causa di motivi economici o su router ad altissime prestazione (~100-200Gps di banda aggregata) sfruttando una massiccia parallelizzazione dei flussi su CPU high-end dai costi superiori ai 1000\/2000€ \cite{risso_sn}. Una soluzione usata dalle restanti fasce di router, compresi i router Tiesse, è quella dell'utilizzo di un fast path e di uno slow path, il primo permette l'inoltro di pacchetti tramite una tabella di forwarding (FIB) e spesso è implementato in hardware tramite delle ASICs. I pacchetti di flussi ancora non conosciuti nella FIB o quelli con caratteristiche particolari transitano dallo slow path, il quale sfrutta la CPU ed è più lento, ma può svolgere operazioni più complesse. La disabilitazione del fast path può portare ad una riduzione delle prestazioni a poche centinaia di Mbps oltre ad incremento dell'utilizzo della CPU, per questo motivo dobbiamo evitarla. 
+% todo: da verificare
+A differenza del nostro sistema collectd effettua le letture tramite dei contatori sulle NIC oppure tramite letture di strutture dati già esistenti, quindi non è necessario il transito di ogni pacchetto dal kernel, mentre nDPI è stato integrato grazie a pesanti modifiche nel software.
+
+
+
 % Cosa fa?
 % Perché l'ho fatto?
 
@@ -164,6 +178,7 @@ I dati all'interno del repository sono organizzati nel seguente modo:
 % \cite{keras_about}
 
 \paragraph{Keras} è un insieme di API ad alto livello di TensorFlow 2 che forniscono astrazioni essenziali per incentrarsi sulla facilità d'uso, la modularità e l'estendibilità per la risoluzioni di problemi relativi al machine learning, con una particolare concentrazione sui moderni problemi di deep learning.
+Come è possibile notare nell'esempio \cite{keras_esempio}, tramite questa libreria è possibile creare facilmente un semplice sistema di anomaly detection.
 
 
 \subsection{Elaborazione dei dati in input}

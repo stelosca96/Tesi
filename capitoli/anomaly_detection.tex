@@ -225,7 +225,7 @@ Esistono in letteratura sistemi di anomaly detection basati su autoencoders, che
 
 
 
-La scelta del sistema di anomaly detection è ricaduta sull'utilizzo di una rete neurale basata su autoencoders a causa della loro semplicità d'uso, poichè non necessitano di dati etichetti per la fase di allenamento è facile ottenere grandi quantità di dati in qualsiasi contesto aziendale, rendendo veloce l'introduzione di questo sistema in molte aziende, unita alla facilità di utilizzo delle api messe a disposizione da Keras e TensorFlow consentono di creare facilmente un modello.
+La scelta del sistema di anomaly detection è ricaduta sull'utilizzo di una rete neurale basata su autoencoders a causa della loro semplicità d'uso, poichè non necessitano di dati etichettati, per la fase di allenamento, è facile ottenere grandi quantità di dati in qualsiasi contesto aziendale, rendendo veloce l'introduzione di questo sistema in molte aziende, unita alla facilità di utilizzo delle API messe a disposizione da Keras e TensorFlow, le quali consentono di creare facilmente un modello.
 Inoltre secondo l'articolo \cite{anomaly_detection_comparativa}, la precisione dei sistemi, utilizzanti autoencoders vanilla o varianti, è paragonabile ad altri sistemi a scapito, in alcuni casi, di un piccolo aumento di tempo in fase di test.
 Basando il nostro sistema di detection su informazioni quantitative riguardanti i dati e non qualitative, è possibile identificare le anomalie anche in situazioni in cui sono utilizzati nuovi pattern di attacco ed è possibile aggiornare il modello in caso di nuovi pattern di traffico di dati aziendali semplicemente rieffettuando un allenamento della rete, nel nostro caso con i dati già memorizzati su un database.
 
