@@ -9,6 +9,10 @@ Mitigare gli attacchi DDoS è un problema di più difficile risoluzione rispetto
 
 L'ip spoofing è una tecnica che permette di costruire pacchetti IP con indirizzo IP sorgente modificato con lo scopo di fingersi un altro dispositivo o nascondere la propria identità. È un grande problema di sicurezza delle reti, principalmente perché permette effettuare attacchi DDoS, permettendo di effettuare attacchi come l'amplificazione DNS oppure rendendo più difficile l'identificazione della sorgente dell'attacco nelle altre tipologie.
 
+Un metodo per prevenire o rendere più tracciabili gli attacchi DDoS che lo utilizzano è adottare tecniche in grado di prevenirne il suo utilizzo.
+
+Nello scenario da noi ipotizzato il meccanismo di mitigazione è installato negli edge router nelle sedi aziendali periferiche, in questa posizione possiamo ipotizzare che tutti i pacchetti in transito dalla sotto-rete del distaccamento, verso la sotto-rete della sede centrale o verso internet, siano stati generati da un host di quella sotto rete. Per questo motivo una soluzione per limitare il problema è impedire al router di effettuare l'inoltro di tutti i pacchetti provenienti da altre sotto-reti.
+Questa soluzione non elimina completamente il problema dell'ip spoofing, perchè un utente malevolo ha sempre la possibilità di generare traffico utilizzando come indirizzo ip sorgente un qualsiasi indirizzo della stessa subnet.
 %todo: cite https://www.cloudflare.com/it-it/learning/ddos/glossary/ip-spoofing/
 
 
@@ -25,7 +29,6 @@ Iptables è un firewall integrato nel kernel linux basato su netfilter.
     # non è esplicitamente accettato
     iptables -P INPUT DROP
 \end{lstlisting}
-Questa soluzione impedisce solo parzialmente l'utilizzo dell'ip spoofing, perché sarà sempre possibile generare pacchetti con ip spoofing provenienti da qualsiasi indirizzo ip della sottorete in cui si trova l'attaccante.
 
 
 \section{Tool utilizzati}
@@ -51,9 +54,9 @@ Poichè non è possibile estendere le features di netflow e non rispecchiano com
 
 \subsection{Modulo Kernel}
 
-Nella sezione \ref{chapter:our_work} è stata accennata la possibiltà di raccogliere dati con maggiore granularità tramite l'utilizzo di un modulo kernel scritto appositamente.
+Nella sezione \ref{section:our_tool} è stata accennata la possibiltà di raccogliere dati con maggiore granularità tramite l'utilizzo di un modulo kernel scritto appositamente.
 
-Nella caso in cui si vogliano aggiungere dei software per collezionare dati maggiormente granulari bisogna intervenire lato kernel, perché in userspace non esistono meccanismi per analizzare tutti i pacchetti in transito su un'interfaccia. Di conseguenza per aggiungere delle funzioni al kernel Linux esisto solitamente tre soluzioni: la prima è quella di fare aggiungere il codice ufficialmente al suo interno, questa soluzione è la più complicata: sono necessarie le giuste motivazioni per convincere i maintainers ad adottare quella soluzione e inoltre passeranno anni prima della distribuzione in distribuzioni stabili. La seconda è quella di creare un modulo kernel personalizzato, i moduli kernel sono una porzione di codice compilato che possono essere inseriti nel kernel a run-time. Questo metodo è sicuramente più rapido, ma potrebbe portare a vulnerabilità, problemi di compatibilità all'aggiornamento del kernel e rischi di deadlock per l'intero sistema.La terza possibilità è l'uso di eBPF, che esploreremo successivamente.
+Nella caso in cui si vogliano aggiungere dei software per collezionare dati maggiormente granulari bisogna intervenire lato kernel, perché in userspace non esistono meccanismi efficienti per analizzare tutti i pacchetti in transito su un'interfaccia. Di conseguenza per aggiungere delle funzioni al kernel Linux esistono solitamente tre soluzioni: la prima è quella di fare aggiungere il codice ufficialmente al suo interno, questa soluzione è la più complicata: sono necessarie le giuste motivazioni per convincere i maintainers ad adottare quella soluzione e inoltre passeranno anni prima della distribuzione in distribuzioni stabili. La seconda è quella di creare un modulo kernel personalizzato, i moduli kernel sono una porzione di codice compilato che possono essere inseriti nel kernel a run-time. Questo metodo è sicuramente più rapido, ma potrebbe portare a vulnerabilità, problemi di compatibilità all'aggiornamento del kernel e rischi di deadlock per l'intero sistema.La terza possibilità è l'uso di eBPF, che esploreremo successivamente.
 %Todo: Cercare articolo dove parla del confronto modulo kernel, modulo nativo, ebpf
 
 La prima versione del nostro software è stata sviluppata scrivendo un modulo kernel che utilizzava netfilter. Questa soluzione è la strada tradizionalmente usata nel mondo Linux e in Tiesse per l'implementazione delle proprie personalizzazioni nei prodotti.

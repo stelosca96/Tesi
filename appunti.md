@@ -193,7 +193,7 @@ Usare le sezioni storage-schemas e storage-aggregation del link. Usare molto del
 Pagina 34 mi sembra una buona idea, parlo dei database temporali, ho approfondito molto l'argomento anche in generale oltre a capire come funziona grafite, perché vedendo come vengono gestiti i dati in Tiesse ho visto che i db temporali potevano tornare utilissimi anche per quanto riguardo il team studentesco e lo abbiamo iniziato ad usare anche per quello... Quindi posso aggiungere anche quello che è interessante e dire che è molto più comodo dei classici database. Comunque se per vedere la dimensione devo accedere da ssh non penso di avere l'accesso.
 
 
-pag. 35
+<!-- pag. 35
 Acceleratore HW, parla di più! Spiega in generale come e cosa accelerano, indipendentemente dalla tecnologia Tiesse! Inoltre sei sicuro che questa sia la giusta sezione? Non è meglio parlarne quando descrivi il modulo Netfilter?
 Non si capisce bene qual'è il problema con cui ti sei dovuto scontrare! Perché collectd va bene e il tuo modulo custom no? A cosa serviva il tuo modulo custom per quanto concerne le feauture??
 Siccome l'impostazione della tesi è posata sul DoS, fai un ragionamento e una discussione delle feature legate ai DoS !!
@@ -202,7 +202,7 @@ Ma non c'è bisogno, se noti le metriche che raccogliamo noi non sono sul traffi
 L'unico intorto pesante fu su ndpi che Ivano lo modificò per farlo funzionare con l'acceleratore e qui basta che citi che Tiesse ha modificato l'ndpi per le metriche applicative
 tutte le altre metriche n nriguarda il traffico specificoIl throughput sono i contatori delle interfacce che vengono aggiornati dal firmware delle NIC se non sbaglio; Il numero di connessioni necessità solamente del primo pacchettoE così via, comunque nella wiki di collectd qualcosa si trova riguardo ai pluginTutte queste cose scrivile, insomma fai una sorta di narrazione; va bene che la fai nella sezione featuresMa contestualizza bene cosa centra l'acceleratore con le metriche
 Sì ma poi dilungati anche sui plguin collectd che usiamo noi se può servir
-Ok grazie, vedo di sistemare, magari illustro il problema: ci servono ulteriori features per avere un anomaly detection più specifico verso le specifiche applicazioni. Poi dico come si potrebbe fare, ma illustro il problema dell'accelleratore hardware e di perché è un casino farlo, parlando di come mai ndpi e collectd non hanno quel problema
+Ok grazie, vedo di sistemare, magari illustro il problema: ci servono ulteriori features per avere un anomaly detection più specifico verso le specifiche applicazioni. Poi dico come si potrebbe fare, ma illustro il problema dell'accelleratore hardware e di perché è un casino farlo, parlando di come mai ndpi e collectd non hanno quel problema -->
 
 pag. 36
 Schema della struttura del "nostro tool"
@@ -212,3 +212,9 @@ Lo pseudo codice e il codice è ancora più largo del corpo del testo normale...
 
 Pag. 51
 Dilungati su cosa blocca l'IP spoofing e su cosa rende "inutile" quindi l'anomaly-detecton per DoS mitigation. Considera che la tesi la deve capire anche un tecnico non puro networking...Entra nei dettagli tecnici qui
+
+
+
+
+
+AVERE TRACCIA DEI FLUSSI PUÒ ESSERE UTILE PER ANALIZZARE I DATI NELLA FASE SUCCESSIVA ALL'ATTACCO
