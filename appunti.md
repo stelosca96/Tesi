@@ -210,8 +210,8 @@ Schema della struttura del "nostro tool"
 Lo pseudo codice e il codice è ancora più largo del corpo del testo normale...Cerca di restringere che si allunga anche.
 
 
-Pag. 51
-Dilungati su cosa blocca l'IP spoofing e su cosa rende "inutile" quindi l'anomaly-detecton per DoS mitigation. Considera che la tesi la deve capire anche un tecnico non puro networking...Entra nei dettagli tecnici qui
+<!-- Pag. 51
+Dilungati su cosa blocca l'IP spoofing e su cosa rende "inutile" quindi l'anomaly-detecton per DoS mitigation. Considera che la tesi la deve capire anche un tecnico non puro networking...Entra nei dettagli tecnici qui -->
 
 
 

@@ -171,9 +171,13 @@ Le reti neurali sono composte da gruppi di neuroni artificiali organizzati in li
 % fonte immagine https://towardsdatascience.com/what-the-hell-is-perceptron-626217814f53
 
 %% todo: parlare di come vengono allenate
-\paragraph{ALLENAMENTO}
+\paragraph{allenamento reti neurali}
 
-parlare di come vengono allenate
+L'allenamento di una rete neurale avviene ripetendo un percorso ciclico di tre fasi:
+
+Il dataset in ingresso viene suddiviso in più gruppi, chiamati batch, e ogni elemento dei gruppi viene analizzato tramite la rete neurale, la quale calcolerà un valore. Calcolando la distanza tra il valore in uscita e il risultato corretto è 
+possibile fare alcune modifiche ai pesi di ogni livello utilizzando l'algoritmo di backpropagation per avvicinare leggermente la predizione verso la risposta corretta \cite{reti_neurali_libro}. 
+Questi passi verranno ripetuti più volte fino a quando non sarà ottenuto il risultato sperato.
 
 \subsection{Autoencoders}
 \begin{figure}[h]
