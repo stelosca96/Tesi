@@ -43,8 +43,6 @@ L'organizzazione di Tiesse e di molti suoi clienti è caratterizzata dallo scena
 Un altro caso possibile di utilizzo di questa soluzione è la distribuzione dei servizi in cloud, in cui l'azienda non ha il controllo dell'infrastruttura di rete e sfrutta i router thrusted nelle reti degli uffici per analizzare il traffico.
 
 
-% todo: sostituire servizi con applicativi aziendali
-
 \begin{figure}[]
     \label{fig:scenario_2}
     %https://lucid.app/lucidchart/8119c7e9-e2e1-4dbb-b55f-bebf6c97af2d/edit?beaconFlowId=3612F8C43004D8D2&page=0_0#
@@ -107,7 +105,7 @@ Gli approcci a bassi rate sono utilizzati frequentemente dagli attacchi DDoS a l
 \begin{figure}[h]
     % todo: capire come gestire citazioni immagini a livello di copyright
     \includegraphics[width=\hsize]{images/introduzione/bersagli_ddos.png}
-    \caption{Distribuzione vittime DDoS, 2020 \cite{imperva_ddos_report}}
+    \caption{Distribuzione vittime DDoS, 2020 \cite{imperva_ddos_report}}.
     \centering
 \end{figure}
 
@@ -131,7 +129,6 @@ Le maggiori vittime secondo il report \cite{imperva_ddos_report} sono le compagn
 
 
 \begin{figure}[h]
-    % todo: capire come gestire citazioni immagini a livello di copyright
     \includegraphics[width=\hsize]{images/introduzione/tesi_distribuzione_tipologia_attacchi.png}
     \caption{Distribuzione di attacchi DDoS per tipologia, Q3 2020 \cite{ddos_kaspersky_q3_2020}}
     \centering
@@ -154,10 +151,10 @@ La maggior parte degli attacchi DDoS hanno una portata inferiore ai 10 Gbps (cir
 
 Gli attacchi basati su botnets sono un grande problema per l'implementazione di sistemi anti-DDoS perché un grande numero di ``zombie'' rende l'attacco più distruttivo, in aggiunta spesso utilizzano ip spoofing complicando il tracciamento all'indietro per determinare la vera locazione bot \cite{ddos_survey_1}.
 
-Il funzionamento delle botnet si basa su tre fasi. La prima consiste nel reclutamento ``dell'esercito'': fase in cui vengono contagiati i dispositivi tramite worms (programmi che si autopropagano) che sfruttano falle nella sicurezza. Sono usate tecniche come: la scansione automatica di indirizzi ip casuali per trovare altri soggetti vulnerabili, questa tipologia di scansione però produce molto traffico e può rendere possibile rilevare l'attacco, oppure una hitlist: una tecnica che frutta una lista di possibili macchine potenzialmente vulnerabili, la scansione della subnet o l'utilizzo di informazioni dei target basandosi sulle informazioni contenute nelle vittime infettate dai worm.
+Il funzionamento delle botnet si basa su tre fasi. La prima consiste nel reclutamento ``dell'esercito'': fase in cui vengono contagiati i dispositivi tramite worms (programmi che si autopropagano) che sfruttano falle nella sicurezza. Sono usate tecniche come: la scansione automatica di indirizzi ip casuali per trovare altri soggetti vulnerabili, questa tipologia di scansione però produce molto traffico e può rendere possibile rilevare l'attacco, oppure una hitlist: una tecnica che frutta una lista di possibili macchine potenzialmente vulnerabili, la scansione della subnet o l'utilizzo di informazioni dei target basandosi sulle informazioni contenute nelle vittime infettate dai wormc.
 
 
-% todo: qui dovrei magari differenziare le botnet controllate direttamente e indirettamente e dilungarmi meno, magari nominare le tre fasi degli attacchi \cite{ddos_motivations} pagina 5 \cite{ddos_survey_4} pagina 37
+% qui dovrei magari differenziare le botnet controllate direttamente e indirettamente e dilungarmi meno, magari nominare le tre fasi degli attacchi  \cite{ddos_motivations} pagina 5 \cite{ddos_survey_4} pagina 37
 Nella fase successiva alla creazione di un ``esercito'' avviene la propagazione delle informazioni riguardanti le vittime da attaccare, con la durata e l'ora.
 I bot possono essere controllati dell'artefice dell'attacco tramite tre architetture \cite{ddos_survey_4}: % pagina 46
 \begin{itemize}

@@ -49,7 +49,7 @@ Netflow è un software introdotto inizialmente nei router Cisco nel 1996, succes
 %     \end{tabular}
 % \end{center}
 
-Poichè non è possibile estendere le features di netflow e non rispecchiano completamente i nostri interessi abbiamo deciso di progettare il nostro agent utilizzando altre soluzioni.
+Poichè non è possibile estendere le features di netflow e quelle esistenti non rispecchiano completamente i nostri interessi abbiamo deciso di progettare il nostro agent utilizzando altre soluzioni.
 % todo: le features di netflow le posso modificare?
 
 \subsection{Modulo Kernel}
@@ -57,26 +57,24 @@ Poichè non è possibile estendere le features di netflow e non rispecchiano com
 Nella sezione \ref{section:our_tool} è stata accennata la possibiltà di raccogliere dati con maggiore granularità tramite l'utilizzo di un modulo kernel scritto appositamente.
 
 Nella caso in cui si vogliano aggiungere dei software per collezionare dati maggiormente granulari bisogna intervenire lato kernel, perché in userspace non esistono meccanismi efficienti per analizzare tutti i pacchetti in transito su un'interfaccia. Di conseguenza per aggiungere delle funzioni al kernel Linux esistono solitamente tre soluzioni: la prima è quella di fare aggiungere il codice ufficialmente al suo interno, questa soluzione è la più complicata: sono necessarie le giuste motivazioni per convincere i maintainers ad adottare quella soluzione e inoltre passeranno anni prima della distribuzione in distribuzioni stabili. La seconda è quella di creare un modulo kernel personalizzato, i moduli kernel sono una porzione di codice compilato che possono essere inseriti nel kernel a run-time. Questo metodo è sicuramente più rapido, ma potrebbe portare a vulnerabilità, problemi di compatibilità all'aggiornamento del kernel e rischi di deadlock per l'intero sistema.La terza possibilità è l'uso di eBPF, che esploreremo successivamente.
-%Todo: Cercare articolo dove parla del confronto modulo kernel, modulo nativo, ebpf
+%TODO: Cercare articolo dove parla del confronto modulo kernel, modulo nativo, ebpf
 
 La prima versione del nostro software è stata sviluppata scrivendo un modulo kernel che utilizzava netfilter. Questa soluzione è la strada tradizionalmente usata nel mondo Linux e in Tiesse per l'implementazione delle proprie personalizzazioni nei prodotti.
 Netfilter è un componente di tutte le moderne distribuzioni Linux, che permette di intercettare e manipolare pacchetti in transito dal router, usato nel kernel permette di registrare delle callback, eseguite alla ricezione di ogni pacchetto su un determinato punto d'aggancio.
 Per la scrittura del modulo siamo partiti dalla compilazione del codice sorgente del kernel del router. successivamente è stato scritto un programma in linguaggio C, che sfruttando netfilter aggancia ad un hook, più in particolare ``NF\_INET\_POST\_ROUTING'', una funzione da eseguire alla ricezione di ogni pacchetto, la quale incrementa dei contatori di un vettore.
-Terminata la scrittura, il modulo deve essere compilato, nel nostro caso cross compilato per architecture ``arm64''. La compilazione generare un file con estensione .ko e dopo averlo copiato sul router, dovrà essere inserito dinamicamente nel kernel del router tramite il comando ``insmod [nome\_modulo].ko''.
+Terminata la scrittura, il modulo deve essere compilato, nel nostro caso cross compilato per architecture ``arm64''. La compilazione genera un file con estensione .ko. Dopo averlo copiato sul router, per renderlo attivo, bisognerà caricarlo dinamicamente nel kernel del router tramite il comando ``insmod [nome\_modulo].ko''.
 
 Inoltre in userspace è stato scritto un plugin per collectd, il quale ogni volta che necessita dei dati effettua una lettura su un ``process file system'' (procfs), uno pseudo-filesystem usato per accedere alle informazioni fornite dai processi kernel, tramite il quale il nostro modulo kernel ritorna un JSON con il nome della metrica presa in considerazione e il valore.
 
 Questa soluzione, nonostante fosse la soluzione da sempre usata in azienda, presenta alcuni problemi come la maggior difficoltà di comunicazione tra user-space e kernel-space, la mancanza di strutture dati già esistenti e soprattutto un problema in questo modulo kernel rischiava di portare ad un completo malfunzionamento dell'intero router, per questa ragione abbiamo deciso di adottare una soluzione più moderna.
 
 \begin{figure}[hbtp]
-    % todo: capire come gestire citazioni imsmagini a livello di copyright
-    %  e capire come funzionano le label per richiamare le immagini
     \label{fig:netfilter}
     \begin{center}
         \includegraphics[height=570pt]{images/mitigazione/netfilter.png}
     \end{center}
 
-    \caption{Flusso dei pacchetti in Netfilter}
+    \caption{Flusso dei pacchetti in Netfilter \cite{netfilter_img}.}
     \centering
 \end{figure}  
 
@@ -130,7 +128,7 @@ I vantaggi di un programma eBPF rispetto alla scrittura di un modulo kernel sono
     % https://www.researchgate.net/publication/333998355_Securing_Linux_with_a_Faster_and_Scalable_Iptables
     \label{fig:hooks}
     \includegraphics[width=\hsize]{images/mitigazione/hooks.png}
-    \caption{Hooks eBPF}
+    \caption{Hooks eBPF \cite{risso_ebpf}.}
     \centering
 \end{figure}
 Il kernel Linux supporta più punti dello stack di rete in cui è possibile agganciare l'esecuzione dei programmi eBPF.
@@ -151,11 +149,9 @@ Il programma inserito su un hook XDP può compiere cinque azioni possibili:
 Il programma python potrà comunicare con quello eBPF grazie all'utilizzo delle mappe precedentemente menzionate.
 
 \begin{figure}[]
-    % todo: capire come gestire citazioni imsmagini a livello di copyright
-    %  e capire come funzionano le label per richiamare le immagini
     \label{fig:bcc}
     \includegraphics[width=\hsize]{images/mitigazione/bcc.png}
-    \caption{Funzionamento di BCC \cite{ebpf.io}}
+    \caption{Funzionamento di BCC \cite{ebpf.io}.}
     \centering
 \end{figure}
 
