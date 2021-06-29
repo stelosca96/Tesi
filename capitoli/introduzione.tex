@@ -37,7 +37,7 @@ La sede centrale dell'azienda si trova ad Ivrea, ma possiede anche sedi distacca
 \end{figure}
 
 Nello sviluppo della nostra soluzione abbiamo preso in considerazione un tipico scenario aziendale, in cui esiste una sede centrale, ben protetta e su cui sono ospitati i servizi dell'azienda e tante sedi periferiche: uffici, negozi o altro, collegati ai servizi della sede centrale tramite un overlay MPLS o una VPN.
-Le sedi periferiche sono quelle più esposte sotto l'aspetto della sicurezza, \uline{anche solo per il fatto che sono in numero maggiore, spesso non ci sono i responsabili dell IT in sede e solitamente sono meno controllate rispetto la sede centrale}. Per questo motivo il nostro obiettivo è quello di proteggere i servizi, gli applicati aziendali e la rete centrale dai dispositivi malevoli connessi alle reti degli uffici.
+Le sedi periferiche sono quelle più esposte sotto l'aspetto della sicurezza, \uline{anche solo per il fatto che sono in numero maggiore, spesso non ci sono i responsabili dell'IT in sede e solitamente sono meno controllate rispetto la sede centrale}. Per questo motivo il nostro obiettivo è quello di proteggere i servizi, gli applicativi aziendali e la rete centrale dai dispositivi malevoli connessi alle reti degli uffici.
 L'organizzazione di Tiesse e di molti suoi clienti è caratterizzata dallo scenario in figura \ref{fig:scenario}. Utilizzando questa struttura di rete per effettuare la raccolta, l'analisi del traffico e le prove, ci siamo basati su un esempio di sede periferica, nel nostro caso un ufficio dell'azienda situato a Torino, con l'obiettivo di proteggere i servizi aziendali presenti nella sede centrale di Ivrea a cui l'ufficio è collegato tramite una VPN.
 
 Un altro caso possibile di utilizzo di questa soluzione è la distribuzione dei servizi in cloud, in cui l'azienda non ha il controllo dell'infrastruttura di rete e sfrutta i router thrusted nelle reti degli uffici per analizzare il traffico.
@@ -141,7 +141,7 @@ La maggior parte degli attacchi DDoS hanno una portata inferiore ai 10 Gbps (cir
 
 \begin{figure}[h]
     % todo: capire come gestire citazioni immagini a livello di copyright
-    \includegraphics[width=\hsize]{images/introduzione/attacks_size.png}
+    \includegraphics[width=\hsize]{images/introduzione/attacks_size_2.png}
     \caption{Distribuzione di attacchi DDoS per dimensione, 2020 \cite{imperva_ddos_report}}
     \centering
 \end{figure}

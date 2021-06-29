@@ -739,49 +739,49 @@ Nonostante i risultati simili, le reti che funzionano meglio sono quelle con 8 n
 
 
 \begin{table}
-    \begin{tabularx}{\textwidth}{||c X c c c c c c||} 
+    \begin{tabularx}{\textwidth}{||c X c c c c||} 
         \hline
-        \# & Tipologia & 8-8-8-8 & 8-6-6-8 & 10-8-8-10 & 40-8-8-40 & 1& 1\\ [0.5ex] 
+        \# & Tipologia & 6-6-6-6 & 8-6-6-8 & 8-8-8-8 & 10-8-8-10\\ [0.5ex] 
         \hline\hline
-        1 & Syn Flood 100pps 40s & \cellcolor{magenta} FN & \cellcolor{magenta} FN & \cellcolor{magenta} FN & \cellcolor{magenta} FN & \cellcolor{magenta} FN & \cellcolor{magenta} FN \\ 
+        1 & Syn Flood 100pps 40s & \cellcolor{magenta} FN & TP & \cellcolor{magenta} FN & \cellcolor{magenta} FN  \\ 
         \hline
-        2 & Upload 500MB su Google Drive & TP & TP & TP & TP & TP & TP  \\ 
+        2 & Upload 500MB su Google Drive & TP & TP & TP & \cellcolor{magenta} FN   \\ 
         \hline
-        3 &  Download 600MB da Google Drive & TN  & TN & TN & TN & TN & TN \\ 
+        3 &  Download 600MB da Google Drive & TN  & TN & \cellcolor{orange} FP & \cellcolor{orange} FP \\ 
         \hline 
-        4 & Normale mattinata & TN & TN & TN & TN & TN & TN \\
+        4 & Normale mattinata & TN & TN & TN & TN \\
         \hline
-        5 & Picco di traffico NTP & TN & TN & TN & TN & TN & TN \\
+        5 & Picco di traffico NTP & TN & TN & TN & TN  \\
         \hline
-        6 & Normale giornata & TN & TN & TN & TN & TN & TN \\ 
+        6 & Normale giornata & TN & TN & TN & TN  \\ 
         \hline
-        7 & Picchi di traffico NTP & TN & TN & TN & TN & TN & TN  \\ 
+        7 & Picchi di traffico NTP & TN & TN & TN & TN   \\ 
         \hline 
-        8 & Syn Flood di 2min 50pps & TP & TP & TP & TP & TP & TP \\
+        8 & Syn Flood di 2min 50pps & TP & TP & TP & TP  \\
         \hline
-        9 & Syn Flood di 30s 50pps & \cellcolor{magenta} FN & \cellcolor{magenta} FN & \cellcolor{magenta} FN & \cellcolor{magenta} FN & TP & TP  \\        
+        9 & Syn Flood di 30s 50pps & TP & TP & \cellcolor{magenta} FN & TP  \\        
         \hline
-        10 & Port scanning (nmap) & TP & TP & \cellcolor{magenta} FN & TP & TP & TP   \\
+        10 & Port scanning (nmap) & TP & TP & TP & TP   \\
         \hline
-        11 & ICMP Flood 100 pps & TP & TP & TP & TP & TP & TP \\
+        11 & ICMP Flood 100 pps & TP & TP & TP & TP \\
         \hline
-        12 & UDP Flood 100pps & TP & TP & TP & TP & TP & TP \\ 
+        12 & UDP Flood 100pps & TP & TP & TP & TP \\ 
         \hline
-        13 & DNS Amplification (4Mbps) & TP & TP & TP & TP & TP & TP \\ 
+        13 & DNS Amplification (4Mbps) & TP & TP & TP & TP \\ 
         \hline 
-        14 & DNS Flood (4Mbps) & TP & TP & TP & TP & TP & TP \\
+        14 & DNS Flood (4Mbps) & TP & TP & TP & TP \\
         \hline
-        15 & Picco di connessioni (2500) & TN & TN & \cellcolor{orange} FP & \cellcolor{orange} FP & \cellcolor{orange} FP & \cellcolor{orange} FP\\        
+        15 & Picco di connessioni (2500) & \cellcolor{orange} FP & \cellcolor{orange} FP & \cellcolor{orange} FP & \cellcolor{orange} FP \\        
         \hline 
-        16 & Picco di connessioni & TN & TN & TN & TN & \cellcolor{orange} FP & TN\\        
+        16 & Picco di connessioni & \cellcolor{orange} FP & \cellcolor{orange} FP & TN &  \cellcolor{orange} FP \\        
         \hline
-        17 & Picco di trasmissione & TN & TN & TN & TN & TN & TN\\        
+        17 & Picco di trasmissione & TN & TN & TN & TN\\        
         \hline
-        18 & Connessioni alte & TN & TN & TN & TN & TN & TN\\
+        18 & Connessioni alte & TN & TN & TN & TN\\
         \hline
-        19 & Normale mattinata & TN & \cellcolor{orange} FP & TN & TN & \cellcolor{orange} FP & TN\\ 
+        19 & Normale mattinata & \cellcolor{orange} FP & \cellcolor{orange} FP & TN & TN \\ 
         \hline
-        20 & Pomeriggio con dei picchi di traffico NTP & TN & TN & TN & TN & TN & TN\\ 
+        20 & Pomeriggio con dei picchi di traffico NTP & \cellcolor{orange} FP & TN & \cellcolor{orange} FP & TN\\ 
         \hline
     \end{tabularx}
     \caption{Tabella dei risultati dei test con diversi modelli di reti neurali LSTM. TN=True Negative, TP=True Positive, \cellcolor{orange} FP=False Positive, \cellcolor{magenta} FN=False Negative}
