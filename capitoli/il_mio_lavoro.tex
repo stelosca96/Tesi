@@ -9,10 +9,17 @@ Utilizzando una soluzione distribuita è possibile bloccare gli attacchi e il tr
 
 La raccolta e l'analisi dei dati viene effettuata utilizzando un sistema centralizzato, questo permette di avere un unico dispositivo con la capacità necessaria a svolgere l'elaborazione, che al tempo stesso possiede una visione completa sulle sorgenti del traffico e quindi sarà in grado di identificare facilmente da quale sede proviene il traffico anomalo.
 
+\begin{figure}[]
+    \label{fig:funzionamento}
+    \includegraphics[width=\hsize]{images/my_work/funzionamento.png}
+    \caption{Architettura del tool di Anomaly Detection}
+    \centering
+\end{figure}
+
 
 \section{Gestione dei dati}
 
-I dati vengono collezionati tramite un demone sui router (collectd), inviati ad un server (go-graphite) e visualizzati tramite una dashboard (Grafana). Il tool di anomaly detection da noi sviluppato si interfaccia direttamente con il database per la lettura dei dati e la scrittura dei risultati.
+I dati vengono collezionati tramite un demone sui router (collectd), inviati ad un server (go-graphite) e visualizzati tramite una dashboard (Grafana). Il tool di anomaly detection da noi sviluppato si interfaccia direttamente con il database per la lettura dei dati e la scrittura dei risultati \ref{fig:funzionamento}.
 Qui in seguito approfondirò maggiormente il flusso della gestione dei dati.
 
 \begin{figure}[]
@@ -24,6 +31,13 @@ Qui in seguito approfondirò maggiormente il flusso della gestione dei dati.
 
 \subsection{collectd}
 
+
+
+Collectd è un demone che raccoglie metriche di sistema e di applicazioni, trasferisce e salva dati di computer e dispositivi di rete. Collect ha una struttura modulare, vedi figura \ref{fig:collectd} in cui è possibile abilitare centinaia di plugin per la raccolta di metriche di sistema dai casi più generali a quelli più specifici ed inoltre è possibile scrivere i propri plugin per integrarlo ulteriormente. I plugin usati nella nostra soluzione sono ``write\_graphite'': plugin che permette di scrivere le metriche raccolte su un database graphite, ``conntrack'': plugin che permette di contare il numero di voci nella connection tracking table di Linux, ``interface'' : plugin che colleziona informazioni sul traffico su un'interfaccia, quindi pacchetti al secondo, bytes al secondo ed errori sull'interfaccia. 
+
+Inoltre per avere ulteriori dati a disposizione è stato scritto un plugin con lo scopo di aggiungere ulteriori metriche riguardanti il conteggio dei pacchetti per tipologia e per destinazione, conteggio non possibile con i plugin standard.
+
+
 \begin{figure}[]
     \label{fig:collectd}
     \begin{center}
@@ -32,13 +46,6 @@ Qui in seguito approfondirò maggiormente il flusso della gestione dei dati.
     \caption{Architettura di collectd}
     \centering
 \end{figure}
-
-Collectd è un demone che raccoglie metriche di sistema e di applicazioni, trasferisce e salva dati di computer e dispositivi di rete. Collect ha una struttura modulare, vedi figura \ref{fig:collectd} in cui è possibile abilitare centinaia di plugin per la raccolta di metriche di sistema dai casi più generali a quelli più specifici ed inoltre è possibile scrivere i propri plugin per integrarlo ulteriormente. I plugin usati nella nostra soluzione sono ``write\_graphite'': plugin che permette di scrivere le metriche raccolte su un database graphite, ``conntrack'': plugin che permette di contare il numero di voci nella connection tracking table di Linux, ``interface'' : plugin che colleziona informazioni sul traffico su un'interfaccia, quindi pacchetti al secondo, bytes al secondo ed errori sull'interfaccia. 
-
-Inoltre per avere ulteriori dati a disposizione è stato scritto un plugin con lo scopo di aggiungere ulteriori metriche riguardanti il conteggio dei pacchetti per tipologia e per destinazione, conteggio non possibile con i plugin standard.
-
-
-
 
 \subsection{NDPI} 
 NDPI è un software open-source per il deep-packet inspection basato su OpenDPI, il suo scopo è di riconoscere protocolli conosciuti anche su porte non standard, \uline{inoltre può essere personalizzato per il riconoscimento di applicazioni aziendali (è vera questa cosa?)}. nDPI è implementato nei router Tiesse e permette l'analisi dei pacchetti senza un degrado prestazionale.
@@ -102,7 +109,7 @@ Riassumendo i dati provenienti dai plugin di collect, dal mio plugin e da NDPI v
 
 \section{Selezione features}
 
-La scelta delle feature da utilizzare dipende da quale obiettivo su vuole ottenere, il mio obiettivo primario in questa tesi è di rilevare gli attacchi DDoS in uscita verso la sede centrale, quindi basandomi sugli attacchi più famosi e frequenti ho delineato una lista di parametri da osservare. Questi parametri sono:
+La scelta delle feature da utilizzare dipende da quale obiettivo si vuole ottenere, in questa tesi il nostro obiettivo primario è di rilevare gli attacchi DDoS in uscita verso la sede centrale, quindi basandoci sugli attacchi più famosi e frequenti abbiamo delineato una lista di parametri da osservare. Questi parametri sono:
 % todo: capire le unità di misura i dati sono ogni secondo o ogni 10
 \begin{itemize}
     \item \emph{bytes trasmessi al secondo}:questa metrica è utile, abbinata ad altre, per la rilevazione di attacchi che mirano alla saturazione della banda.
@@ -122,13 +129,13 @@ La scelta delle feature da utilizzare dipende da quale obiettivo su vuole ottene
 % todo: sistemare frase
 Tutte le feature vengono poi \uline{derivate su un tempo di 10/30s, per avere dei "rate"} confrontabili tra lavoro.
 
-La scelta della features è nata da un compromesso tra i dati necessari per rilevare al meglio le anomalie, la riduzione dei dati da salvare sul server e di conseguenza l'uso di banda usata per il trasferimento. Inoltre un problema che ho dovuto tenere in considerazione è l'utilizzo di un \underline{acceleratore hardware} nei router Tiesse, il quale permette un incremento della velocità di routing, ma non permette di analizzare nel kernel i pacchetti.
+La scelta della features è nata da un compromesso tra i dati necessari per rilevare al meglio le anomalie, la riduzione dei dati da salvare sul server e di conseguenza l'uso di banda usata per il trasferimento. Inoltre un problema che abbiamo dovuto tenere in considerazione è l'utilizzo di un \underline{acceleratore hardware} nei router Tiesse, il quale permette un incremento della velocità di routing, ma rende più difficoltosa l'analisi dei pacchetti nel kernel senza la perdita di prestazioni.
  %todo: approfondire meglio come funziona il fast path
  
 \section{Il nostro tool}
 \label{section:our_tool}
 
-Utilizzando unicamente i dati provenienti da nDPI e collectd non abbiamo accesso a features utili per monitorare una determinata tipologia di pacchetti, oppure una minore granularità dei dati per conoscere il numero dei pacchetti in transito verso certi applicativi aziendali. Per questo motivo, per una migliore raccolta e monitoraggio, abbiamo sviluppato un ulteriore software in grado di estrarre metriche relative a \uline{server/servizi} aziendali specifici o metriche non disponibili tramite i plugin ufficiali di collectd, come per esempio il syn rate. Per svilupparlo abbiamo programmato un modulo kernel, che comunica con un plugin per collectd, anch'esso da noi creato, tramite un process file system (procfs). Per una discussione più approfondita rimando al capitolo 5.
+Utilizzando unicamente i dati provenienti da nDPI e collectd non abbiamo accesso a features utili per monitorare una determinata tipologia di pacchetti, oppure a informazioni sul traffico con una minore granularità per esempio per conoscere il numero dei pacchetti in transito verso certi applicativi aziendali. Per questo motivo, per una migliore raccolta e monitoraggio, abbiamo sviluppato un ulteriore software in grado di estrarre metriche relative a \uline{server/servizi} aziendali specifici o metriche non disponibili tramite i plugin ufficiali di collectd, come per esempio il syn rate. Per svilupparlo abbiamo programmato un modulo kernel, che comunica con un plugin per collectd, anch'esso da noi creato, tramite un process file system (procfs). Per una discussione più approfondita rimando al capitolo 5.
 
 Questa soluzione è funzionante ed è stata testata in laboratorio, però non viene utilizzata per la raccolta di dati necessaria a causa dell'impossibilità di introdurre software aggiuntivo in un router in produzione, da cui dipende la produttività di un intero ufficio. 
  
@@ -187,7 +194,7 @@ Come è possibile notare nell'esempio \cite{keras_esempio}, tramite questa libre
 % Genero tante piccole sequenze di 8 elementi (spiegare il motivo della scelta della sequence length => trade-off tra tempo di rilevamento dell'anomalia e mitigazione dei picchi e dei falsi positivi) e perché lo faccio, come normalizzo i dati e perché. Come fornisco i dati in input alla rete.
 
 
-Le metriche relative alle applicazioni vengono aggiornate ogni 30 secondi, a differenza dei 10 secondi con cui aggiorno i dati collezionati da collectd, per questo motivo ogni volta che devo richiedere dei dati al server devo effettuare due richieste, tramite la libreria requests, alle carbonapi.
+Le metriche relative alle applicazioni di nDPI vengono aggiornate ogni 30 secondi, a differenza dei 10 secondi con cui aggiorno i dati collezionati da collectd, per questo motivo ogni volta che devo richiedere dei dati al server devo effettuare due richieste, tramite la libreria requests, alle carbonapi.
 
 % (Viene usato http con basic auth, questo mi provoca un colpo al cuore lato sicurezza, ma lo posso giustificare dicendo che è un ambiente di test, in produzione come minimo verrà usato https.)
 
@@ -328,7 +335,7 @@ def get_data(s_time, e_time, hostname: str, interface: str,
 
 \end{lstlisting}
 
-Ricevuti i dati e organizzati nel formato corretto, effettuo una nuova richiesta alle carbon api, per ricevere le statistiche relative alle applicazioni, il procedimento è simile a quello precedentemente descritto, l'unica differenza è che i dati sul database vengono salvati da ndpi ogni 30 secondi, per questo motivo devo estenderli mostrando lo stesso dato più volte, in modo da avere lo stesso numero degli elementi ottenuti precedentemente.
+Ricevuti i dati e organizzati nel formato corretto, effettuo una nuova richiesta alle carbon api, per ricevere le statistiche relative alle applicazioni, il procedimento è simile a quello precedentemente descritto, l'unica differenza è che i dati sul database vengono salvati da nDPI ogni 30 secondi, per questo motivo devo estenderli mostrando lo stesso dato più volte, in modo da avere lo stesso numero degli elementi ottenuti precedentemente.
 
 \begin{lstlisting}[language=python3]
 for element in app_list:
@@ -361,10 +368,9 @@ for j in range(3):
 
 %todo: tabella con i dati di tutte le features
 
-\paragraph{La standardizzazione dei dati} è la faschee subito successiva, 
+\paragraph{La standardizzazione dei dati} è la fase subito successiva,
 % differenziare i casi tra l'evaluate e il train
-Durante il train calcolo la media e la deviazione chestandard sui dati, successivamente standardizzo  i dati per ogni istante di tempo e salvo la media e la deviazione standard di ogni feature su un file.
-Durante la fase di evaluate per standardizzare i dati uso i dati salvati precedentemente sul file durante l'allenamento.
+durante il train calcolo la media e la deviazione standard sui dati, successivamente standardizzo  i dati per ogni istante di tempo e salvo la media e la deviazione standard di ogni feature su un file. Questo permette di avere dati prossimi all'unità, permettendo un migliore funzionamento della rete neurale. Durante la fase di evaluate effettuo lo stesso procedimento, ma per standardizzare i dati uso la media e la deviazione standard precedentemente salvate su file durante l'allenamento.
 
 %todo: Un problema della standardizzazione dei dati è la gestione dei picchi le reti neurali lavorano meglio con dati piccoli, quindi i picchi potrebbero essere un problema, si può pensare un modo diverso per standardizzare i dati
 
@@ -452,15 +458,15 @@ Successivamente prima di effettuare il train vero e proprio, grazie alla funzion
 L'allenamento viene effettuato usando il metodo ``fit'' della classe model e usando in input sia per le x, che per le y: l'insieme di train appena generato e l'insieme di test per validare il modello. Inoltre abbiamo abilitato l'EarlyStopping, tramite il quale se per più di cinque iterazioni non si hanno miglioramenti, viene stoppato il processo di allenamento, questo serve per ridurre i tempi di train e ridurre la possibilità di overfitting.
 %todo: da valutare possibilità di overfitting.
 
-Come spiegato precedentemente, l'utilizzo degli autoencoders permette di ottenere degli ``anomaly score'' per ogni sequenza di dati, quindi terminata la fase di allenamento della rete devo decidere sopra quale valore devo considerare i dati anomali.
-Le soglie sopra le quali considero i dati anomali vengono prese dai massimi valori degli anomaly score per ogni feature: avendo ipotizzato che tutti i dati forniti per il train non siano anomali, devo assicurarmi che effettuando la valutazione delle anomalie su quei dati nulla risulti anomalo.
-Per calcolare l'anomaly score calcolo il valore medio dei valori assoluti delle differenze tra il valore originale e quello ricostruita.
+Come spiegato precedentemente, l'utilizzo degli autoencoders permette di ottenere degli ``anomaly score'' per ogni sequenza di dati, quindi terminata la fase di allenamento della rete bisogna decidere sopra quali valori vogliamo considerare i dati anomali.
+Avendo ipotizzato che tutti i dati forniti per il train siano regolari, le soglie sopra le quali dovremo considerare i dati anomali verranno prese dai massimi valori degli anomaly score per ogni feature, questo permette di assicurarci che effettuando la valutazione delle anomalie su quel dataset nulla risulti anomalo.
+Dopo avere ricostruito i dati tramite l’utilizzo della rete di autoencoder per calcolare l'anomaly score viene calcolato il valore medio dei valori assoluti delle differenze tra il valore originale e quello ricostruito.
 \begin{equation}
     % \caption{Formula per il calcolo dell'anomaly score}
     anomaly\_score = \frac{\sum_{elementi\_sequenza}\lvert valore\_originale - valore\_ricostruito \rvert}{lunghezza\_sequenza}
 \end{equation}
 
-La scelta di questo sistema permette di evidenziare sia anomalie sul traffico anomalo dovuto a variazioni verso l'alto dei valori normali, sia verso il basso, ma anche i valori ondulatori possono essere notificati, perché la somma delle distanze delle ricostruzioni del valore assoluto di ogni istante da quello reale si discosterà molto, nonostante il valore medio sia in linea con quello aspettato.
+La scelta di questo sistema permette di evidenziare sia anomalie sul traffico anomalo dovuto a variazioni sia verso l'alto dei valori normali, sia verso il basso, ma anche i valori ondulatori possono essere notificati, perché la somma delle distanze delle ricostruzioni del valore assoluto di ogni istante da quello reale si discosterà molto, nonostante il valore medio sia in linea con quello aspettato.
 
 Le soglie calcolate vengono salvate su un file, da potere usare successivamente per la valutazione delle anomalie.
 

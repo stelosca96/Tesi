@@ -11,7 +11,7 @@ L'ip spoofing è una tecnica che permette di costruire pacchetti IP con indirizz
 
 Un metodo per prevenire o rendere più tracciabili gli attacchi DDoS che lo utilizzano è adottare tecniche in grado di prevenirne il suo utilizzo.
 
-Nello scenario da noi ipotizzato il meccanismo di mitigazione è installato negli edge router nelle sedi aziendali periferiche, in questa posizione possiamo ipotizzare che tutti i pacchetti in transito dalla sotto-rete del distaccamento, verso la sotto-rete della sede centrale o verso internet, siano stati generati da un host di quella sotto rete. Per questo motivo una soluzione per limitare il problema è impedire al router di effettuare l'inoltro di tutti i pacchetti provenienti da altre sotto-reti.
+Nello scenario da noi ipotizzato il meccanismo di mitigazione è installato negli edge router nelle sedi aziendali periferiche, in questa posizione possiamo ipotizzare che tutti i pacchetti in transito dalla sotto-rete del distaccamento, verso la sottorete della sede centrale o verso internet, siano stati generati da un host di quella sotto rete. Per questo motivo una soluzione per limitare il problema è impedire al router di effettuare l'inoltro di tutti i pacchetti provenienti da altre sottoreti.
 Questa soluzione non elimina completamente il problema dell'ip spoofing, perchè un utente malevolo ha sempre la possibilità di generare traffico utilizzando come indirizzo ip sorgente un qualsiasi indirizzo della stessa subnet.
 %todo: cite https://www.cloudflare.com/it-it/learning/ddos/glossary/ip-spoofing/
 
