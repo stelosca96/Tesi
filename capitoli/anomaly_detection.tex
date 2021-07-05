@@ -121,7 +121,7 @@ Lo scopo della sicurezza di rete è di proteggere la confidenzialità, l'integri
     \item Denial of service (DoS)
     \item Probe: viene sondata la rete per ottenere informazione sulla struttura della rete target o degli host, principalmente per scopi di ricognizione.
     \item User to root (U2R): è una tipologia di attacco, quando l'attaccante ha l'obiettivo di ottenere illegalmente accesso ad un account amministrativo per manipolare o fare uso illecito di risorse.
-    \item Remote to user (R2U): è un attacco in cui l'attaccante  ottenere l'accesso di una macchina target, in modo di avere i privilegi di utilizzare la sua rete.
+    \item Remote to user (R2U): è un attacco in cui l'attaccante  ottenere l'accesso di una macchina target, in modo di avere il privilegio di utilizzare la sua rete.
 \end{itemize}
 
 \section{Le reti neurali}
@@ -131,7 +131,7 @@ Lo scopo della sicurezza di rete è di proteggere la confidenzialità, l'integri
 
 Le reti neurali sono composte da diversi strati (layer) di nodi, ciascuno collegato al successivo.
 
-L'unità base di ogni rete neurale è il nodo, che rappresenta il neurone artificiale, il tipo base è il ``perceptron'': un nodo con più input e un output rappresentato come una funzione a gradino caratterizzata dalla funzione \ref{eq:perceptron}, in cui si può notare che solo se la sommatoria dei valori in ingresso supera una certa soglia, il neurone si attiva.
+L'unità base di ogni rete neurale è il nodo, che rappresenta il neurone artificiale, il tipo base è il ``perceptron'': un nodo con più input e un output rappresentato come una funzione a gradino caratterizzata dalla funzione ~\ref{eq:perceptron}, in cui si può notare che solo se la sommatoria dei valori in ingresso supera una certa soglia, il neurone si attiva.
 %todo: fixare label equazione
 \[
 \label{eq:perceptron}
@@ -194,7 +194,7 @@ Questi passi verranno ripetuti più volte fino a quando non sarà ottenuto il ri
 % Cosa sono gli autoencoder e perché sono utili nell'anomaly detection.
 
 Gli autoencoder sono una tipologia di reti neurali non supervisionata, anche se quasi sempre vengono usati in maniera semi-supervisionata, che permettono di generare nuovi dati, effettuando in uscita la ricostruzione dei dati forniti in ingresso.
-Gli autoencoder sono composti da tre parti, l'encoder, lo spazio latente e il decoder, negli autoencoder la dimensione dell'input è uguale a quella dell'output, e nel mezzo ci sono dei livelli che si occupano prima di comprimere (encoder) le dimensioni, fino a raggiungere lo spazio latente, una forma ``compressa'' dell'input, seguita da una serie di livelli (decoder) che si occupano di ritornare alle dimensioni originarie ~\ref{fig:autoencoder}.
+Gli autoencoder sono composti da tre parti, l'encoder, lo spazio latente e il decoder, negli autoencoder la dimensione dell'input è uguale a quella dell'output, e nel mezzo ci sono dei livelli che si occupano prima di comprimere (encoder) le dimensioni, fino a raggiungere lo spazio latente, una forma ``compressa'' dell'input, seguita da una serie di livelli (decoder) che si occupano di ritornare alle dimensioni originarie (Figura ~\ref{fig:autoencoder}).
 La capacità di comprimere i dati e decomprimerli si basa sull'allenamento della rete, di conseguenza ogni rete è specifica per una tipologia di dati da comprimere e decomprimere, questo la caratterizza dagli altri sistemi di compressione, per esempio gzip, inoltre è una tipologia di compressione ``lossy'', con perdita, perché l'uscita sarà simile all'ingresso, ma degradata.
 Una popolare applicazione degli autoencoder è l'anomaly detection. Gli autoencoder si occupano di ricostruire i dati iniziali, imparando effettivamente a riprodurre una funzione identità, per questo motivo allenandoli solo con dati di istanze normali quando si troveranno davanti ad un dato anomalo falliranno la ricostruzione dell'input e di conseguenza produrranno un grande errore di ricostruzione \cite{anomaly_detection_survey_2_deep_learning}. 
 % https://towardsdatascience.com/applied-deep-learning-part-3-autoencoders-1c083af4d798#f686
@@ -207,7 +207,7 @@ Esistono in letteratura sistemi di anomaly detection basati su autoencoders, che
 
 \begin{itemize}
 \item Kitsune \cite{kitsune}: un NIDS, basato sistema di anomaly detection basato su autoencoders, che permette il riconoscimento di traffico normale e anomalo senza una supervisione per l'allenamento. Il sistema ha l'obiettivo di rilevare attacchi di tipo DDoS, Man in the Middle, scansioni di rete e botnet in una rete con dispositivi tradizionali e IoT.
-\item La soluzione proposta nell'articolo  \uline{(come lo cito?)} \cite{chen_autoencoders}, la quale sfrutta una rete convoluzionari di autoencoders (per una riduzione dei tempi di training) per superare le prestazioni dei sistemi di rilevamento tradizionali.
+\item La soluzione proposta nell'articolo  \uline{(come lo cito?)} \cite{chen_autoencoders} sfrutta una rete di autoencoders convoluzionaria (per una riduzione dei tempi di training) per superare le prestazioni dei sistemi di rilevamento tradizionali.
 \item L'obiettivo della soluzione \cite{vae_autoencoders} è di rilevare attacchi in di rete utilizzando i dati provenienti dai router di rete, generati tramite NetFlow, inoltre si pone l'obiettivo di spiegare in cosa consiste l'anomalia nei dati. Per il rilevamento delle anomalie si basa sui Variational Autoencoder, uno sviluppo della versione tradizionale.
 %todo: citare articoli autoencoders delle soluzioni esistenti prese dagli articoli.
 

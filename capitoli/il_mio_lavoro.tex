@@ -19,7 +19,7 @@ La raccolta e l'analisi dei dati viene effettuata utilizzando un sistema central
 
 \section{Gestione dei dati}
 
-I dati vengono collezionati tramite un demone sui router (collectd), inviati ad un server (go-graphite) e visualizzati tramite una dashboard (Grafana). Il tool di anomaly detection da noi sviluppato si interfaccia direttamente con il database per la lettura dei dati e la scrittura dei risultati \ref{fig:funzionamento}.
+I dati vengono collezionati tramite un demone sui router (collectd), inviati ad un server (go-graphite) e visualizzati tramite una dashboard (Grafana). Il tool di anomaly detection da noi sviluppato si interfaccia direttamente con il database per la lettura dei dati e la scrittura dei risultati (Figura \ref{fig:funzionamento}).
 Qui in seguito approfondirò maggiormente il flusso della gestione dei dati.
 
 \begin{figure}[]
@@ -33,17 +33,17 @@ Qui in seguito approfondirò maggiormente il flusso della gestione dei dati.
 
 
 
-Collectd è un demone che raccoglie metriche di sistema e di applicazioni, trasferisce e salva dati di computer e dispositivi di rete. Collect ha una struttura modulare, vedi figura \ref{fig:collectd} in cui è possibile abilitare centinaia di plugin per la raccolta di metriche di sistema dai casi più generali a quelli più specifici ed inoltre è possibile scrivere i propri plugin per integrarlo ulteriormente. I plugin usati nella nostra soluzione sono ``write\_graphite'': plugin che permette di scrivere le metriche raccolte su un database graphite, ``conntrack'': plugin che permette di contare il numero di voci nella connection tracking table di Linux, ``interface'' : plugin che colleziona informazioni sul traffico su un'interfaccia, quindi pacchetti al secondo, bytes al secondo ed errori sull'interfaccia. 
+Collectd è un demone che raccoglie metriche di sistema e di applicazioni, trasferisce e salva dati di computer e dispositivi di rete. Collect ha una struttura modulare (vedi figura \ref{fig:collectd}), in cui è possibile abilitare centinaia di plugin per la raccolta di metriche di sistema dai casi più generali a quelli più specifici ed inoltre è possibile scrivere i propri plugin per integrarlo ulteriormente. I plugin usati nella nostra soluzione sono ``write\_graphite'': plugin che permette di scrivere le metriche raccolte su un database graphite, ``conntrack'': plugin che permette di contare il numero di voci nella connection tracking table di Linux, ``interface'' : plugin che colleziona informazioni sul traffico su un'interfaccia, quindi pacchetti al secondo, bytes al secondo ed errori sull'interfaccia. 
 
 Inoltre per avere ulteriori dati a disposizione è stato scritto un plugin con lo scopo di aggiungere ulteriori metriche riguardanti il conteggio dei pacchetti per tipologia e per destinazione, conteggio non possibile con i plugin standard.
 
 
 \begin{figure}[]
-    \label{fig:collectd}
     \begin{center}
         \includegraphics[height=300pt]{images/my_work/collectd.png}
     \end{center}
     \caption{Architettura di collectd}
+    \label{fig:collectd}
     \centering
 \end{figure}
 
@@ -53,7 +53,7 @@ NDPI è un software open-source per il deep-packet inspection basato su OpenDPI,
 %todo: completare ndpi
 
 
-\subsection{graphite} è un software open source per il monitoraggio funzionante sia su hardware economico, che su un'infrastruttura cloud. Può essere usato per monitorare le performance di siti, applicazioni, server e nel caso di Tiesse per monitorare informazioni sull'utilizzo dei router. Degli esempi di informazioni raccolte sono: il numero totale di router connessi, quelli raggiungibili, il throughput, l'uptime e la velocità della connessione xDSL.
+\subsection{graphite} Graphite è un software open source per il monitoraggio funzionante sia su hardware economico, che su un'infrastruttura cloud. Può essere usato per monitorare le performance di siti, applicazioni, server e nel caso di Tiesse per monitorare informazioni sull'utilizzo dei router. Degli esempi di informazioni raccolte sono: il numero totale di router connessi, quelli raggiungibili, il throughput, l'uptime e la velocità della connessione xDSL.
 L'obiettivo di graphite è il salvataggio di serie temporali di dati numerici e la successiva condivisione e visualizzazione.
 Graphite è composto da tre parti (come si può vedere dalla figura ~\ref{fig:graphite}):
 
@@ -72,37 +72,38 @@ Whisper è il time-series database usato da Graphite, è un database veloce e af
 Nel nostro caso abbiamo scelto di mantenere salvati i dati usati come feature per l'anomaly detection per 4 mesi, con una granularità di 10 secondi, aggregata successivamente tramite il calcolo della media su intervalli crescenti con il passare del tempo. La scelta è ricaduta su un periodo di tempo così lungo prima di iniziare ad aggregare i dati perchè per l'allenamento del modello necessitiamo dei dati con maggiore granularità possibile e avevamo la necessità di allenare la rete su periodi differenti per valutare l'affidabilità del modello. Questa scelta verrà modificata in produzione in base alla stazionarietà dei dati dell'azienda presa in considerazione.
 
 \begin{figure}[h]
-     \label{fig:graphite}
     \includegraphics[width=\hsize]{images/my_work/graphite.png}
     \caption{Architettura di Graphite}
+    \label{fig:graphite}
     \centering
 \end{figure}
 
 \paragraph{go-graphite} è un'implementazione in Golang di Graphite, rispetto alla versione originale di carbon il backend
-go-carbon è più veloce in tutte le condizioni (la differenza di prestazioni varia in base alla macchina su cui è installato) ~\ref{fig:gocarbon}.
-Le carbonapi invece sono un subset delle api di graphite-web e le vanno a sostituire essendo dalle 5 alle 10 volte più veloci.
+go-carbon è più veloce in tutte le condizioni (la differenza di prestazioni varia in base alla macchina su cui è installato.
+Le carbonapi invece sono un subset delle api di graphite-web e le vanno a sostituire essendo dalle 5 alle 10 volte più veloci (Figura \ref{fig:gocarbon}).
 
 \begin{figure}[h]
-    \label{fig:gocarbon}
     \includegraphics[width=\hsize]{images/my_work/go-carbon.png}
     \caption{Differenza di prestazioni tra carbon e go-carbon}
+    \label{fig:gocarbon}
     \centering
 \end{figure}
 % https://github.com/go-graphite/go-carbon
 
 
 \begin{figure}[h]
-    \label{fig:grafana}
     \includegraphics[width=\hsize]{images/my_work/grafana_dashboard.png}
     \caption{La dashboard per l'anomaly detection su Grafana}
+    \label{fig:grafana}
     \centering
 \end{figure}
 
-\subsection{Grafana} è un software open source che permette la visualizzazione e la generazione delle metriche tramite una web application. Permette di creare dashboard dinamiche interrogando le api di graphite-web. Nel nostro caso è stata organizzata una dashboard in modo da visualizzare sia i dati provenienti dai router da analizzate, sia gli anomaly score calcolati dal software di anomaly-detection ~\ref{fig:grafana}.
+\subsection{Grafana}
+Grafana è un software open source che permette la visualizzazione e la generazione delle metriche tramite una web application. Permette di creare dashboard dinamiche interrogando le api di graphite-web. Nel nostro caso è stata organizzata una dashboard in modo da visualizzare sia i dati provenienti dai router da analizzate, sia gli anomaly score calcolati dal software di anomaly-detection (Figura \ref{fig:grafana}).
 
 
 %todo: come vengono mandati i dati di ndpi?
-Riassumendo i dati provenienti dai plugin di collect, dal mio plugin e da NDPI vengono collezionati da collectd e inviati tramite il plugin write\_graphite al backend go-carbon, che si occupa di ricevere i dati e salvarli sul file system. Per la visualizzazione dei dati viene usato grafana, che permette di visualizzare i dati richiedendo i dati alle carbonapi e contemporaneamente il nostro tool di anomaly detection richiede i dati per analizzarli. Una volta analizzati i dati e ottenuti dei risultati, vengono mandati a go-carbon per salvarli nel database ~\ref{fig:mos}.
+Riassumendo i dati provenienti dai plugin di collect, dal mio plugin e da NDPI vengono collezionati da collectd e inviati tramite il plugin write\_graphite al backend go-carbon, che si occupa di ricevere i dati e salvarli sul file system. Per la visualizzazione dei dati viene usato Grafana, che permette di visualizzare i dati richiedendo i dati alle carbonapi e contemporaneamente il nostro tool di anomaly detection richiede i dati per analizzarli. Una volta analizzati i dati e ottenuti dei risultati, vengono mandati a go-carbon per salvarli nel database (Figura \ref{fig:mos}).
 % todo: approfondire MOS
 % todo: fare immagine con la gestione dei dati
 
@@ -112,7 +113,7 @@ Riassumendo i dati provenienti dai plugin di collect, dal mio plugin e da NDPI v
 La scelta delle feature da utilizzare dipende da quale obiettivo si vuole ottenere, in questa tesi il nostro obiettivo primario è di rilevare gli attacchi DDoS in uscita verso la sede centrale, quindi basandoci sugli attacchi più famosi e frequenti abbiamo delineato una lista di parametri da osservare. Questi parametri sono:
 % todo: capire le unità di misura i dati sono ogni secondo o ogni 10
 \begin{itemize}
-    \item \emph{bytes trasmessi al secondo}:questa metrica è utile, abbinata ad altre, per la rilevazione di attacchi che mirano alla saturazione della banda.
+    \item \emph{bytes trasmessi al secondo}: questa metrica è utile, abbinata ad altre, per la rilevazione di attacchi che mirano alla saturazione della banda.
     \item \emph{pacchetti trasmessi al secondo}: questa metrica ha uno scopo simile alla precedente oppure aiuta ad avere informazioni sugli attacchi di tipo flooding.
     \item \emph{numero di connessioni aperte}: il numero di connessioni aperte è un indicatore importante per identificare tutti gli attacchi che mirano a saturare le connessioni di un server. %todo: questa ha molti usi
     \item \emph{numero di pacchetti con flag syn}: questa metrica è molto utile per la rilevazione di syn flood o port scanning.
@@ -141,7 +142,7 @@ Questa soluzione è funzionante ed è stata testata in laboratorio, però non vi
  
 % in cui solo il primo pacchetto di ogni flusso passa tramite il kernel e i successivi vengono inoltrati automaticamente in hardware.
  
-Inoltre i router Tiesse sfruttano un acceleratore hardware, che complica l'utilizzo di questo sistema. I router hanno lo scopo di analizzare il traffico proveniente dalle porte e cercare la corretta porta di destinazione su cui inoltrarlo. Insieme a questo compito si occupano anche di scartare del traffico in base a delle regole e effettuare la traduzione degli indirizzi nel caso in cui svolgano anche la funzione di NAT. Per prendere una decisione su dove inoltrare ogni pacchetto il router deve mandarli alla CPU, la quale si occupa di prendere una decisione e inoltrarli verso la porta corretta. Questa soluzione è usata solamente nei router economici, capaci di inoltrare centinaia di Mbps a causa di motivi economici o su router ad altissime prestazione (~100-200Gps di banda aggregata) sfruttando una massiccia parallelizzazione dei flussi su CPU high-end dai costi superiori ai 1000\/2000€ \cite{risso_sn}. Una soluzione usata dalle restanti fasce di router, compresi i router Tiesse, è quella dell'utilizzo di un fast path e di uno slow path, il primo permette l'inoltro di pacchetti tramite una tabella di forwarding (FIB) e spesso è implementato in hardware tramite delle ASICs. I pacchetti di flussi ancora non conosciuti nella FIB o quelli con caratteristiche particolari transitano dallo slow path, il quale sfrutta la CPU ed è più lento, ma può svolgere operazioni più complesse. La disabilitazione del fast path può portare ad una riduzione delle prestazioni a poche centinaia di Mbps oltre ad incremento dell'utilizzo della CPU, per questo motivo dobbiamo evitarla. 
+Inoltre i router Tiesse sfruttano un acceleratore hardware, che complica l'utilizzo di questo sistema. I router hanno lo scopo di analizzare il traffico proveniente dalle porte e cercare la corretta porta di destinazione su cui inoltrarlo. Insieme a questo compito si occupano anche di scartare del traffico in base a delle regole e effettuare la traduzione degli indirizzi nel caso in cui svolgano anche la funzione di NAT. Per prendere una decisione su dove inoltrare ogni pacchetto il router deve mandarli alla CPU, la quale si occupa di prendere una decisione e inoltrarli verso la porta corretta. Questa soluzione è usata solamente nei router economici, capaci di inoltrare centinaia di Mbps a causa di motivi economici o su router ad altissime prestazione (~100-200Gbps di banda aggregata) sfruttando una massiccia parallelizzazione dei flussi su CPU high-end dai costi superiori ai 1000/2000€ \cite{risso_sn}. Una soluzione usata dalle restanti fasce di router, compresi i router Tiesse, è quella dell'utilizzo di un fast path e di uno slow path, il primo permette l'inoltro di pacchetti tramite una tabella di forwarding (FIB) e spesso è implementato in hardware tramite delle ASICs. I pacchetti di flussi ancora non conosciuti nella FIB o quelli con caratteristiche particolari transitano dallo slow path, il quale sfrutta la CPU ed è più lento, ma può svolgere operazioni più complesse. La disabilitazione del fast path può portare ad una riduzione delle prestazioni a poche centinaia di Mbps oltre ad incremento dell'utilizzo della CPU, per questo motivo dobbiamo evitarla. 
 % todo: da verificare
 A differenza del nostro sistema collectd effettua le letture tramite dei contatori sulle NIC oppure tramite letture di contatori in strutture dati già esistenti, quindi non è necessario il transito di ogni pacchetto dal kernel, mentre nDPI è stato integrato grazie a pesanti modifiche nel software.
 
@@ -359,7 +360,7 @@ for j in range(3):
     \hline
     2 & 45830 & 0.0 & 0.0 & 6868.0& 0.0 &  76.0 \\
     \hline
-    3 & 45830 & 621.0 & 0.0 & 6864.0 & 389.0  &  0.0 \\
+    3 & 45860 & 621.0 & 0.0 & 6864.0 & 389.0  &  0.0 \\
     \hline
     \end{tabular}
     \caption{Tabella di esempio dei dati ricevuti relativi alle app di nDPI}
@@ -375,7 +376,7 @@ durante il train calcolo la media e la deviazione standard sui dati, successivam
 %todo: Un problema della standardizzazione dei dati è la gestione dei picchi le reti neurali lavorano meglio con dati piccoli, quindi i picchi potrebbero essere un problema, si può pensare un modo diverso per standardizzare i dati
 
 \paragraph{Scelta della lunghezza delle sequenze dei dati.} Utilizzando i dati standardizzati genero ``N-K'' sequenze di lunghezza ``K'' elementi, dove ``N'' è il numero di elementi ricevuti precedentemente. Queste sequenze mi servono per uniformare i dati di allenamento e valutazione usando una lunghezza fissa per la sequenza di dati da dare in input alla rete neurale.
-La scelta della lunghezza della sequenza è molto importante, perché da essa dipende la capacità di rilevamento delle anomalie: più il valore sarà grande e più sarà preciso il riconoscimento delle anomalie e meno il programma sarà soggetto a falsi positivi, ma al tempo stesso renderà di difficile identificazione i picchi anomali e il tempo necessario per rilevare un'anomalia sarà maggiore.
+La scelta della lunghezza della sequenza è molto importante, perché da essa dipende la capacità di rilevamento delle anomalie: più il valore sarà grande e più sarà preciso il riconoscimento e meno il programma sarà soggetto a falsi positivi, ma al tempo stesso renderà di difficile identificazione i picchi anomali e il tempo necessario per rilevare un'anomalia sarà maggiore.
 %todo: aggiungo il codice per creare le sequenze?
 %todo: qua spiego cosa ho scelto allegando delle immagini
 Dopo un attenta analisi, illustrata successivamente, abbiamo scelto una lunghezza della sequenza pari a 12 elementi, tenendo anche in considerazione il fatto che il 25\% degli attacchi ha una durata inferiore ai 10 minuti \cite{imperva_ddos_report}, quindi è importante rilevare attacchi di breve durata.
@@ -451,7 +452,7 @@ sequential_model.summary()
 
 \subsection{Train}
 Il train deve essere effettuato su intervalli di tempo in cui non si sono verificate anomalie, per questo motivo viene fatta l'assunzione che tutto il traffico generato non presenti anomalie a meno di piccoli intervalli conosciuti che è possibile specificare prima dell'avvio di questa fase, nel nostro caso abbiamo escluso gli intervalli in cui è stato generato traffico malevolo volutamente per scopo di test. Se l'amministratore di sistema notasse altri periodi di traffico anomalo potrebbe escluderli dai dati di allenamento.
-Inoltre per avere un maggiore numero di dati, e velocizzare l'apprendimento dell'allenamento della rete, è possibile utilizzare i dati provenienti da più router delle sedi periferiche, se ipotizziamo che il traffico generato sia simile tra loro.
+Inoltre per avere un maggiore numero di dati, e velocizzare l'apprendimento della rete, è possibile utilizzare i dati provenienti da più router delle sedi periferiche, se ipotizziamo che il traffico generato sia simile tra loro.
 Dalla selezione degli intervalli di tempo su cui si vuole effettuare il train per semplicità in questa prima versione di algoritmo vengono esclusi i weekend: giorni della settimana in cui, nel nostro caso, il traffico è molto diverso dagli altri, volendo risolvere il problema si potrebbe usare una seconda rete da usare solo nei giorni festivi oppure considerare l'introduzione di nuove feature per considerarli. %todo: proporre altre soluzioni per i weekend
 Nella fase di train per prima cosa viene effettuata la raccolta e la trasformazione dei dati dal server, come spiegato precedentemente e viene caricato da file il modello generato.
 Successivamente prima di effettuare il train vero e proprio, grazie alla funzione ``train\_test\_split'' della libreria sklearn i dati vengono divisi in due insiemi, quello di train e quello di test, con il 15\% dei dati usati per il test e il restante per il train.
