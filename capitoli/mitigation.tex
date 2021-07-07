@@ -3,9 +3,9 @@
 
 \section{Introduzione}
 
-Mitigare gli attacchi DDoS è un problema di più difficile risoluzione rispetto alla sola rilevazione, perché bisogna conoscere maggiori informazioni sulla provenienza del flusso malevolo e il problema dei ``false positive'' è maggiormente sentito: se durante la fase di detection rileviamo un falso positivo e lo notifichiamo all'amministratore di sistema \underline{è un problema relativo} perché sarà lui ad effettuare una successiva analisi prima di intraprendere azioni correttive. Se ci prefiggiamo l'obiettivo di bloccare automaticamente i flussi malevoli dei falsi positivi significherà degradare o impedire la connessione ad utenti legittimi.
+Mitigare gli attacchi DDoS è un problema di più difficile risoluzione rispetto alla sola rilevazione, poiché bisogna conoscere maggiori informazioni sulla provenienza del flusso malevolo e il problema dei ``false positive'' è maggiormente sentito: se ci prefiggiamo l'obiettivo di bloccare automaticamente i flussi malevoli, in caso di falsi positivi significa degradare o impedire la connessione ad utenti legittimi. Quindi se durante la fase di detection rileviamo un falso positivo possiamo anche considerare la possibilità di notificarlo solo all'amministratore di sistema, fornendogli una visione più chiara sui flussi e lasciando a lui il compito lui di effettuare un'analisi prima di intraprendere azioni correttive. 
 
-\subsection{Ip spoofing}
+\section{Ip spoofing}
 
 L'ip spoofing è una tecnica che permette di costruire pacchetti IP con indirizzo IP sorgente modificato con lo scopo di fingersi un altro dispositivo o nascondere la propria identità. È un grande problema di sicurezza delle reti, principalmente perché permette effettuare attacchi DDoS, permettendo di effettuare attacchi come l'amplificazione DNS oppure rendendo più difficile l'identificazione della sorgente dell'attacco nelle altre tipologie.
 
@@ -16,8 +16,8 @@ Questa soluzione non elimina completamente il problema dell'ip spoofing, perchè
 %todo: cite https://www.cloudflare.com/it-it/learning/ddos/glossary/ip-spoofing/
 
 
-\paragraph{Bloccare l'ip spoofing}
-Per mitigare questo problema abbiamo introdotto una regola iptables nel router \ref{code:iptablesrule}, la quale impedisce l'inoltro di pacchetti provenienti da sottoreti diverse da quella in cui è situato il router.
+\subsection{Bloccare l'ip spoofing}
+Per mitigare questo problema abbiamo introdotto una regola iptables nel router (Listing \ref{code:iptablesrule}), la quale impedisce l'inoltro di pacchetti provenienti da sottoreti diverse da quella in cui è situato il router.
 Iptables è un firewall integrato nel kernel linux basato su netfilter.
 % https://wiki.archlinux.org/title/Iptables_(Italiano)#:~:text=Iptables%20%C3%A8%20un%20potente%20firewall,%C3%A8%20usato%20per%20gli%20IPv6.
 
@@ -37,7 +37,7 @@ Per mitigare un attacco bisogna conoscere un maggior numero di informazioni in f
 
 \subsection{Netflow}
 
-Netflow è un software introdotto inizialmente nei router Cisco nel 1996, successivamente è stato creata un'estensione standardizzata dall'IETF, chiamata IPFIX. Netflow è uno dei tool di monitoring più famosi e permette di monitorare e registare informazioni riguardo i flussi che attraversano una determinata interfaccia.
+Netflow è un software introdotto inizialmente nei router Cisco nel 1996, successivamente è stata creata un'estensione standardizzata dall'IETF, chiamata IPFIX. Netflow è uno dei tool di monitoring più famosi e permette di monitorare e registare informazioni riguardo i flussi che attraversano una determinata interfaccia.
 % todo: tabella con features raccolete da netflow
 
 % \begin{center}
@@ -108,17 +108,17 @@ La extended Berkeley Packet Filter è una versione che estende la versione origi
     \centering
 \end{figure}
 
-Prima che il bytecode sia caricato nel kernel Linux vengono effettuati due passaggi, come si può notare dall'immagine \ref{fig:ebpf}. La prima è la ``Verication'', la quale si occupa di verificare che il programma sia sicuro da eseguire e verifica che: il programma abbia lunghezza limitata, che non ci siano accessi a indirizzi di memoria non validi e che abbia una fine, di conseguenza controlla che non siano presenti cicli infiniti. 
-Effettuata la verifica viene eseguita la ``Just-in-Time (JIT) compilation'', la quale traduce il bytecode generico in istruzioni specifiche per la macchina che lo sta eseguendo, questo permette di incrementare le prestazioni e rendere i programmi eBPF efficienti come i moduli kernel compilati nativamente \cite{ebpf.io}.
+Prima che il bytecode sia caricato nel kernel Linux vengono effettuati due passaggi, come si può notare dall'immagine \ref{fig:ebpf}. La prima è la ``Verication'', la quale si occupa di verificare che il programma sia sicuro da eseguire controllando che il programma abbia lunghezza limitata, che non ci siano accessi a indirizzi di memoria non validi e che abbia una fine, di conseguenza controlla che non siano presenti cicli infiniti. 
+Effettuata la verifica viene eseguita la ``Just-in-Time (JIT) compilation'', nella quale viene tradotto il bytecode generico in istruzioni specifiche per la macchina su cui deve essere eseguito, questo permette di incrementare le prestazioni e rendere i programmi eBPF efficienti come i moduli kernel compilati nativamente \cite{ebpf.io}.
 eBPF inoltre fornisce strumenti utili per lo sviluppo, come le mappe e gli helpers.
 
-Le mappe sono un importante aspetto dei programmi eBPF, esse permettono di memorizzare dati in delle strutture chiave/valore in kernel space, che possono essere condivise con altri programmi eBPF oppure con applicazioni in user space \cite{cilium_ebpf}.
+Le mappe sono un importante aspetto dei programmi eBPF, esse permettono di memorizzare dati in strutture chiave/valore in kernel space, che possono essere condivise con altri programmi eBPF oppure con applicazioni in user space \cite{cilium_ebpf}.
 
-La chiamata di generiche funzioni a livello kernel non è consentita, sia per mantenere la compatibilità del programma non solo con una determinata versione del kernel, per questo motivo sono stati introdotti gli ``helpers'', i quali inoltre permettono l'esecuzione di istruzioni o permettono di eseguire alcuni task non permessi dall'assembly eBPF per motivi di sicurezza.
+La chiamata di generiche funzioni a livello kernel non è consentita, sia per mantenere la compatibilità del programma non solo con una determinata versione del kernel, per questo motivo sono stati introdotti gli ``helpers'', i quali inoltre permettono l'esecuzione di istruzioni o task non permessi dall'assembly eBPF per motivi di sicurezza.
 
 Un ulteriore caratteristica di eBPF è la possibilità di potere concatenare l'esecuzione dei programmi, chiamandoli a cascata,in maniera simile alla ``execve()'', durante l'esecuzione.
 
-I vantaggi di un programma eBPF rispetto alla scrittura di un modulo kernel sono molteplici: permettono l'esecuzione sicura del codice senza la possibilità che vada a corrompere il kernel, non c'è rischio che le nuovi versioni del kernel vadano a interrompere il suo funzionamento e garantisce le stesse prestazioni.
+I vantaggi di un programma eBPF rispetto alla scrittura di un modulo kernel sono molteplici: permettono l'esecuzione sicura del codice, senza la possibilità che vada a corrompere il kernel, non c'è rischio che le nuovi versioni del kernel vadano a interrompere il suo funzionamento e garantisce le stesse prestazioni.
 
 % https://ebpf.io/
 
@@ -131,15 +131,15 @@ I vantaggi di un programma eBPF rispetto alla scrittura di un modulo kernel sono
     \caption{Hooks eBPF \cite{risso_ebpf}.}
     \centering
 \end{figure}
-Il kernel Linux supporta più punti dello stack di rete in cui è possibile agganciare l'esecuzione dei programmi eBPF.
+Il kernel Linux supporta più punti nello stack di rete in cui è possibile agganciare l'esecuzione dei programmi eBPF.
 XDP (eXpress Data Path) è un hook ad alte performance che permette di eseguire un programma eBPF al primo punto possibile, questo permette grandi performance, poiché il processamento avviene prima che qualsiasi altra manipolazione possa avvenire. XDP è un punto d'aggancio ideale per il filtering dei pacchetti malevoli o inaspettati e in qualsiasi comune protezione anti DDoS \cite{cilium_xdp}.
 Il programma inserito su un hook XDP può compiere cinque azioni possibili:
 \begin{itemize}
-    \item XDP\_PASS: lascia passare il pacchetto nel normale stack di rete
-    \item XDP\_DROP: ignora semplicemente il pacchetto, senza compiere ulteriori azioni
-    \item XDP\_TX, restituisce il pacchetto alla stessa interfaccia, normalmente modificato
-    \item XDP\_ABORTED: è un valore di ritorno che il programmatore non dovrebbe utilizzare, segnala un che si è verificato un errore nel programma eBPF, per esempio una divisione per zero e contemporaneamente ignora il pacchetto come l'XDP\_DROP
-    \item XDP\_REDIRECT: reindirizza il pacchetto verso un'altra scheda di rete, o in user space
+    \item XDP\_PASS: lascia passare il pacchetto nel normale stack di rete.
+    \item XDP\_DROP: ignora semplicemente il pacchetto, senza compiere ulteriori azioni.
+    \item XDP\_TX, restituisce il pacchetto alla stessa interfaccia, normalmente modificato.
+    \item XDP\_ABORTED: è un valore di ritorno che il programmatore non dovrebbe utilizzare, segnala un che si è verificato un errore nel programma eBPF, per esempio una divisione per zero e contemporaneamente ignora il pacchetto come l'XDP\_DROP.
+    \item XDP\_REDIRECT: reindirizza il pacchetto verso un'altra scheda di rete, o in user space.
 \end{itemize}
 
 
@@ -183,11 +183,11 @@ Alla ricezione di un pacchetto TCP, UDP e di pacchetti TCP con flag SYN, un RST,
 % todo: tabella con esempio di dati sui flussi
 
 % todo: trovare nome
-\subsection{Fase decisionale - Trovare nome decente}
+\subsection{Fase decisionale}
 
-Grazie alle mappe implementate in eBPF è possibile accedere al loro contenuto anche in userspace. Nel programma in python facciamo accesso alle mappe, leggendo e resettando i contatori e in seguito abbiamo ipotizzato due strade per bloccare le anomalie.
+Grazie alle mappe implementate in eBPF è possibile accedere al loro contenuto anche in userspace. Nel programma in Python facciamo accesso alle mappe, leggendo e resettando i contatori e in seguito abbiamo ipotizzato due strade per bloccare le anomalie.
 
-La prima coinvolge un intervento umano, conoscendo quali anomaly score hanno superato le soglie nei dati aggregati, è possibile mostrare una classifica dei flussi con i valori decrescenti relativi alla feature anomala. In questo modo l'operatore potrà, tramite un'interfaccia, bloccare o limitare il flusso per un determinato periodo di tempo. Questa soluzione può essere efficace, perché le anomalie segnalate sui dati aggregati non saranno molte e l'intervento umano permette di bloccare utenti che stanno facendo un uso legittimo della rete, riducendone la loro produttività.
+La prima coinvolge un intervento umano, conoscendo quali anomaly score hanno superato le soglie nei dati aggregati, è possibile mostrare una classifica dei flussi con i valori decrescenti relativi alla feature anomala. In questo modo l'operatore potrà, tramite un'interfaccia, bloccare o limitare il flusso per un determinato periodo di tempo. Questa soluzione può essere efficace, perché le anomalie segnalate sui dati aggregati non saranno molte e l'intervento umano permette di non bloccare l'accesso agli utenti che stanno facendo un uso legittimo della rete, così da non ridurre la loro produttività.
 
 La soluzione alternativa è più complessa e si basa sui principi della precedente fase di anomaly detection.
 Per sviluppare questo sistema di mitigazione ci siamo basati nuovamente su una rete neurale, ma a differenza della precedente, la quale lavorava su sequenze temporali di dati, in questo caso il rilevamento delle anomalie viene effettuato sul singolo flusso, con i relativi contatori.
@@ -228,7 +228,7 @@ Nel momento in cui viene rilevata un'anomalia sui dati aggregati, è necessario 
 
 \subsection{Bloccare gli attacchi}
 
-Identificati i flussi anomali grazie all'utilizzo di un'ulteriore mappa condivisa con il codice eBPF, dall'interfaccia è possibile comunicare su quali flussi applicare i blocchi oppure su quali applicare delle restrizioni.
+Identificati i flussi anomali grazie all'utilizzo di un'ulteriore mappa condivisa con il codice eBPF, dall'interfaccia è possibile comunicare su quali flussi applicare i blocchi oppure delle restrizioni.
 Nel nostro esempio abbiamo usato una mappa, tramite la quale è possibile comunicare alla funzione eBPF quali pacchetti bloccare. Volendo sarebbe possibile differenziare i comportamenti in base alla tipologia di attacco, per esempio in caso di SYN flood si potrebbero limitare solo quelli.
 
 Gli attacchi DDoS effettuati utilizzando la tecnica dell'ip spoofing è possibile bloccarli facilmente nel caso in cui l'indirizzo ip sorgente non appartenga alla subnet, ma è ancora possibile effettuare attacchi con gli ip della sottorete.

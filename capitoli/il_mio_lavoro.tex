@@ -456,7 +456,7 @@ Inoltre per avere un maggiore numero di dati, e velocizzare l'apprendimento dell
 Dalla selezione degli intervalli di tempo su cui si vuole effettuare il train per semplicità in questa prima versione di algoritmo vengono esclusi i weekend: giorni della settimana in cui, nel nostro caso, il traffico è molto diverso dagli altri, volendo risolvere il problema si potrebbe usare una seconda rete da usare solo nei giorni festivi oppure considerare l'introduzione di nuove feature per considerarli. %todo: proporre altre soluzioni per i weekend
 Nella fase di train per prima cosa viene effettuata la raccolta e la trasformazione dei dati dal server, come spiegato precedentemente e viene caricato da file il modello generato.
 Successivamente prima di effettuare il train vero e proprio, grazie alla funzione ``train\_test\_split'' della libreria sklearn i dati vengono divisi in due insiemi, quello di train e quello di test, con il 15\% dei dati usati per il test e il restante per il train.
-L'allenamento viene effettuato usando il metodo ``fit'' della classe model e usando in input sia per le x, che per le y: l'insieme di train appena generato e l'insieme di test per validare il modello. Inoltre abbiamo abilitato l'EarlyStopping, tramite il quale se per più di cinque iterazioni non si hanno miglioramenti, viene stoppato il processo di allenamento, questo serve per ridurre i tempi di train e ridurre la possibilità di overfitting.
+L'allenamento viene effettuato usando il metodo ``fit'' della classe model e usando in input sia per le x, che per le y l'insieme di train appena generato e l'insieme di test per validare il modello. Inoltre abbiamo abilitato l'EarlyStopping, tramite il quale se per più di cinque iterazioni non si hanno miglioramenti viene stoppato il processo di allenamento, questo serve per ridurre i tempi di train e ridurre la possibilità di overfitting.
 %todo: da valutare possibilità di overfitting.
 
 Come spiegato precedentemente, l'utilizzo degli autoencoders permette di ottenere degli ``anomaly score'' per ogni sequenza di dati, quindi terminata la fase di allenamento della rete bisogna decidere sopra quali valori vogliamo considerare i dati anomali.
@@ -495,7 +495,7 @@ Le soglie calcolate vengono salvate su un file, da potere usare successivamente 
 \subsection{Evaluate}
 % Come effettuo la valutazione? Su quali sequenze?
 Allenato il modello a ricostruire l'input e calcolate sopra le quali considerare gli anomaly score anomali è possibile verificare se il traffico generato in un intervallo di tempo da un determinato router è anomalo.  
-Per mettere in atto questa fase, dopo avere trattato i dati in ingresso nello stesso modo dei dati per l'allenamento, leggo dal file generato precedentemente le soglie e verifico se ogni sequenza di k elementi è anomala, calcolando gli anomaly score come effettuato nell'ultima fase del train. Se gli anomaly score superano le soglie si è verificata un'anomalia, a questo punto viene segnalata all'amministratore di rete e viene attivata la fase di mitigazione sul router.
+Per mettere in atto questa fase, dopo avere trattato i dati in ingresso nello stesso modo dei dati per l'allenamento, leggo dal file generato precedentemente le soglie e verifico se ogni sequenza di elementi è anomala, calcolando gli anomaly score come effettuato nell'ultima fase del train. Se gli anomaly score superano le soglie si è verificata un'anomalia, a questo punto viene segnalata all'amministratore di rete e viene attivata la fase di mitigazione sul router.
 
 Come detto precedentemente l'utilizzo della rete potrebbe variare nel tempo, anche nel breve periodo o tra un allenamento e il successivo, per questo motivo è importante non segnalare come anomalo le piccole variazioni che hanno superato i precedenti massimi, per questo motivo è stato introdotto un ulteriore margine sulla soglie. Nel nostro caso la sede di Torino presenta un traffico molto variabile nel breve periodo per questo motivo abbiamo deciso di segnalare le anomalie solo nel caso in cui le soglie vengano superate del 120\%.
 
@@ -530,7 +530,7 @@ Per cosa è stato usato, quali sono i limiti di hping3 e perché dobbiamo
 
 Hping3 non consente di riprodurre tutte le tipologie di attacco a noi necessarie, per questo motivo è stato sviluppata un'applicazione per costruire pacchetti di tipo DNS da utilizzare per creare attacchi di tipo DNS flood e DNS amplification.
 Il tool è sviluppato in C++, per una maggiore efficienza e per raggiungere un maggiore throughput durante gli attacchi, utilizzando la libreria ``libtins''\footnote{ http://libtins.github.io/}.
-Il programma genera delle DNS query indirizzate verso i DNS server configurati in un file di configurazione. A scopo di test, per non sovraccaricare il server DNS aziendale, abbiamo utilizzato dei Raspberry Pi, con in esecuzione dei container di CoreDNS: semplici istanze DNS configurate in modo da mantenere in cache le risposte alle richieste effettuate e abbiamo effettuato solo richieste di risoluzione di un particolare dominio da parte del software di attacco.
+Il programma genera delle DNS query indirizzate verso i DNS server configurati in un file di configurazione. A scopo di test, per non sovraccaricare il server DNS aziendale, abbiamo utilizzato dei Raspberry Pi, con in esecuzione dei container di CoreDNS: semplici istanze DNS configurate in modo da mantenere in cache le risposte alle richieste effettuate \uline{e rispondere alle richieste di risoluzione di un particolare dominio da parte del software di attacco}.
 Inoltre per semplicità d'uso il software permette anche di effettuare attacchi di tipo syn flood con ip spoofing.
 
 % todo: immagini di wireshark / gestione attività durante gli attacchi
@@ -544,9 +544,11 @@ Le reti neurali usata per i test sono state allenate usando i dati di circa due 
 \subsection{Test effettuati}
 
 Per verificare qual'è la migliore lunghezza della finestra da utilizzare o qual'è il migliore modello di rete neurale, sono stati effettuati dei test su 20 intervalli di dati (Tabella \ref{table:test}) che presentano delle peculiarità e su cui la rete non era stata precedentemente allenata. 
-\uline{Inoltre oltre ad analizzare i risultati dei tes, è stato controllato che il modello approssimasse veramente i dati in ingresso e che i buoni risultati non fossero dovuti solo a valori di soglie calcolate durante l'allenamento molto alte.}
+\uline{Inoltre oltre ad analizzare i risultati dei test, è stato controllato che il modello approssimasse veramente i dati in ingresso e che i buoni risultati non fossero dovuti solo a valori di soglie calcolate durante l'allenamento molto alte.}
 
-Per mostrare un risultato visivo delle ricostruzioni sono stati disegnati dei grafici approssimati, mostrare un grafico con i dati ricostruiti dell'intervallo iniziale sarebbe impossibile, perché fornisco alla rete in input delle sequenze di N elementi e non l'intero intervallo, quindi per avere un'idea di come potrebbe essere il grafico ricostruito sono stati presi i primi valori di ogni sequenza, in modo da avere tutti i dati per ricomporre l'intero intervallo.
+Per mostrare un risultato visivo delle ricostruzioni sono stati disegnati dei grafici approssimati: mostrare un grafico con i dati ricostruiti dell'intervallo iniziale sarebbe impossibile, perché fornisco alla rete in input delle sequenze di N elementi e non l'intero intervallo, quindi per avere un'idea di come potrebbe essere il grafico ricostruito sono stati presi i primi valori di ogni sequenza, in modo da avere tutti i dati per ricomporre l'intero intervallo.
+
+\FloatBarrier
 \begin{table}
     \begin{tabularx}{\textwidth}{||c c c c X X||} 
         \hline
@@ -599,12 +601,14 @@ Per mostrare un risultato visivo delle ricostruzioni sono stati disegnati dei gr
     \caption{Tabella dei test}
     \label{table:test}
 \end{table}
+\FloatBarrier
 
 \subsection{Scelta della finestra}
 
-Per la scelta della lunghezza della finestra abbiamo eseguito i test variandone la lunghezza e mantenendo il modello della rete costante.
+Per la scelta della lunghezza della finestra abbiamo eseguito test variandone la lunghezza e mantenendo il modello della rete costante.
 Abbiamo effettuato test con lunghezza di: 4 (40s), 8 (1min20), 12 (2min) e 18 (3min).
 
+\FloatBarrier
 \begin{table}
     \begin{tabularx}{\textwidth}{||c X c c c c||} 
         \hline
@@ -654,6 +658,7 @@ Abbiamo effettuato test con lunghezza di: 4 (40s), 8 (1min20), 12 (2min) e 18 (3
     \caption{Tabella dei test con diverse lunghezze delle finestra. TN=True Negative, TP=True Positive, \cellcolor{orange} FP=False Positive, \cellcolor{magenta} FN=False Negative}
     \label{table:finestra}
 \end{table}
+\FloatBarrier
 
 Dai risultati nella tabella \ref{table:finestra} possiamo osservare che usando una finestra da 3min il modello non riconosce gli attacchi di breve durata, generando dei falsi negativi. La situazione si oppone usando la finestra da 40 secondi, in cui i picchi di traffico alto, ma legittimo, non vengono smorzati, questo porta al rilevamento di falsi positivi. Le migliori soluzioni sono le lunghezze intermedie, che tramite un compromesso tra le due lunghezze analizzate precedentemente, riescono ad essere più precise.
 Il primo test di breve durata e con un basso rate non viene rilevato da nessun modello, per migliorare il rilevamento in questo caso potrebbe essere utile l'utilizzo del syn rate precedentemente menzionato, ma che non abbiamo potuto utilizzare.
@@ -667,8 +672,21 @@ Conclusasi la scelta della lunghezza della finestra, effettuo gli stessi test co
 % todo: convoluzionarie
 
 \paragraph{Reti dense} I risultati dei test relativi alle reti dense sono visibili nella tabella \ref{table:dense_tests}.
+I test sono stati effettuati sulle seguenti tipologie di reti:
+\begin{itemize}
+    \item Rete con un autoencoder con un singolo livello a 6 nodi: in questo caso possiamo notare che avendo pochi nodi nel livello centrale le ricostruzioni dei valori delle varie features si influenzano molto tra loro. Il risultato finale è buono, ma non sempre il modello approssima l'ingresso al meglio.
+    \item Rete con un autoencoder con un singolo livello a 8 nodi: il risultato è simile al precedente, ma con delle ricostruzioni leggermente migliori.
+    \item Rete con un autoencoder con un singolo livello a 10 nodi: in questo modello si può notare che avendo nel livello centrale tanti nodi quante le features, il modello ricostruisce molto bene i picchi, ma compie degli errori nel ricostruire l'ingresso nel tempo, come si può vedere nella figura.
+    \item Rete con un autoencoder con tre livelli, il primo con 15 nodi, il secondo con 8 e il terzo nuovamente con 15: Il modello non ricostruisce bene i picchi, come si può notare nelle figure, per questo motivo segnala anomalie quando non dovrebbero esserci.
+    \item Rete con un autoencoder con tre livelli, il primo con 15 nodi, il secondo con 6 e il terzo nuovamente con 15: il modello ha gli stessi problemi del precedente, ma in maniera leggermente più accentuata.
+    \item \uline{Rete con un autoencoder con tre livelli, il primo con 40 nodi, il secondo con 8 e il terzo nuovamente con 40: il modello}  %todo: non ne ho idea
+    \item Rete con un autoencoder con tre livelli, il primo con 25 nodi, il secondo con 8 e il terzo nuovamente con 25: il risultato è buono, con dei false negative solo in caso di attacchi molto brevi.
 
+\end{itemize}
 
+Nonostante i risultati simili, le reti che funzionano meglio sono quelle con 8 nodi in un singolo livello e quella con 25 nodi nei livelli più esterni e 8 in quello centrale.
+
+\FloatBarrier
 \begin{table}
     \begin{tabularx}{\textwidth}{||c X c c c c c c c||} 
         \hline
@@ -718,22 +736,9 @@ Conclusasi la scelta della lunghezza della finestra, effettuo gli stessi test co
     \caption{Tabella dei risultati dei test con diversi modelli di reti neurali dense. TN=True Negative, TP=True Positive, \cellcolor{orange} FP=False Positive, \cellcolor{magenta} FN=False Negative}
     \label{table:dense_tests}
 \end{table}
+\FloatBarrier
 
-I test sono stati effettuati sulle seguenti tipologie di reti:
-\begin{itemize}
-    \item Rete con un autoencoder con un singolo livello a 6 nodi: in questo caso possiamo notare che avendo pochi nodi nel livello centrale le ricostruzioni dei valori delle varie features si influenzano molto tra loro. Il risultato finale è buono, ma non sempre il modello approssima l'ingresso al meglio.
-    \item Rete con un autoencoder con un singolo livello a 8 nodi: il risultato è simile al precedente, ma con delle ricostruzioni leggermente migliori.
-    \item Rete con un autoencoder con un singolo livello a 10 nodi: in questo modello si può notare che avendo nel livello centrale tanti nodi quante le features, il modello ricostruisce molto bene i picchi, ma compie degli errori nel ricostruire l'ingresso nel tempo, come si può vedere nella figura.
-    % todo: aggiungere figura
-    \item Rete con un autoencoder con tre livelli, il primo con 15 nodi, il secondo con 8 e il terzo nuovamente con 15: Il modello non ricostruisce bene i picchi, come si può notare nelle figure, per questo motivo segnala anomalie quando non dovrebbero esserci.
-    \item Rete con un autoencoder con tre livelli, il primo con 15 nodi, il secondo con 6 e il terzo nuovamente con 15: %todo: non ne ho idea
 
-    \item Rete con un autoencoder con tre livelli, il primo con 40 nodi, il secondo con 8 e il terzo nuovamente con 40:  %todo: non ne ho idea
-    \item Rete con un autoencoder con tre livelli, il primo con 25 nodi, il secondo con 8 e il terzo nuovamente con 25:  %todo: non ne ho idea
-
-\end{itemize}
-
-Nonostante i risultati simili, le reti che funzionano meglio sono quelle con 8 nodi in un singolo livello e quella con 25 nodi nei livelli più esterni e 8 in quello centrale.
 
 \begin{figure}[]
     \label{fig:reconstructions}
@@ -744,7 +749,7 @@ Nonostante i risultati simili, le reti che funzionano meglio sono quelle con 8 n
 
 \paragraph{Reti LSTM} I risultati dei test relativi alle reti con nodi LSTM sono visibili nella tabella \ref{table:LSTM_tests}.
 
-
+\FloatBarrier
 \begin{table}
     \begin{tabularx}{\textwidth}{||c X c c c c||} 
         \hline
@@ -794,5 +799,6 @@ Nonostante i risultati simili, le reti che funzionano meglio sono quelle con 8 n
     \caption{Tabella dei risultati dei test con diversi modelli di reti neurali LSTM. TN=True Negative, TP=True Positive, \cellcolor{orange} FP=False Positive, \cellcolor{magenta} FN=False Negative}
     \label{table:LSTM_tests}
 \end{table}
+\FloatBarrier
 
 I risultati sono buoni e paragonabili con i precedenti, ma una rete neurale ricorsiva richiede molto più tempo per essere allenata. Inoltre l'obiettivo principale di questa tesi non è la ricerca del modello di rete ottimale, quindi la scelta del modello è ricaduta su un modello dense, di quelli analizzati precedentemente. Per la messa in produzione del sistema verrà ricercato il modello ottimo.
