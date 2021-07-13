@@ -30,7 +30,7 @@ L'obiettivo di questa tesi sarà concentrato sul rilevamento e la mitigazione de
 \end{figure}
 
 \paragraph{Network/transport-level DDoS flooding attacks} % todo: rivedere titolo
-Gli attacchi di denial of service che mirano ad esaurire le risorse di rete si basano sull'invio di molti pacchetti con lo scopo di consumare totalmente \uline{la banda o le socket} della vittima, queste tipologia di attacco può essere effettuata in maniera diretta: \emph{flooding attacks} e \emph{protocol exploitation attacks}, nel primo caso la vittima viene inondata di pacchetti (UDP flood, ICMP flood, DNS flood, VoIP flood, etc.), in questo caso la banda aggregata in uscita di tutti gli attaccanti deve essere superiore a quella del servizio che si vuole danneggiare. Nel secondo caso vengono sfruttane delle caratteristiche dei protocolli della vittima in modo da consumare una grande quantità di risorse (es. TCP SYN flood, TCP SYN-ACK flood, RST/FIN flood e ecc) utilizzando una minore quantità di banda.
+Gli attacchi di denial of service che mirano ad esaurire le risorse di rete si basano sull'invio di molti pacchetti con lo scopo di consumare totalmente la banda o le strutture dati relative al livello di trasporto della vittima, queste tipologia di attacco può essere effettuata in maniera diretta: \emph{flooding attacks} e \emph{protocol exploitation attacks}, nel primo caso la vittima viene inondata di pacchetti (UDP flood, ICMP flood, DNS flood, VoIP flood, etc.), in questo caso la banda aggregata in uscita di tutti gli attaccanti deve essere superiore a quella del servizio che si vuole danneggiare. Nel secondo caso vengono sfruttane delle caratteristiche dei protocolli della vittima in modo da consumare una grande quantità di risorse (es. TCP SYN flood, TCP SYN-ACK flood, RST/FIN flood e ecc) utilizzando una minore quantità di banda.
 
 Gli attacchi che non vengono effettuati in maniera diretta invece sfruttano la riflessione o l'amplificazione: nei \emph{Reflection-based flooding attacks} chi attacca manda un particolare pacchetto, indirizzandolo ad un riflettore e questo riflettore manda le sue risposte alla vittima, in modo da esaurirne le risorse. Un esempio di questa tipologia di attacchi sono lo Smurf e il Fraggle, nel primo vengono mandati ICMP Echo Request ad una sottorete, utilizzando l'ip spoofing per mandare pacchetti, con ip di destinazione l'indirizzo broadcast e specificando come ip sorgente l'ip della vittima, questa tecnica provocherà la risposta di tutti gli host verso l'indirizzo IP della vittima usato come sorgente \cite{ddos_survey_2}.
 Gli \emph{Amplification-based flooding attacks} sfruttano servizi che restituiscono risposte più grandi della richiesta ricevuta, un esempio è il DNS amplification, che riesce a moltiplicare dalle 30 alle 50 volte \cite{imperva_amplification} la banda in uscita dell'attaccante, il suo funzionamento si basa sull'utilizzo dell'ip spoofing mandando un pacchetto con indirizzo ip sorgente della vittima, così il servizio DNS risponderà ad essa con un flood di pacchetti di dimensioni maggiori \cite{ddos_survey_1}. Lo stesso principio è sfruttato anche dal NTP amplification che può aumentare il traffico con un rapporto tra 20:1 e 200:1, arrivando in alcuni casi anche a 556:1 \cite{imperva_amplification}. 
@@ -127,13 +127,13 @@ Il codice per effettuare attacchi DDoS include dieci tipologie diverse di attacc
 
 Alcuni attacchi possibili tramite la botnet Mirai sono: flood DNS, STOMP: una attacco che mira ad effettuare il three-way TCP handshake e solo dopo quando la sessione sarà messa in whitelist inizia un ACK flood, GREIP: incapsula nel pacchetto GRE un pacchetto ip con ip sorgente e destinazioni casuali, SYN flood, ACK flood, UDP flood e HTTP flood.
 
-\subsubsection{Attacchi DDoS famosi}
+% \subsubsection{Attacchi DDoS famosi}
 
-%todo: qua parla del flood dns https://www.cloudflare.com/it-it/learning/ddos/dns-flood-ddos-attack/
+% %todo: qua parla del flood dns https://www.cloudflare.com/it-it/learning/ddos/dns-flood-ddos-attack/
 
-\uline{Aggiungo questa parte o sarebbe superflua?
+% \uline{Aggiungo questa parte o sarebbe superflua?
 
-Potrei parlare dei primi attacchi, fino a quelli moderni menzionando i motivi dell'attacco se scoperti, la tipologia e la portata.}
+% Potrei parlare dei primi attacchi, fino a quelli moderni menzionando i motivi dell'attacco se scoperti, la tipologia e la portata.}
 
 
 \section{Riconoscimento DDoS}

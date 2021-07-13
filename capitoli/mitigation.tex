@@ -12,7 +12,7 @@ L'ip spoofing è una tecnica che permette di costruire pacchetti IP con indirizz
 Un metodo per prevenire o rendere più tracciabili gli attacchi DDoS che lo utilizzano è adottare tecniche in grado di prevenirne il suo utilizzo.
 
 Nello scenario da noi ipotizzato il meccanismo di mitigazione è installato negli edge router nelle sedi aziendali periferiche, in questa posizione possiamo ipotizzare che tutti i pacchetti in transito dalla sotto-rete del distaccamento, verso la sottorete della sede centrale o verso internet, siano stati generati da un host di quella sotto rete. Per questo motivo una soluzione per limitare il problema è impedire al router di effettuare l'inoltro di tutti i pacchetti provenienti da altre sottoreti.
-Questa soluzione non elimina completamente il problema dell'ip spoofing, perchè un utente malevolo ha sempre la possibilità di generare traffico utilizzando come indirizzo ip sorgente un qualsiasi indirizzo della stessa subnet.
+Questa soluzione non elimina completamente il problema dell'ip spoofing, perché un utente malevolo ha sempre la possibilità di generare traffico utilizzando come indirizzo ip sorgente un qualsiasi indirizzo della stessa subnet.
 %todo: cite https://www.cloudflare.com/it-it/learning/ddos/glossary/ip-spoofing/
 
 
@@ -49,7 +49,7 @@ Netflow è un software introdotto inizialmente nei router Cisco nel 1996, succes
 %     \end{tabular}
 % \end{center}
 
-Poichè non è possibile estendere le features di netflow e quelle esistenti non rispecchiano completamente i nostri interessi abbiamo deciso di progettare il nostro agent utilizzando altre soluzioni.
+Poiché non è possibile estendere le features di netflow e quelle esistenti non rispecchiano completamente i nostri interessi abbiamo deciso di progettare il nostro agent utilizzando altre soluzioni.
 % todo: le features di netflow le posso modificare?
 
 \subsection{Modulo Kernel}
@@ -243,5 +243,5 @@ Bloccare o modificare flussi appartenenti ad applicazioni mission-critical è se
 % \subsection{Tool utilizzati}
 \section{Risultati}
 
-I risultati ottenuti tramite l'utilizzo del sistema di anomaly detection sui singoli flussi sono molto promettenti, nel caso in cui il traffico sia generato da applicazioni aziendali specifiche è anche più facilmente riconoscibile, ma bisogna valutare attentamente il livello di criticità dell'applicazione, perchè in caso di un errore dovuto ad un utilizzo insolito dell'applicativo c'è il rischio di degradare o interrompere il lavoro di un utente, per questa ragione bisogna valutare caso per caso quale sia la migliore reazione da prendere.
+I risultati ottenuti tramite l'utilizzo del sistema di anomaly detection sui singoli flussi sono molto promettenti, nel caso in cui il traffico sia generato da applicazioni aziendali specifiche è anche più facilmente riconoscibile, ma bisogna valutare attentamente il livello di criticità dell'applicazione, perché in caso di un errore dovuto ad un utilizzo insolito dell'applicativo c'è il rischio di degradare o interrompere il lavoro di un utente, per questa ragione bisogna valutare caso per caso quale sia la migliore reazione da prendere.
 

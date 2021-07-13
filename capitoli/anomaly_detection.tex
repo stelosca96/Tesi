@@ -36,7 +36,7 @@ I sistemi di anomaly detection necessitano di dataset con esempi di traffico per
 
 \paragraph{Apprendimento superivisionato}
 
-I sistemi di anomaly detection basati su apprendimento supervisionato hanno prestazioni superiori ai metodi non supervisionati, poichè usano esempi etichettati di dati. I metodi supervisionati imparano il limite di separazione da un set di dati annotato durante una fase di allenamento e successivamente classifica le istanze da testare basandosi sul modello imparato. Avendo bisogno di etichette di difficile reperibilità, questo metodo è poco usato rispetto a quello semi-supervisionato e a quello non supervisionato, ma ha come vantaggi oltre al fatto di essere più preciso anche la velocità della fase di test, basandosi su un modello pre calcolato.
+I sistemi di anomaly detection basati su apprendimento supervisionato hanno prestazioni superiori ai metodi non supervisionati, poiché usano esempi etichettati di dati. I metodi supervisionati imparano il limite di separazione da un set di dati annotato durante una fase di allenamento e successivamente classifica le istanze da testare basandosi sul modello imparato. Avendo bisogno di etichette di difficile reperibilità, questo metodo è poco usato rispetto a quello semi-supervisionato e a quello non supervisionato, ma ha come vantaggi oltre al fatto di essere più preciso anche la velocità della fase di test, basandosi su un modello pre calcolato.
 % Le tipologie di reti c
 % Deep supervised techniques fail to separate normal from anomalous data if the feature space is highly complex and non-linear.
 
@@ -207,7 +207,7 @@ Esistono in letteratura sistemi di anomaly detection basati su autoencoders, che
 
 \begin{itemize}
 \item Kitsune \cite{kitsune}: un NIDS, basato sistema di anomaly detection basato su autoencoders, che permette il riconoscimento di traffico normale e anomalo senza una supervisione per l'allenamento. Il sistema ha l'obiettivo di rilevare attacchi di tipo DDoS, Man in the Middle, scansioni di rete e botnet in una rete con dispositivi tradizionali e IoT.
-\item La soluzione proposta nell'articolo  \uline{(come lo cito?)} \cite{chen_autoencoders} sfrutta una rete di autoencoders convoluzionaria (per una riduzione dei tempi di training) per superare le prestazioni dei sistemi di rilevamento tradizionali.
+\item La soluzione proposta nell'articolo \citetitle{chen_autoencoders} \cite{chen_autoencoders} sfrutta una rete di autoencoders convoluzionaria (per una riduzione dei tempi di training) per superare le prestazioni dei sistemi di rilevamento tradizionali.
 \item L'obiettivo della soluzione \cite{vae_autoencoders} è di rilevare attacchi in di rete utilizzando i dati provenienti dai router di rete, generati tramite NetFlow, inoltre si pone l'obiettivo di spiegare in cosa consiste l'anomalia nei dati. Per il rilevamento delle anomalie si basa sui Variational Autoencoder, uno sviluppo della versione tradizionale.
 %todo: citare articoli autoencoders delle soluzioni esistenti prese dagli articoli.
 
@@ -226,7 +226,7 @@ Esistono in letteratura sistemi di anomaly detection basati su autoencoders, che
 
 
 
-La scelta del sistema di anomaly detection è ricaduta sull'utilizzo di una rete neurale basata su autoencoders a causa della loro semplicità d'uso, poichè non necessitano di dati etichettati, per la fase di allenamento, è facile ottenere grandi quantità di dati in qualsiasi contesto aziendale, rendendo veloce l'introduzione di questo sistema in molte aziende, unita alla facilità di utilizzo delle API messe a disposizione da Keras e TensorFlow, le quali consentono di creare facilmente un modello.
+La scelta del sistema di anomaly detection è ricaduta sull'utilizzo di una rete neurale basata su autoencoders a causa della loro semplicità d'uso, poiché non necessitano di dati etichettati, per la fase di allenamento, è facile ottenere grandi quantità di dati in qualsiasi contesto aziendale, rendendo veloce l'introduzione di questo sistema in molte aziende, unita alla facilità di utilizzo delle API messe a disposizione da Keras e TensorFlow, le quali consentono di creare facilmente un modello.
 Inoltre secondo l'articolo \cite{anomaly_detection_comparativa}, la precisione dei sistemi, utilizzanti autoencoders vanilla o varianti, è paragonabile ad altri sistemi a scapito, in alcuni casi, di un piccolo aumento di tempo in fase di test.
 Basando il nostro sistema di detection su informazioni quantitative riguardanti i dati e non qualitative, è possibile identificare le anomalie anche in situazioni in cui sono utilizzati nuovi pattern di attacco ed è possibile aggiornare il modello in caso di nuovi pattern di traffico di dati aziendali semplicemente rieffettuando un allenamento della rete, nel nostro caso con i dati già memorizzati su un database.
 

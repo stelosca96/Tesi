@@ -12,7 +12,7 @@ La raccolta e l'analisi dei dati viene effettuata utilizzando un sistema central
 \begin{figure}[]
     \label{fig:funzionamento}
     \includegraphics[width=\hsize]{images/my_work/funzionamento.png}
-    \caption{Architettura del tool di Anomaly Detection}
+    \caption{Architettura del nostro software}
     \centering
 \end{figure}
 
@@ -48,9 +48,8 @@ Inoltre per avere ulteriori dati a disposizione è stato scritto un plugin con l
 \end{figure}
 
 \subsection{NDPI} 
-NDPI è un software open-source per il deep-packet inspection basato su OpenDPI, il suo scopo è di riconoscere protocolli conosciuti anche su porte non standard, \uline{inoltre può essere personalizzato per il riconoscimento di applicazioni aziendali (è vera questa cosa?)}. nDPI è implementato nei router Tiesse e permette l'analisi dei pacchetti senza un degrado prestazionale.
+NDPI è un software open-source per il deep-packet inspection basato su OpenDPI, il suo scopo è di riconoscere protocolli conosciuti anche su porte non standard, inoltre può essere personalizzato per il riconoscimento di applicazioni aziendali. nDPI è implementato nei router Tiesse e permette l'analisi dei pacchetti senza un degrado prestazionali, infatti, i flussi vengono identificati nei primissimi pacchetti, dopodiché il traffico è accelerato in hardware non aggiungendo ulteriore ritardo di elaborazione sui pacchetti.
 %http://luca.ntop.org/nDPI.pdf
-%todo: completare ndpi
 
 
 \subsection{graphite} Graphite è un software open source per il monitoraggio funzionante sia su hardware economico, che su un'infrastruttura cloud. Può essere usato per monitorare le performance di siti, applicazioni, server e nel caso di Tiesse per monitorare informazioni sull'utilizzo dei router. Degli esempi di informazioni raccolte sono: il numero totale di router connessi, quelli raggiungibili, il throughput, l'uptime e la velocità della connessione xDSL.
@@ -69,7 +68,7 @@ Graphite è composto da tre parti (come si può vedere dalla figura ~\ref{fig:gr
 Per rendere permanenti i dati graphite utilizza un database temporale (time-series database TSDB), un sistema NoSQL progettato per il salvataggio e la visualizzazione di record facenti parte di sequenze temporali, in cui ad ogni istante di tempo sono associati un set di dati. Per questo motivo i database temporali sono più efficienti rispetto ai database relazionali. Le serie temporali possono anche essere grandi flussi di dati, come nel nostro caso e in molti casi è possibile eseguirne una compressione per gestirli in maniera maggiormente efficiente.
 Whisper è il time-series database usato da Graphite, è un database veloce e affidabile per dati numerici nel tempo. Esso è un fixed-size database, cioè è configurabile per avere una maggiore risoluzione per i dati recenti e una degradazione dei dati ad una minore risoluzione per lo storage di lungo termine, per farlo è necessario specificare il tempo per cui è necessario mantenere salvati i dati e con quale granularità, inoltre è possibile dichiarare diversi retention rate con granularità differente, definendo anche in che modo (min, max, average, last, sum) il database deve effettuare l'aggregazione dei dati.
 % todo: i numeri sono corretti?
-Nel nostro caso abbiamo scelto di mantenere salvati i dati usati come feature per l'anomaly detection per 4 mesi, con una granularità di 10 secondi, aggregata successivamente tramite il calcolo della media su intervalli crescenti con il passare del tempo. La scelta è ricaduta su un periodo di tempo così lungo prima di iniziare ad aggregare i dati perchè per l'allenamento del modello necessitiamo dei dati con maggiore granularità possibile e avevamo la necessità di allenare la rete su periodi differenti per valutare l'affidabilità del modello. Questa scelta verrà modificata in produzione in base alla stazionarietà dei dati dell'azienda presa in considerazione.
+Nel nostro caso abbiamo scelto di mantenere salvati i dati usati come feature per l'anomaly detection per 4 mesi, con una granularità di 10 secondi, aggregata successivamente tramite il calcolo della media su intervalli crescenti con il passare del tempo. La scelta è ricaduta su un periodo di tempo così lungo prima di iniziare ad aggregare i dati perché per l'allenamento del modello necessitiamo dei dati con maggiore granularità possibile e avevamo la necessità di allenare la rete su periodi differenti per valutare l'affidabilità del modello. Questa scelta verrà modificata in produzione in base alla stazionarietà dei dati dell'azienda presa in considerazione.
 
 \begin{figure}[h]
     \includegraphics[width=\hsize]{images/my_work/graphite.png}
@@ -128,15 +127,15 @@ La scelta delle feature da utilizzare dipende da quale obiettivo si vuole ottene
 \end{itemize}
 
 % todo: sistemare frase
-Tutte le feature vengono poi \uline{derivate su un tempo di 10/30s, per avere dei "rate"} confrontabili tra lavoro.
+Di tutte le feature viene poi calcolato il valore medio su un tempo di 10/30s, per avere dei valori confrontabili tra lavoro.
 
-La scelta della features è nata da un compromesso tra i dati necessari per rilevare al meglio le anomalie, la riduzione dei dati da salvare sul server e di conseguenza l'uso di banda usata per il trasferimento. Inoltre un problema che abbiamo dovuto tenere in considerazione è l'utilizzo di un \underline{acceleratore hardware} nei router Tiesse, il quale permette un incremento della velocità di routing, ma rende più difficoltosa l'analisi dei pacchetti nel kernel senza la perdita di prestazioni.
+La scelta della features è nata da un compromesso tra i dati necessari per rilevare al meglio le anomalie, la riduzione dei dati da salvare sul server e di conseguenza l'uso di banda usata per il trasferimento. Inoltre un problema che abbiamo dovuto tenere in considerazione è l'utilizzo di un acceleratore hardware nei router Tiesse, il quale permette un incremento della velocità di routing, ma rende più difficoltosa l'analisi dei pacchetti nel kernel senza la perdita di prestazioni.
  %todo: approfondire meglio come funziona il fast path
  
 \section{Il nostro tool}
 \label{section:our_tool}
 
-Utilizzando unicamente i dati provenienti da nDPI e collectd non abbiamo accesso a features utili per monitorare una determinata tipologia di pacchetti, oppure a informazioni sul traffico con una minore granularità per esempio per conoscere il numero dei pacchetti in transito verso certi applicativi aziendali. Per questo motivo, per una migliore raccolta e monitoraggio, abbiamo sviluppato un ulteriore software in grado di estrarre metriche relative a \uline{server/servizi} aziendali specifici o metriche non disponibili tramite i plugin ufficiali di collectd, come per esempio il syn rate. Per svilupparlo abbiamo programmato un modulo kernel, che comunica con un plugin per collectd, anch'esso da noi creato, tramite un process file system (procfs). Per una discussione più approfondita rimando al capitolo 5.
+Utilizzando unicamente i dati provenienti da nDPI e collectd non abbiamo accesso a features utili per monitorare una determinata tipologia di pacchetti, oppure a informazioni sul traffico con una minore granularità per esempio per conoscere il numero dei pacchetti in transito verso certi applicativi aziendali. Per questo motivo, per una migliore raccolta e monitoraggio, abbiamo sviluppato un ulteriore software in grado di estrarre metriche relative a server/servizi aziendali specifici o metriche non disponibili tramite i plugin ufficiali di collectd, come per esempio il syn rate. Per svilupparlo abbiamo programmato un modulo kernel, che comunica con un plugin per collectd, anch'esso da noi creato, tramite un process file system (procfs). Per una discussione più approfondita rimando al capitolo 5.
 
 Questa soluzione è funzionante ed è stata testata in laboratorio, però non viene utilizzata per la raccolta di dati necessaria a causa dell'impossibilità di introdurre software aggiuntivo in un router in produzione, da cui dipende la produttività di un intero ufficio. 
  
@@ -530,7 +529,7 @@ Per cosa è stato usato, quali sono i limiti di hping3 e perché dobbiamo
 
 Hping3 non consente di riprodurre tutte le tipologie di attacco a noi necessarie, per questo motivo è stato sviluppata un'applicazione per costruire pacchetti di tipo DNS da utilizzare per creare attacchi di tipo DNS flood e DNS amplification.
 Il tool è sviluppato in C++, per una maggiore efficienza e per raggiungere un maggiore throughput durante gli attacchi, utilizzando la libreria ``libtins''\footnote{ http://libtins.github.io/}.
-Il programma genera delle DNS query indirizzate verso i DNS server configurati in un file di configurazione. A scopo di test, per non sovraccaricare il server DNS aziendale, abbiamo utilizzato dei Raspberry Pi, con in esecuzione dei container di CoreDNS: semplici istanze DNS configurate in modo da mantenere in cache le risposte alle richieste effettuate \uline{e rispondere alle richieste di risoluzione di un particolare dominio da parte del software di attacco}.
+Il programma genera delle DNS query indirizzate verso i DNS server configurati in un file di configurazione. A scopo di test, per non sovraccaricare il server DNS aziendale, abbiamo utilizzato dei Raspberry Pi, con in esecuzione dei container di CoreDNS: semplici istanze DNS configurate in modo da mantenere in cache le risposte alle richieste effettuate, così da non dover sempre inoltrare le query al DNS aziendale.
 Inoltre per semplicità d'uso il software permette anche di effettuare attacchi di tipo syn flood con ip spoofing.
 
 % todo: immagini di wireshark / gestione attività durante gli attacchi
@@ -543,8 +542,7 @@ Le reti neurali usata per i test sono state allenate usando i dati di circa due 
 
 \subsection{Test effettuati}
 
-Per verificare qual'è la migliore lunghezza della finestra da utilizzare o qual'è il migliore modello di rete neurale, sono stati effettuati dei test su 20 intervalli di dati (Tabella \ref{table:test}) che presentano delle peculiarità e su cui la rete non era stata precedentemente allenata. 
-\uline{Inoltre oltre ad analizzare i risultati dei test, è stato controllato che il modello approssimasse veramente i dati in ingresso e che i buoni risultati non fossero dovuti solo a valori di soglie calcolate durante l'allenamento molto alte.}
+Per verificare qual'è la migliore lunghezza della finestra da utilizzare o qual'è il migliore modello di rete neurale, sono stati effettuati dei test su 20 intervalli di dati (Tabella \ref{table:test}) che presentano delle peculiarità e su cui la rete non era stata precedentemente allenata. Inoltre oltre all'analisi dei risultati dei test, è stato controllato che il modello approssimasse veramente i dati in ingresso e che i buoni risultati non fossero dovuti solo a valori di soglie molto alte calcolate durante l'allenamento.
 
 Per mostrare un risultato visivo delle ricostruzioni sono stati disegnati dei grafici approssimati: mostrare un grafico con i dati ricostruiti dell'intervallo iniziale sarebbe impossibile, perché fornisco alla rete in input delle sequenze di N elementi e non l'intero intervallo, quindi per avere un'idea di come potrebbe essere il grafico ricostruito sono stati presi i primi valori di ogni sequenza, in modo da avere tutti i dati per ricomporre l'intero intervallo.
 
