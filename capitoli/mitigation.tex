@@ -21,11 +21,10 @@ Per mitigare questo problema abbiamo introdotto una regola iptables nel router (
 Iptables è un firewall integrato nel kernel linux basato su netfilter.
 % https://wiki.archlinux.org/title/Iptables_(Italiano)#:~:text=Iptables%20%C3%A8%20un%20potente%20firewall,%C3%A8%20usato%20per%20gli%20IPv6.
 
-% todo: la regola è corretta?
 \begin{lstlisting}[caption={Esempio di regole iptables}\label{code:iptablesrule}]
     # Accetta i pacchetti della sottorete
     iptables -A INPUT -i internal_interface -s 192.168.0.0/16  -j ACCEPT
-    # Fa il drop di tutto ciò che
+    # Fa il drop di tutto quello che
     # non è esplicitamente accettato
     iptables -P INPUT DROP
 \end{lstlisting}
@@ -124,7 +123,6 @@ I vantaggi di un programma eBPF rispetto alla scrittura di un modulo kernel sono
 
 \subsection{eXpress Data Path (XDP)}
 \begin{figure}[]
-    % todo: capire come gestire citazioni imsmagini a livello di copyright
     % https://www.researchgate.net/publication/333998355_Securing_Linux_with_a_Faster_and_Scalable_Iptables
     \label{fig:hooks}
     \includegraphics[width=\hsize]{images/mitigazione/hooks.png}
@@ -170,8 +168,6 @@ Sul server di monitoraggio quando viene rilevata un'anomalia è possibile risali
 La fase di mitigazione, raccogliendo dati in forma meno aggregata, è potenzialmente più dispendiosa in termini di risorse, per questo motivo la eseguiamo solo in presenza di un'anomalia sui dati aggregati.
 
 Per metterla in atto per prima cosa dobbiamo raccogliere i dati con minore granularità, per farlo sfruttiamo eBPF, successivamente avviene la fase di decisione in un software o un amministratore di sistema decidono cos'è anomalo e infine sempre tramite eBPF blocchiamo o limitiamo il traffico proveniente da uno o più indirizzi IP.
-% todo: come viene notificato?
-% todo: accelleratore hardware?
 
 \subsection{Acquisizione dati}
 
@@ -180,9 +176,7 @@ Il funzionamento del sistema di mitigazione da noi ipotizzato si basa sull'utili
 Una funzione eBPF scritta per essere eseguita come callback all'arrivo di ogni pacchetto sull'hook XDP di ogni interfaccia ha lo scopo di incrementare dei contatori di pacchetti in una mappa che utilizza come chiave un intero a 64bit generato dall'unione, tramite degli spostamenti bitwise, di ip sorgente, ip destinazione e porta destinazione. L'ip sorgente, per riuscire a mantenere la chiave a soli 64bit, viene troncato a 16 bit: questo permette comunque di identificare l'host sorgente su una rete /16, soluzione aziendale tipica in cui vengono utilizzati i router Tiesse.
 Alla ricezione di un pacchetto TCP, UDP e di pacchetti TCP con flag SYN, un RST, FIN oppure pacchetti indirizzati verso una specifica porta, incrementa i relativi contatori. Il software incrementa un contatore anche alla ricezione di ogni pacchetto ICMP, il quale essendo un protocollo incapsulato direttamente in IP non possiede una porta sorgente, per questo motivo la chiave verrà calcolata con il valore di porta destinazione a zero.
 
-% todo: tabella con esempio di dati sui flussi
 
-% todo: trovare nome
 \subsection{Fase decisionale}
 
 Grazie alle mappe implementate in eBPF è possibile accedere al loro contenuto anche in userspace. Nel programma in Python facciamo accesso alle mappe, leggendo e resettando i contatori e in seguito abbiamo ipotizzato due strade per bloccare le anomalie.

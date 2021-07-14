@@ -101,13 +101,11 @@ Le applicazioni dell'anomaly detection possono essere molteplici, qui un breve e
 
 \begin{itemize}
 %todo: dire per ogni tipologia di applicazione quale sistema per l'anomaly detection è usato: esempio nids autoencoders, va, o altro 
-%todo: terminare l'elenco delle applicazioni
 
     \item Fraud detection: sono sistemi con lo scopo di riconoscere frodi, i occupano di rilevare attività illegali in diversi campi come quella assicurativo, finanziario e telefonico.
     \item Medical and Public Health Anomaly Detection: lavorano sui dati dei pazienti, che possono avere anomalie per diverse ragioni: errori di registrazione, errori degli strumenti di misura o una condizione anormale delle condizioni del paziente. Questi sistemi mirano a riconoscere anomalie puntuali usando sistemi semi supervisionati.
     \item Industrial Damage Detection: i dispositivi industriali sono soggetti ad usura e danneggiamenti, sistemi di anomaly detection applicati in queste situazioni possono permettere di prevenire o rilevare in anticipo questi problemi.
     \item Image Processing: permette di riconoscere anomalie significative in immagini durante il tempo (motion detection) o regioni anomale in immagini statiche.
-    % todo: non ho capito bene
     \item Anomaly Detection in Text Data: questi sistemi riconoscono principalmente gli argomenti o gli eventi in una collezione di documenti, le anomalie sono causate da nuovi eventi interessanti o argomenti anomali.
     \item Sensor Networks: anomalie nei rilevamenti dei sensori possono significare un difetto o un'intrusione.
     \item Intrusion detection systems(IDS): sono dei sistemi che puntano ad identificare attività malevole nei sistemi informativi, gli IDS possono essere installati su un computer, in quel caso si parla di ``Host Intrusion Detection (HIDS)'' oppure su una rete, in quel caso si parla di ``Network Intrusion Detection (NIDS)'', gli IDS possono essere signature-based oppure anomaly based, nel primo caso non si è in grado di riconoscere nuove tipologie di attacchi. In questo contesto vengono analizzate le anomalie collettive e sono preferiti sistemi di apprendimento semi-supervionato o non supervisionato, perché le etichette per i dati anomali non sono quasi mai disponibili. In questa tesi mi concentrerò sull'analisi di anomalie di rete basandomi su sistemi di anomaly detection. 
@@ -132,7 +130,6 @@ Lo scopo della sicurezza di rete è di proteggere la confidenzialità, l'integri
 Le reti neurali sono composte da diversi strati (layer) di nodi, ciascuno collegato al successivo.
 
 L'unità base di ogni rete neurale è il nodo, che rappresenta il neurone artificiale, il tipo base è il ``perceptron'': un nodo con più input e un output rappresentato come una funzione a gradino caratterizzata dalla funzione ~\ref{eq:perceptron}, in cui si può notare che solo se la sommatoria dei valori in ingresso supera una certa soglia, il neurone si attiva.
-%todo: fixare label equazione
 \[
 \label{eq:perceptron}
 output = \begin{cases}
@@ -144,16 +141,13 @@ Questo permette di compiere decisioni in base all'input.
 %todo: Per esempio qui posso inserire l'esempio di pagina 3 del libro sulle reti neurali.
 
 \begin{figure}[h]
-    % todo: capire come gestire citazioni imsmagini a livello di copyright
-    %  e capire come funzionano le label per richiamare le immagini
+    \includegraphics[width=300px]{images/reti_neurali/neurone.png}
     \label{fig:neurone}
-    \includegraphics[width=\hsize]{images/reti_neurali/neurone.png}
     \caption{Neurone artificiale}
     \centering
     % https://www.doc.ic.ac.uk/~nuric/teaching/imperial-college-machine-learning-neural-networks.html
 \end{figure}
 
-% todo: qua potrei generalizzare dicendo che 
 Come si può notare dalla figura con l'evoluzione delle reti neurali non viene più usata solo la funzione a gradino, ma anche delle generiche funzioni rappresentate come ``f''.
 Un esempio comunemente usato di evoluzione del perceptron sono i neuroni di Sigmoid, i quali invece di ritornare una funzione a gradino in uscita, ritornano il risultato della funzione di sigmoid ~\ref{eq:sigmoid} \cite{reti_neurali_libro}.
 
@@ -161,13 +155,17 @@ Un esempio comunemente usato di evoluzione del perceptron sono i neuroni di Sigm
     \label{eq:sigmoid}
     \sigma(z) = \frac{1}{1+\mbox{exp}(-\sum_{j}{w_{j}x_{j}} - b)}
 \end{equation}
-%todo: grafico funzione di sigmoid
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=200px]{images/reti_neurali/sigmoid-curve.png}
+    \label{fig:sigmoid_curve}
+    \caption{Esempio di curva di Sigmoid}
+\end{figure}
 Le reti neurali sono composte da gruppi di neuroni artificiali organizzati in livelli e tipicamente composte da almeno tre strati: uno di input, uno o più livelli intermedi definiti ``livelli nascosti'' e un livello di uscita. Ogni livello può contenere uno o più neuroni che possono essere collegati tra loro solo con dei collegamenti in direzione dai nodi di input a quelli di output, in questo caso si parla di ``feedforward'' oppure ``recurrent'' in cui sono previste delle connessioni di feedback a neuroni dello stesso livello o a livelli precedenti.
 % 
 %https://www.spindox.it/it/blog/ml1-reti-neurali-demistificate/
 % fonte immagine https://towardsdatascience.com/what-the-hell-is-perceptron-626217814f53
 
-%% todo: parlare di come vengono allenate
 \paragraph{Allenamento reti neurali}
 
 L'allenamento di una rete neurale avviene ripetendo un percorso ciclico di tre fasi:
@@ -178,8 +176,6 @@ Questi passi verranno ripetuti più volte fino a quando non sarà ottenuto il ri
 
 \subsection{Autoencoders}
 \begin{figure}[h]
-    % todo: capire come gestire citazioni imsmagini a livello di copyright
-    %  e capire come funzionano le label per richiamare le immagini
     \includegraphics[width=\hsize]{images/reti_neurali/autoencoder.png}
     \caption{Struttura di un autoencoder}
     \label{fig:autoencoder}
@@ -209,7 +205,7 @@ Esistono in letteratura sistemi di anomaly detection basati su autoencoders, che
 \item Kitsune \cite{kitsune}: un NIDS, basato sistema di anomaly detection basato su autoencoders, che permette il riconoscimento di traffico normale e anomalo senza una supervisione per l'allenamento. Il sistema ha l'obiettivo di rilevare attacchi di tipo DDoS, Man in the Middle, scansioni di rete e botnet in una rete con dispositivi tradizionali e IoT.
 \item La soluzione proposta nell'articolo \citetitle{chen_autoencoders} \cite{chen_autoencoders} sfrutta una rete di autoencoders convoluzionaria (per una riduzione dei tempi di training) per superare le prestazioni dei sistemi di rilevamento tradizionali.
 \item L'obiettivo della soluzione \cite{vae_autoencoders} è di rilevare attacchi in di rete utilizzando i dati provenienti dai router di rete, generati tramite NetFlow, inoltre si pone l'obiettivo di spiegare in cosa consiste l'anomalia nei dati. Per il rilevamento delle anomalie si basa sui Variational Autoencoder, uno sviluppo della versione tradizionale.
-%todo: citare articoli autoencoders delle soluzioni esistenti prese dagli articoli.
+
 
 \end{itemize}
 
@@ -233,9 +229,9 @@ Basando il nostro sistema di detection su informazioni quantitative riguardanti 
 \begin{figure}[]
     \begin{center}
     \label{fig:anomaly_comparazione_1}
-    \includegraphics[width=\hsize]{images/reti_neurali/precisione_media.png}
-    \caption{Comparazione precisione media dei metodi di anomaly detection \cite{anomaly_detection_comparativa}.}
     \centering
+    \includegraphics[width=350px]{images/reti_neurali/precisione_media.png}
+    \caption{Comparazione precisione media dei metodi di anomaly detection \cite{anomaly_detection_comparativa}.}
     \end{center}
 \end{figure}
 

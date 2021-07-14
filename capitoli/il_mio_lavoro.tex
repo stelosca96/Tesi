@@ -101,11 +101,7 @@ Le carbonapi invece sono un subset delle api di graphite-web e le vanno a sostit
 Grafana è un software open source che permette la visualizzazione e la generazione delle metriche tramite una web application. Permette di creare dashboard dinamiche interrogando le api di graphite-web. Nel nostro caso è stata organizzata una dashboard in modo da visualizzare sia i dati provenienti dai router da analizzate, sia gli anomaly score calcolati dal software di anomaly-detection (Figura \ref{fig:grafana}).
 
 
-%todo: come vengono mandati i dati di ndpi?
-Riassumendo i dati provenienti dai plugin di collect, dal mio plugin e da NDPI vengono collezionati da collectd e inviati tramite il plugin write\_graphite al backend go-carbon, che si occupa di ricevere i dati e salvarli sul file system. Per la visualizzazione dei dati viene usato Grafana, che permette di visualizzare i dati richiedendo i dati alle carbonapi e contemporaneamente il nostro tool di anomaly detection richiede i dati per analizzarli. Una volta analizzati i dati e ottenuti dei risultati, vengono mandati a go-carbon per salvarli nel database (Figura \ref{fig:mos}).
-% todo: approfondire MOS
-% todo: fare immagine con la gestione dei dati
-
+Riassumendo i dati provenienti dai plugin di collect e dal mio plugin vengono collezionati e inviati tramite il plugin write\_graphite al backend go-carbon, che si occupa di ricevere i dati e salvarli sul file system. Per nDPI il processo è simile. Per la visualizzazione dei dati viene usato Grafana, che permette di visualizzare i dati richiedendo i dati alle carbonapi e contemporaneamente il nostro tool di anomaly detection richiede i dati per analizzarli. Una volta analizzati i dati e ottenuti dei risultati, vengono mandati a go-carbon per salvarli nel database (Figura \ref{fig:mos}).
 
 \section{Selezione features}
 
@@ -114,23 +110,22 @@ La scelta delle feature da utilizzare dipende da quale obiettivo si vuole ottene
 \begin{itemize}
     \item \emph{bytes trasmessi al secondo}: questa metrica è utile, abbinata ad altre, per la rilevazione di attacchi che mirano alla saturazione della banda.
     \item \emph{pacchetti trasmessi al secondo}: questa metrica ha uno scopo simile alla precedente oppure aiuta ad avere informazioni sugli attacchi di tipo flooding.
-    \item \emph{numero di connessioni aperte}: il numero di connessioni aperte è un indicatore importante per identificare tutti gli attacchi che mirano a saturare le connessioni di un server. %todo: questa ha molti usi
+    \item \emph{numero di connessioni aperte}: il numero di connessioni aperte è un indicatore importante per identificare tutti gli attacchi che mirano a saturare le connessioni di un server.
     \item \emph{numero di pacchetti con flag syn}: questa metrica è molto utile per la rilevazione di syn flood o port scanning.
     \item \emph{tls throughput}: tutto il traffico inviato su un canale sicuro tls non può essere analizzato più nello specifico, quindi viene raggruppato in questa categoria.
     \item \emph{dns throughput}: conoscere il traffico relativo al traffico dns può essere utile come indice di un attacco contro il server DNS aziendale oppure di un attacco di DNS amplification.
     \item \emph{ssh throughput}: potrebbe segnalare anomalie sull'utilizzo improprio di macchine nella sede centrale tramite delle connessioni ssh.
     \item \emph{ntp throughput}: potrebbe segnalare anomalie riguardanti attacchi DDoS di NTP amplification.
+    \item \emph{http throughput}: potrebbe segnalare anomalie riguardanti attacchi DDoS contro i server HTTP (anche se questo contatore non funziona nel caso in cui sia usato https).
     %todo: da rivedere come funzionano gli icmp durante un syn flood
     \item \emph{icmp throughput}: è un indicatore di attacchi, per esempio durante un syn flood usando ip spoofing, con ip della sottorete dell'attaccante, al ritorno dei syn ack si vede un aumento degli icmp che indicano che l'host non è esistente o che la porta destinazione a cui è destinato il pacchetto è chiusa. Inoltre gli icmp possono anche essere usati direttamente per degli attacchi.
     \item \emph{ora del giorno}: l'ora del giorno viene aggiunta per caratterizzare al meglio il traffico lungo la giornata.
     %todo: aggiungere http e ntp
 \end{itemize}
 
-% todo: sistemare frase
 Di tutte le feature viene poi calcolato il valore medio su un tempo di 10/30s, per avere dei valori confrontabili tra lavoro.
 
 La scelta della features è nata da un compromesso tra i dati necessari per rilevare al meglio le anomalie, la riduzione dei dati da salvare sul server e di conseguenza l'uso di banda usata per il trasferimento. Inoltre un problema che abbiamo dovuto tenere in considerazione è l'utilizzo di un acceleratore hardware nei router Tiesse, il quale permette un incremento della velocità di routing, ma rende più difficoltosa l'analisi dei pacchetti nel kernel senza la perdita di prestazioni.
- %todo: approfondire meglio come funziona il fast path
  
 \section{Il nostro tool}
 \label{section:our_tool}
@@ -151,7 +146,7 @@ A differenza del nostro sistema collectd effettua le letture tramite dei contato
 % Perché l'ho fatto?
 
 % todo: perché è commentata?
-% Per rilevare le anomalie, una volta decise le features da analizzare, abbiamo dovuto decidere quale sistema dei precedentemente elencati adottare. La scelta è ricaduta sull'utilizzo di una rete neurale di autoencoder, la quale permette di allenare facilmente il modello in modo semi-supervisionato, grazie all'utilizzo della sola classe normale di traffico.
+% \uline{Per rilevare le anomalie, una volta decise le features da analizzare, abbiamo dovuto decidere quale sistema dei precedentemente elencati adottare. La scelta è ricaduta sull'utilizzo di una rete neurale di autoencoder, la quale permette di allenare facilmente il modello in modo semi-supervisionato, grazie all'utilizzo della sola classe normale di traffico.}
 
 \subsection{Struttura}
 
@@ -349,24 +344,21 @@ for j in range(3):
 \end{lstlisting}
 
 \begin{table}[]
-    %todo: tabella con i dati di ndpi => questa è fake
-
-    \begin{tabular}{||c c c c c c c||} 
+    \begin{tabular}{||c c c c c c c c||} 
     \hline
-    index & timestamp  & app-http & app-ssl & app-icmp & app-dns & app-ntp \\ [0.5ex] 
+    index & timestamp  & app-http & app-ssl & app-icmp & app-dns & app-ntp & app-ssh \\ [0.5ex] 
     \hline\hline
-    1 & 45800 & 7.0 & 5103.0 & 6545.0 & 0.0 &  0.0\\ 
+    1 & 45800 & 7.0 & 5103.0 & 6545.0 & 0.0 &  0.0 &  0.0\\ 
     \hline
-    2 & 45830 & 0.0 & 0.0 & 6868.0& 0.0 &  76.0 \\
+    2 & 45830 & 0.0 & 0.0 & 6868.0& 0.0 &  76.0 & 0.0\\
     \hline
-    3 & 45860 & 621.0 & 0.0 & 6864.0 & 389.0  &  0.0 \\
+    3 & 45860 & 621.0 & 0.0 & 6864.0 & 389.0  &  0.0 &  0.0\\
     \hline
     \end{tabular}
     \caption{Tabella di esempio dei dati ricevuti relativi alle app di nDPI}
     \label{table:tabella_dati_2}
 \end{table}
 
-%todo: tabella con i dati di tutte le features
 
 \paragraph{La standardizzazione dei dati} è la fase subito successiva,
 % differenziare i casi tra l'evaluate e il train
@@ -474,7 +466,7 @@ Le soglie calcolate vengono salvate su un file, da potere usare successivamente 
 % todo: per quanto tempo faccio il train? 
 
 % Un importante aspetto da tenere in considerazione è la stazionarietà dei dati
-%todo: Immagini di confronto dei valori ricostruiti e originali con anomalie e non
+
 
 
 
@@ -583,7 +575,7 @@ Per mostrare un risultato visivo delle ricostruzioni sono stati disegnati dei gr
         \hline 
         14 & 31/03/21 & 12.11 & 12.20 & DNS Flood (4Mbps) & SI\\
         \hline
-        15 & 18/05/21 & 13.49 & 14.00 & Picco di connessioni (2500) & Dipende \\ %todo: prendere una decisione sul dipende        
+        15 & 18/05/21 & 13.49 & 14.00 & Picco di connessioni (2500) & NO (/dipende) \\ %todo: prendere una decisione sul dipende        
         \hline 
         16 & 18/05/21 & 12.57 & 13.19 & Picco di connessioni & NO\\        
         \hline
@@ -666,8 +658,7 @@ Analizzando tutti i risultati, da questo momento in poi useremo 12 come valore d
 
 \subsection{Scelta del modello e risultati}
 
-Conclusasi la scelta della lunghezza della finestra, effettuo gli stessi test con modelli diversi: sia reti dense, sia long short memory term, sia convoluzionarie.
-% todo: convoluzionarie
+Conclusasi la scelta della lunghezza della finestra, effettuo gli stessi test con modelli diversi: sia reti dense, sia long short memory term.
 
 \paragraph{Reti dense} I risultati dei test relativi alle reti dense sono visibili nella tabella \ref{table:dense_tests}.
 I test sono stati effettuati sulle seguenti tipologie di reti:
@@ -684,7 +675,8 @@ I test sono stati effettuati sulle seguenti tipologie di reti:
 
 Nonostante i risultati simili, le reti che funzionano meglio sono quelle con 8 nodi in un singolo livello e quella con 25 nodi nei livelli più esterni e 8 in quello centrale.
 
-\FloatBarrier
+
+
 \begin{table}
     \begin{tabularx}{\textwidth}{||c X c c c c c c c||} 
         \hline
@@ -736,8 +728,6 @@ Nonostante i risultati simili, le reti che funzionano meglio sono quelle con 8 n
 \end{table}
 \FloatBarrier
 
-
-
 \begin{figure}[]
     \label{fig:reconstructions}
     \includegraphics[width=\hsize]{images/my_work/confronto_modelli.png}
@@ -745,8 +735,10 @@ Nonostante i risultati simili, le reti che funzionano meglio sono quelle con 8 n
     \centering
 \end{figure}
 
+
 \paragraph{Reti LSTM} I risultati dei test relativi alle reti con nodi LSTM sono visibili nella tabella \ref{table:LSTM_tests}.
 
+I risultati sono buoni e paragonabili con i precedenti, ma una rete neurale ricorsiva richiede molto più tempo per essere allenata. Inoltre l'obiettivo principale di questa tesi non è la ricerca del modello di rete ottimale, quindi la scelta del modello è ricaduta su un modello dense, di quelli analizzati precedentemente. Per la messa in produzione del sistema verrà ricercato il modello ottimo.
 \FloatBarrier
 \begin{table}
     \begin{tabularx}{\textwidth}{||c X c c c c||} 
@@ -798,5 +790,3 @@ Nonostante i risultati simili, le reti che funzionano meglio sono quelle con 8 n
     \label{table:LSTM_tests}
 \end{table}
 \FloatBarrier
-
-I risultati sono buoni e paragonabili con i precedenti, ma una rete neurale ricorsiva richiede molto più tempo per essere allenata. Inoltre l'obiettivo principale di questa tesi non è la ricerca del modello di rete ottimale, quindi la scelta del modello è ricaduta su un modello dense, di quelli analizzati precedentemente. Per la messa in produzione del sistema verrà ricercato il modello ottimo.
