@@ -33,6 +33,7 @@ tipotesi=magistrale,
 numerazioneromana,
 % libro, utile per la stampa => mette il margine diverso per la rilegatura
 greek,
+cucitura=5mm,
 evenboxes,
 ]{toptesi}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -82,7 +83,7 @@ evenboxes,
 
 \colorlet{punct}{red!60!black}
 \definecolor{background}{HTML}{EEEEEE}
-\definecolor{delim}{RGB}{20,105,176}
+\definecolor{delim}{RGB}{153,153,153}
 \colorlet{numb}{magenta!60!black}
 
 \lstdefinelanguage{json}{
@@ -154,9 +155,9 @@ evenboxes,
     bookmarksopen,
     pdfstartview={FitH},
     colorlinks,
-    linkcolor={blue},
-    citecolor={blue},
-    urlcolor={blue}
+    linkcolor={black},
+    citecolor={black},
+    urlcolor={black}
 }
 %
 %%%%%%% Esempio di composizione di tesi di laurea con PDFLATEX 
@@ -180,7 +181,7 @@ evenboxes,
 %%%%%%% TOPtesi.
 
 \include{frontespizio}
-
+\paginavuota
 %%%%%%% Per cambiare l'offset per la rilegatura;
 %%%%%%% meno offset c'e', meglio e'
 %\setbindingcorrection{3mm}
@@ -200,12 +201,15 @@ Dedica qui
 %%%%%%% Fine esperimento
 
 \include{capitoli/sommario}
+\paginavuota
+
 % \paginavuota % funziona anche senza specificare l'opzione classica
 \italiano
 
 % \tablespagetrue\figurespagetrue % normalmente questa riga non serve ed e' commentata
 \indici
 
+\paginavuota
 
 \mainmatter
 \include{capitoli/introduzione}
@@ -216,6 +220,7 @@ Dedica qui
 \include{capitoli/lavoro_futuro}
 \include{capitoli/conclusioni}
 
+\listoftables
 \listoffigures
 % \include{capitoli/bibliografia}
 \printbibliography
